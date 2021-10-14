@@ -1,0 +1,14 @@
+{
+  "presets": [
+    [
+      "@babel/preset-typescript",
+      { "allExtensions": true, "isTSX": true, "allowDeclareField": true, "onlyRemoveTypeImports": true }
+    ],
+    "@babel/preset-react",
+    "@linaria"
+  ],
+  "plugins": [
+    ["lodash"],
+    "react-hot-loader/babel"
+  ]
+}
