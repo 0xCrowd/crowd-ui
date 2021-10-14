@@ -1,20 +1,81 @@
 import React, { FC, useEffect, useState } from "react";
-import Modal from 'react-modal';
 import { observer } from 'mobx-react-lite';
-import Loader from 'react-loader-spinner';
 import { useLocation } from "react-router-dom";
 
-import CrowdBlock from "@app/components/crowd-block";
 import Layout from '@app/components/layout';
-import Button from '@app/components/button';
-import Proposal from '@app/components/proposal';
-import Input from '@app/components/input';
-import TextArea from '@app/components/text-area';
+import UserBadge from "@app/components/user-badge";
+import Modal from "@app/components/modal";
+import Proposals from "./components/proposals";
 
 import chainStore from '@app/stores/chainStore';
 
-//import rarible from "src/assets/images/rarible.svg";
-import close from '@assets/images/close.svg';
+//#region styles
+import { styled } from '@linaria/react';
+import { css } from '@linaria/core';
+
+import rarible from '@assets/images/rarible.svg';
+import Button from "@app/components/button";
+import CrowdBlock from "./components/crowd-block";
+import ProposalForm from "./components/proposal-form";
+import EthForm from "./components/eth-form";
+
+const Root = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 1220px;
+  margin-top: 64px;
+  margin: auto;
+`;
+
+const MainBlock = styled.div`
+  display: flex;
+  margin-bottom: 40px;
+`;
+
+const NftBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+`
+
+const UserRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+`;
+
+const UserName = styled.div`
+  font-family: Inter;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 20px;
+`;
+
+const Preview = styled.img`
+  height: 440px;
+  width: 800px;
+  margin-bottom: 18px;
+`;
+
+const badge = css`
+  margin-bottom: 12px;
+`;
+//#endregion
+
+export interface IProposalFormData {
+  header: string;
+  description: string;
+}
+
+export interface IEthFormData {
+  deposite: string;
+}
+
+export enum ModalModeEnum {
+  Proposal = 'proposal',
+  Eth = 'eth',
+}
 
 const CrowdPage: FC = observer(() => {
   const { 
@@ -34,8 +95,9 @@ const CrowdPage: FC = observer(() => {
   } = chainStore;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [header, setHeader] = useState("");
-  const [description, setDescription] = useState("");
+  const [proposalFormData, setProposalFormData] = useState<IProposalFormData | null>(null);
+  const [ethFormData, setEthFormData] = useState<IEthFormData | null>(null);
+  const [modalMode, setModalMode] = useState(ModalModeEnum.Proposal);
   const [poolId, setPoolId] = useState(0);
   const [myCrowd, setMyCrowd] = useState(0);
   const [userData, setUserData] = useState<any[]>([]);
@@ -100,17 +162,20 @@ const CrowdPage: FC = observer(() => {
   };
 
   const createNewProposal = async () => {
-    setAddLoading(true);
-    const hash = await createProposal(header, description, pool.nft_address, pool.nft_id);
-    await window.web3.eth.getTransaction(
-      hash.transactionHash,
-      async (error, trans) => {
-        clearPool();
-        getPool(poolId);
-        setIsOpen(false);
-        setAddLoading(false);
-      }
-    );
+    if (proposalFormData) {
+      setAddLoading(true);
+      const { header, description } = proposalFormData;
+      const hash = await createProposal(header, description, pool.nft_address, pool.nft_id);
+      await window.web3.eth.getTransaction(
+        hash.transactionHash,
+        async (error, trans) => {
+          clearPool();
+          getPool(poolId);
+          setIsOpen(false);
+          setAddLoading(false);
+        }
+      );
+    }
   };
 
   const vote = async (value: boolean, id: number) => {
@@ -123,91 +188,52 @@ const CrowdPage: FC = observer(() => {
     );
   }
 
-  console.log(daoContract, 'dao')
+  const onCloseModal = () => setIsOpen(false);
+
+  const onOpenModal = (mode: ModalModeEnum) => {
+    setIsOpen(true);
+    setModalMode(mode);
+  };
+
+  const onProposalSubmit = (data: IProposalFormData) => {
+    console.log(data);
+    setProposalFormData(data);
+  };
+
+  const onEthSubmit = (data: IEthFormData) => {
+    console.log(data)
+    setEthFormData(data);
+  }
 
   return (
     <Layout>
-      {/* <Modal
+      <Modal
         isOpen={isOpen}
-        onRequestClose={() => setIsOpen(false)}
-        className={s.modal}
-        overlayClassName={s.overlay}
+        onRequestClose={onCloseModal}
+        isLight
+        title="New Proposal"
       >
-        <div className={s.modalHeader}>
-          <p className={s.modalTitle}>Add proposal</p>
-          <button className={s.closeButton}>
-            <img src={close} alt="close" onClick={() => setIsOpen(false)}/>
-          </button>
-        </div>
-        <Input 
-          label="Header" 
-          placeholder="header" 
-          value={header} 
-          onChange={(e) => setHeader(e.target.value)}
-          className={s.mb12}
-        />
-        <TextArea
-          label="Description"
-          placeholder="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className={s.mb18}
-        />
-        <Button loading={addLoading} onClick={createNewProposal} className={s.button}>Add Proposal</Button>
+        {modalMode === ModalModeEnum.Proposal ? (
+          <ProposalForm onSubmit={onProposalSubmit} loading={false} />
+        ) : (
+          <EthForm onSubmit={onEthSubmit} loading={false} />
+        )}
       </Modal>
-      {pool ? <>
-        <div className={s.root}>
-          <div className={s.nftBlock}>
-            <div className={s.titleBlock}>
-              <p className={s.title}>{pool.name}</p>
-              <a className={s.rari} href={`https://rarible.com/token/${pool.nft_address}:${pool.nft_id}?tab=bids`}>
-                <img src={rarible} alt="rarible" />
-              </a>
-            </div>
-            <div className={s.user}>
-              <div className={s.avatar}></div>
-              <div className={s.name}>name</div>
-            </div>
-            <div className={s.imageContainer}>
-              <img className={s.img} alt="nft" src={pool.image} />
-            </div>
-            {daoContract && <Button onClick={() => setIsOpen(true)}>Add Proposal</Button>}
-          </div>
-          <CrowdBlock 
-            price={pool.price}
-            percentage={pool.percentage}
-            participants={pool.participants.length}
-            title={pool.party_name}
-            description={pool.description}
-            onDeposite={handleDeposite}
-            myCrowd={myCrowd}
-            userData={userData}
-            loading={depositeLoading}
-            modalVisible={addModalVisible}
-            onModalOpen={() => setAddModalVisible(true)}
-            onModalClose={() => setAddModalVisible(false)}
-          />
-        </div>
-        <div className={s.proposalBlock}>
-          {proposals.map((item: any) => <Proposal 
-            title={item.title}
-            description={item.description}
-            voteAgree={+item.votes_for}
-            voteDisagree={+item.votes_against}
-            id={item.id}
-            onVote={vote}
-            status={item.status}
-            />)}
-        </div>
-      </>: <div className={s.loaderContainer}>
-        <Loader
-          type="Puff"
-          color="#6200E8"
-          height={100}
-          width={100}
-          timeout={3000}
-        />
-      </div> } */}
+      <Root>
+        <MainBlock>
+          <NftBlock>
+            <UserRow>
+              <UserName>User party name</UserName>
+              <img src={rarible} alt="rarible" />
+            </UserRow>
+            <UserBadge name="user" className={badge} />
+            <Preview src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hashmask_15753.jpg/1024px-Hashmask_15753.jpg" alt="" />
+            <Button onClick={() => onOpenModal(ModalModeEnum.Proposal)}>New proposal</Button>
+          </NftBlock>
+          <CrowdBlock partyName="" description="" price={1000} tokenName="$Holder" />
+        </MainBlock>
+        <Proposals proposals={[]} />
+      </Root>
     </Layout>
   );
 });

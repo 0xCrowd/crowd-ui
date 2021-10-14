@@ -64,13 +64,11 @@ const AddButtonContainer = styled.div`
   right: 0;
 `;
 
-const large = css`
-  height: 548px;
-`;
-
 const modalLarge = css`
   padding: 0;
-  overflow: scroll;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 //#endregion
 
@@ -81,7 +79,7 @@ export interface IPartyFormData {
 }
 
 const MainPage: FC = observer(() => {
-  const { order, orderState, getOrder } = raribleStore;
+  const { order, orderState, getOrder, clearOrder } = raribleStore;
   const { getPartyNumber, clearPool, poolContract, pools, poolLoading } = chainStore;
 
   const [activeTab, setActiveTab] = useState(TabsEnum.All);
@@ -116,9 +114,10 @@ const MainPage: FC = observer(() => {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         preventScroll={false}
-        className={order ? modalLarge : large}
-        title={order ? "" : "Start a party"}
+        className={order ? modalLarge : ""}
+        title={order ? "" : "Start a PARTY"}
         isLight={!order ? true : false}
+        onBack={order ? clearOrder : undefined}
       >
         {!order ? (
           <PartyForm

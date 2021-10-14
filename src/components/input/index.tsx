@@ -22,17 +22,19 @@ const Label = styled.label`
 `;
 
 const StyledInput = styled.input`
-  height: 40px;
-  padding-left: 12px;
+  box-sizing: border-box;
+  padding: 8px 12px;
   font-family: Inter;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 36px;
+  font-weight: 600;
+  font-size: 14px;
   letter-spacing: 0.25px;
   background: rgba(255, 255, 255, 0.53);
   border-radius: 15px;
   border: none;
-  color: #263238;
+  outline: none;
+  font-size: 14px;
+  line-height: 16px;
+  color: #5B666B;
 
   &::placeholder {
     font-family: Inter;

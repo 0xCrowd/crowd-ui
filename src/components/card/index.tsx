@@ -18,10 +18,10 @@ interface Props {
   className?: string;
 }
 
-const Card = ({ className }: PropsWithChildren<Props>): ReactElement => {
+const Card = ({ className, children }: PropsWithChildren<Props>): ReactElement => {
   return (
     <Root className={className}>
-      
+      {children}
     </Root>
   )
 }

@@ -8,14 +8,14 @@ import { IPartyFormData } from '@pages/main-page';
 
 //#region styles
 import { css } from "@linaria/core";
-import { mb18 } from "@assets/styles/constants";
+import { mb12 } from "@assets/styles/constants";
 
 const buttonContainer = css`
   width: 100% !important;
 `;
 
 const button = css`
-  width: calc(100% - 4px);
+  width: 100%;
 `;
 //#endregion
 
@@ -41,7 +41,7 @@ const PartyForm = ({ loading, onSubmit }: PropsType): ReactElement => {
   return (
     <form onSubmit={handleSubmit} id="data">
       <Input
-        className={mb18}
+        className={mb12}
         label="What’s your party name?"
         id="name"
         placeholder="Qroud Party"
@@ -49,7 +49,7 @@ const PartyForm = ({ loading, onSubmit }: PropsType): ReactElement => {
         onChange={(e) => setPartyName(e.target.value)}
       />
       <Input
-        className={mb18}
+        className={mb12}
         label="If you win, what’s your token?"
         id="token"
         placeholder="$HOLDER"
@@ -57,7 +57,7 @@ const PartyForm = ({ loading, onSubmit }: PropsType): ReactElement => {
         onChange={(e) => setTokenName(e.target.value)}
       />
       <Input
-        className={mb18}
+        className={mb12}
         label="The auction URL is"
         id="url"
         placeholder="https://zora.co/void/123"

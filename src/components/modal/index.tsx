@@ -8,6 +8,7 @@ import { styled } from '@linaria/react';
 
 import close from '@assets/images/close.svg';
 import closeDark from '@assets/images/closeDark.svg';
+import back from '@assets/images/back.svg';
 
 const modal = css`
   box-sizing: border-box;
@@ -17,7 +18,7 @@ const modal = css`
   left: 40px;
   right: 40px;
   bottom: 40px;
-  padding: 18px;
+  padding: 34px 18px 28px 18px;
   background: linear-gradient(0deg, #FFFFFF, #FFFFFF), #263238;
   border-radius: 15px;
   border: 2px solid #363636;
@@ -33,12 +34,12 @@ const overlay = css`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: linear-gradient(0deg, rgba(63, 155, 215, 0.18), rgba(63, 155, 215, 0.18)), rgba(0, 0, 0, 0.5);
 `;
 
 const Header = styled.p`
   margin-bottom: 24px;
-  margin-top: 34px;
+  margin-top: 0;
   text-align: center;
   font-family: Inter;
   font-weight: 500;
@@ -54,8 +55,8 @@ interface ButtonProps {
 
 const CloseButton = styled.button<ButtonProps>`
   position: absolute;
-  top: 36px;
-  right: 35px;
+  top: 28px;
+  right: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,6 +66,12 @@ const CloseButton = styled.button<ButtonProps>`
   border-radius: 50%;
   cursor: pointer;
   border: none;
+`;
+
+const BackIcon = styled.img`
+  position: absolute;
+  top: 41px;
+  left: 35px;
 `;
 //#endregion
 
@@ -84,6 +91,7 @@ const customStyles = {
 interface Props {
   isOpen: boolean;
   onRequestClose: () => void;
+  onBack?: () => void;
   preventScroll?: boolean;
   title?: string;
   className?: string;
@@ -94,6 +102,7 @@ interface Props {
 const CustomModal = ({
   isOpen,
   onRequestClose,
+  onBack,
   preventScroll = true,
   title,
   className,
@@ -116,6 +125,7 @@ const CustomModal = ({
           <CloseButton onClick={onRequestClose} isLight={isLight}>
             <img src={isLight ? closeDark : close} alt="close" />
           </CloseButton>
+          {onBack && <BackIcon src={back} alt="back icon" onClick={onBack} />}
         </>
       </Modal>
   )

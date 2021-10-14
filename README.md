@@ -2,25 +2,25 @@
 
 Установить зависимости:
 ```
-npm install
+yarn
 ```
 Запуск dev-версии:
 ```
-npm run start
+yarn start
 ```
 Сборка prod-версии:
 ```
-npm run build
+yarn build
 ```
 Сборка и запуск prod-версии:
 ```
-npm run start:prod
+yarn start:prod
 ```
 Очистить собранное:
 ```
-npm run clean
+yarn clean
 ```
 Проверить линтерами:
 ```
-npm run check
+yarn check
 ```

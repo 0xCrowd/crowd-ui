@@ -15,6 +15,9 @@ export const mb20 = css`
 export const mb8 = css`
   margin-bottom: 8px;
 `;
+export const mb4 = css`
+  margin-bottom: 4px;
+`;
 export const mb12 = css`
   margin-bottom: 12px;
 `;
