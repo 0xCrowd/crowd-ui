@@ -67,7 +67,6 @@ const PartyForm = ({ loading, onSubmit }: PropsType): ReactElement => {
       <Button
         containerClassName={buttonContainer}
         className={button}
-        active
         form="data"
         type="submit"
       >

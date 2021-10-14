@@ -32,7 +32,7 @@ const StyledButton = styled.button<ButtonProps>`
   font-weight: bold;
   font-size: 14px;
   line-height: 12px;
-  color: #FFFFFF;
+  color: ${({ isLight }) => isLight ? '#263238' : '#fff'};
   cursor: pointer;
   outline: none;
 

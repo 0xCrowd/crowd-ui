@@ -47,6 +47,14 @@ class ChainStore {
     id: '3',
     party_name: 'crowd',
     description: '123',
+  },
+  {
+    price: 100,
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hashmask_15753.jpg/1024px-Hashmask_15753.jpg',
+    percentage: 10,
+    id: '3',
+    party_name: 'crowd',
+    description: '123',
   }];
   pool!: any;
   poolLoading = true;

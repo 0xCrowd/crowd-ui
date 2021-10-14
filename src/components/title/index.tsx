@@ -4,9 +4,10 @@ import React, { PropsWithChildren, ReactElement, memo } from 'react';
 import { styled } from '@linaria/react';
 
 const Root = styled.p`
+  margin: 0;
   font-weight: bold;
   font-size: 18px;
-  line-height: 24px;
+  line-height: 20px;
   margin-top: 18px;
   margin-bottom: 18px;
   color: #6C5CE7;

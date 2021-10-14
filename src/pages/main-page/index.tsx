@@ -20,10 +20,11 @@ import plus from "@app/assets/images/plus.svg";
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
 import { mr24 } from '@assets/styles/constants';
+import TabButtons from './components/tab-buttons/index';
 
 const AddButton = styled.button`
-  width: 54px;
-  height: 54px;
+  width: 36px;
+  height: 36px;
   margin-left: 18px;
   background: #6200E8;
   border-radius: 50%;
@@ -36,7 +37,7 @@ const AddButton = styled.button`
 const ButtonText = styled.p`
   margin: 0;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 18px;
   line-height: 24px;
   letter-spacing: 0.44px;
   color: #6C5CE7;
@@ -49,7 +50,7 @@ const ButtonsRow = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  width: 1220px;
+  width: 1152px;
   padding-top: 28px;
   padding-bottom: 28px;
   margin: auto;
@@ -117,6 +118,7 @@ const MainPage: FC = observer(() => {
         preventScroll={false}
         className={order ? modalLarge : large}
         title={order ? "" : "Start a party"}
+        isLight={!order ? true : false}
       >
         {!order ? (
           <PartyForm
@@ -135,19 +137,10 @@ const MainPage: FC = observer(() => {
         )}
       </Modal>
       <ButtonsRow>
-        <Button
-          active={activeTab === TabsEnum.All}
-          onClick={() => setActiveTab(TabsEnum.All)}
-          containerClassName={mr24}
-        >
-          ALL PARTIES
-        </Button>
-        <Button
-          active={activeTab === TabsEnum.My}
-          onClick={() => setActiveTab(TabsEnum.My)}
-        >
-          MY PARTIES
-        </Button>
+        <TabButtons 
+          activeTab={activeTab}
+          onChange={setActiveTab}
+        />
         <AddButtonContainer>
           <ButtonText>START A PARTY</ButtonText>
           <AddButton onClick={openModal}>

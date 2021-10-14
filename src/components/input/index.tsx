@@ -6,7 +6,8 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   padding: 18px;
-  background: #6F1875;
+  background: linear-gradient(93.35deg, #DFFDFF 10.24%, #FFE4FE 100%);
+  box-shadow: 0px -4px 11px rgba(180, 250, 255, 0.3);
   border-radius: 10px;
 `;
 
@@ -14,12 +15,10 @@ const Label = styled.label`
   margin-bottom: 16px;
   font-family: Inter;
   font-weight: bold;
-  font-size: 18px;
-  line-height: 24px;
-  letter-spacing: 0.25px;
-  font-weight: 500;
+  font-size: 16px;
   line-height: 16px;
-  color: #FFFFFF;
+  letter-spacing: 0.25px;
+  color: #263238;
 `;
 
 const StyledInput = styled.input`
@@ -30,18 +29,18 @@ const StyledInput = styled.input`
   font-size: 18px;
   line-height: 36px;
   letter-spacing: 0.25px;
-  background: #4A2556;
+  background: rgba(255, 255, 255, 0.53);
   border-radius: 15px;
   border: none;
-  color: #FFF;
+  color: #263238;
 
   &::placeholder {
     font-family: Inter;
     font-weight: normal;
-    font-size: 18px;
+    font-size: 14px;
     line-height: 16px;
     letter-spacing: 0.25px;
-    color: #F3F3F3;
+    color: #828282;
   }
 `;
 //#endregion

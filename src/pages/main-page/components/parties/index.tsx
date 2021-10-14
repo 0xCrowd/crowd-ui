@@ -2,18 +2,18 @@ import React, { ReactElement } from "react";
 import Loader from "react-loader-spinner";
 import cn from 'classnames';
 
-import Card from "@app/components/card";
+import NftCard from "@app/components/nft-card";
 import Button from "@app/components/button";
 
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { mr40 } from '@assets/styles/constants';
+import { mr32 } from '@assets/styles/constants';
 
 const Root = styled.div`
   display: flex;
   flex-wrap: wrap;
-  width: 1220px;
+  width: 1152px;
   margin: auto;
 `;
 
@@ -76,14 +76,14 @@ const Parties = ({ pools, loading, onCreateClick }: Props): ReactElement => {
               price,
             }, index) => {
               return (
-                <Card
+                <NftCard
                   id={id}
                   price={price}
                   collected={percentage}
                   title={party_name}
                   image={image}
                   participants={participants?.length}
-                  className={cn(card, (index + 1) % 3 !== 0 ? mr40 : '')}
+                  className={cn(card, (index + 1) % 4 !== 0 ? mr32 : '')}
                 />
               );
             }

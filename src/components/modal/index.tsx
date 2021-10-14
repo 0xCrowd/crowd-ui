@@ -5,7 +5,9 @@ import Modal from "react-modal";
 //#region styles
 import { css } from '@linaria/core';
 import { styled } from '@linaria/react';
+
 import close from '@assets/images/close.svg';
+import closeDark from '@assets/images/closeDark.svg';
 
 const modal = css`
   box-sizing: border-box;
@@ -16,9 +18,13 @@ const modal = css`
   right: 40px;
   bottom: 40px;
   padding: 18px;
-  background: #263238;
+  background: linear-gradient(0deg, #FFFFFF, #FFFFFF), #263238;
   border-radius: 15px;
   border: 2px solid #363636;
+
+  @media (max-height: 800px) {
+    max-height: 650px;
+  }
 `;
 
 const overlay = css`
@@ -31,19 +37,22 @@ const overlay = css`
 `;
 
 const Header = styled.p`
-  margin-bottom: 30px;
-  margin-top: 22px;
+  margin-bottom: 24px;
+  margin-top: 34px;
   text-align: center;
   font-family: Inter;
   font-weight: 500;
   font-size: 14px;
   line-height: 16px;
   letter-spacing: 0.25px;
-  color: #FFFFFF;
-  text-shadow: 0px 0px 8px rgba(38, 50, 56, 0.5);
+  color: #263238;
 `;
 
-const CloseButton = styled.button`
+interface ButtonProps {
+  isLight: boolean;
+}
+
+const CloseButton = styled.button<ButtonProps>`
   position: absolute;
   top: 36px;
   right: 35px;
@@ -52,7 +61,7 @@ const CloseButton = styled.button`
   justify-content: center;
   height: 28px;
   width: 28px;
-  background: #FFFFFF;
+  background: ${({ isLight }) => isLight ? '#263238' : '#fff'};
   border-radius: 50%;
   cursor: pointer;
   border: none;
@@ -79,6 +88,7 @@ interface Props {
   title?: string;
   className?: string;
   overlayClassName?: string;
+  isLight?: boolean;
 }
 
 const CustomModal = ({
@@ -88,6 +98,7 @@ const CustomModal = ({
   title,
   className,
   overlayClassName,
+  isLight = true,
   children,
 }: PropsWithChildren<Props>): ReactElement => {
   return (
@@ -102,8 +113,8 @@ const CustomModal = ({
         <>
           {title ? <Header>{title}</Header> : null}
           {children}
-          <CloseButton onClick={onRequestClose}>
-            <img src={close} alt="close" />
+          <CloseButton onClick={onRequestClose} isLight={isLight}>
+            <img src={isLight ? closeDark : close} alt="close" />
           </CloseButton>
         </>
       </Modal>

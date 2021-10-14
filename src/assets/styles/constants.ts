@@ -28,8 +28,8 @@ export const mr24 = css`
 export const mr14 = css`
   margin-right: 14px;
 `;
-export const mr40 = css`
-  margin-right: 40px;
+export const mr32 = css`
+  margin-right: 32px;
 `;
 
 export const ml10 = css`

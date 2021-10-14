@@ -10,13 +10,13 @@ const Root = styled.div`
   background: #00F0FF;
   box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.4);
   border-radius: 10px;
-  padding: 12px 22px;
+  padding: 7px 16px;
 `;
 
 const Main = styled.div`
   background: #D2FF53;
   border-radius: 10px;
-  height: 8px;
+  height: 5px;
   position: relative;
 `;
 
@@ -29,7 +29,7 @@ const Percent = styled.div<PercentProps>`
   background: #009606;
   border-radius: 10px;
   width: ${({ number }) => `${number}%`};
-  height: 8px;
+  height: 5px;
 `;
 //#endregion
 
