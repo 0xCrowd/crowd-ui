@@ -36,14 +36,16 @@ const Percent = styled.div<PercentProps>`
 
 type PropsType = {
   number: number;
+  mainClassName?: string;
+  precentClassName?: string;
   className?: string;
 }
 
-const Percentage: FC<PropsType> = ({ number, className }) => {
+const Percentage: FC<PropsType> = ({ number, mainClassName, precentClassName, className }) => {
   return (
     <Root className={className}>
-      <Main>
-        <Percent number={number > 100 ? 100 : number}></Percent>
+      <Main className={mainClassName}>
+        <Percent className={precentClassName} number={number > 100 ? 100 : number}></Percent>
       </Main>
     </Root>
   );

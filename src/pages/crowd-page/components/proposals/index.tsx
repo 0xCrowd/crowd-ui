@@ -15,6 +15,7 @@ const Root = styled.div`
 const Row = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-bottom: 28px;
 `;
 //#endregion
 

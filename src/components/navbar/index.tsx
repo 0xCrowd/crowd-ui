@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 
 //#region styles
 import { styled } from '@linaria/react';
@@ -46,7 +46,11 @@ const Row = styled.div`
 `;
 //#endregion
 
-const Navbar = () => {
+interface Props {
+  balance: string;
+}
+
+const Navbar = ({ balance }: Props): ReactElement => {
   return (
     <Root>
       <Row>
@@ -54,7 +58,7 @@ const Navbar = () => {
         <SearchInput />
       </Row>
       <PriceBlock>
-        <Price>1000</Price>
+        <Price>{balance}</Price>
         <img src={eth} alt="eth" />
       </PriceBlock>
     </Root>

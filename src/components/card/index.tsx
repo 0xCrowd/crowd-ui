@@ -4,6 +4,7 @@ import React, { PropsWithChildren, ReactElement } from 'react';
 import { styled } from '@linaria/react';
 
 const Root = styled.div`
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   padding: 28px 38px;

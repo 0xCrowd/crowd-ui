@@ -70,6 +70,10 @@ const modalLarge = css`
   -ms-overflow-style: none;
   scrollbar-width: none;
 `;
+
+const layout = css`
+  height: 100%;
+`;
 //#endregion
 
 export interface IPartyFormData {
@@ -80,11 +84,25 @@ export interface IPartyFormData {
 
 const MainPage: FC = observer(() => {
   const { order, orderState, getOrder, clearOrder } = raribleStore;
-  const { getPartyNumber, clearPool, poolContract, pools, poolLoading } = chainStore;
+  const { 
+    getPartyNumber,
+    clearPool,
+    loadWeb3, 
+    loadBlockChain,
+    poolContract,
+    pools,
+    poolLoading,
+    balance,
+  } = chainStore;
 
   const [activeTab, setActiveTab] = useState(TabsEnum.All);
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [party, setParty] = useState<IPartyFormData | null>(null);
+
+  useEffect(() => {
+    loadWeb3();
+    loadBlockChain();
+  }, []);
 
   useEffect(() => {
     if (poolContract) {
@@ -109,7 +127,7 @@ const MainPage: FC = observer(() => {
   };
 
   return (
-    <Layout>
+    <Layout balance={balance} className={layout}>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}

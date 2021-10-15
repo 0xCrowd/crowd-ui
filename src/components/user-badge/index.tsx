@@ -47,16 +47,24 @@ type PropsType = {
   name: string;
   number?: string;
   className?: string;
+  textClassName?: string;
+  substrParam?: number
 }
 
-const UserBadge: FC<PropsType> = ({ name, number, className }) => {
+const UserBadge: FC<PropsType> = ({ 
+  name,
+  number,
+  substrParam = 5,
+  textClassName,
+  className,
+}) => {
   return (
     <Root className={className}>
       <NameBlock>
         <Avatar />
-        <Name>{`${name.substr(0, 5)}...`}</Name>
+        <Name className={textClassName}>{`${name.substr(0, substrParam)}...`}</Name>
       </NameBlock>
-      {number && <Price>{number} ETH</Price>}
+      {number && <Price className={textClassName}>{number} ETH</Price>}
     </Root>
   )
 }

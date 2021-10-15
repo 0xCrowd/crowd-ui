@@ -207,7 +207,7 @@ const NftCard = ({
                 <Price>10000</Price>
               </PriceRow>
             </PriceBlock>
-            <Button onClick={() => push(`id/${id}`)} className={button} containerClassName={container}>
+            <Button onClick={() => push(`/${id}`)} className={button} containerClassName={container}>
               VIEW PARTY
             </Button>
           </Footer>

@@ -12,18 +12,30 @@ import { css } from '@linaria/core';
 import { mb4 } from '@assets/styles/constants';
 
 const card = css`
+  box-sizing: border-box;
   height: 566px;
   width: 380px;
 `;
 
 const percentage = css`
-  margin-bottom: 10px;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 12px 22px;
+  margin-top: 10px;
   margin-bottom: 18px;
 `;
 
+const percentRow = css`
+  height: 8px;
+`;
+
+const percent = css`
+  height: 8px;
+`;
+
 const button = css`
-  height: 300px;
-  width: 28px;
+  width: 300px;
+  height: 28px;
   font-family: Inter;
   font-weight: bold;
   font-size: 14px;
@@ -31,9 +43,15 @@ const button = css`
 `;
 
 const buttonContainer = css`
-  height: 304px;
-  width: 32px;
+  height: 32px;
+  width: 304px;
   margin-bottom: 18px;
+`;
+
+const userText = css`
+  font-size: 10px;
+  line-height: 20px;
+  color: #C5C5C5;
 `;
 
 const Header = styled.div`
@@ -75,7 +93,7 @@ const Icon = styled.div`
   width: 44px;
   margin-right: 12px;
   border-radius: 50%;
-  background: #fff;
+  border: 1px solid #fff;
 `;
 
 const PriceInfo = styled.div`
@@ -98,9 +116,10 @@ const Current = styled.p`
 const Price = styled.p`
   margin: 0;
   font-family: Inter;
-  font-weight: bold;
+  font-weight: 700;
   font-size: 18px;
   line-height: 18px;
+  color: #fff;
 `;
 
 const Row = styled.div`
@@ -116,6 +135,7 @@ const CollectedText = styled.p`
   font-weight: 500;
   font-size: 14px;
   line-height: 16px;
+  color: #fff;
 `;
 
 const CollectedValue = styled.p`
@@ -123,7 +143,8 @@ const CollectedValue = styled.p`
   font-family: Inter;
   font-weight: 500;
   font-size: 16px;
-  line-height: 36px;
+  line-height: 16px;
+  color: #fff;
 `;
 
 const Funds = styled.p`
@@ -133,6 +154,7 @@ const Funds = styled.p`
   font-weight: 800;
   font-size: 12px;
   line-height: 18px;
+  color: #fff;
 `;
 
 const UserTitle = styled.p`
@@ -142,6 +164,14 @@ const UserTitle = styled.p`
   font-weight: bold;
   font-size: 14px;
   line-height: 20px;
+  color: #fff;
+`;
+
+const Hr = styled.div`
+  width: 100%;
+  height: 0.5px;
+  margin-bottom: 14px;
+  background: linear-gradient(97.56deg, #00F0FF 8.07%, #FF1CF7 91.93%);
 `;
 //#endregion
 
@@ -150,9 +180,22 @@ interface Props {
   description: string;
   price: number;
   tokenName: string;
+  collected: number;
+  participants: number;
+  yourPaid: number;
+  onAddClick: () => void;
 }
 
-const CrowdBlock = ({ partyName, description, price, tokenName }: Props): ReactElement => {
+const CrowdBlock = ({ 
+  partyName,
+  description,
+  price,
+  tokenName,
+  collected,
+  participants,
+  yourPaid,
+  onAddClick,
+}: Props): ReactElement => {
   return (
     <Card className={card}>
       <Header>
@@ -164,7 +207,7 @@ const CrowdBlock = ({ partyName, description, price, tokenName }: Props): ReactE
         <Icon />
         <PriceInfo>
           <Current>Current price</Current>
-          <Price>ETH 1000</Price>
+          <Price>ETH {price}</Price>
         </PriceInfo>
       </PriceBlock>
       <Row>
@@ -172,18 +215,22 @@ const CrowdBlock = ({ partyName, description, price, tokenName }: Props): ReactE
         <CollectedText>Participants</CollectedText>
       </Row>
       <Row>
-        <CollectedValue>80%</CollectedValue>
-        <CollectedValue>1111</CollectedValue>
+        <CollectedValue>{collected}%</CollectedValue>
+        <CollectedValue>{participants}</CollectedValue>
       </Row>
-      <Percentage number={80} className={percentage} />
-      <Button className={button} containerClassName={buttonContainer} active>+ Add funds</Button>
-      <Funds>Your funds: 3% / 0.5 ETH</Funds>
-      <hr />
-      <UserTitle>
-        <UserBadge number="1000" name="User" className={mb4} />
-        <UserBadge number="1000" name="User" className={mb4} />
-        <UserBadge number="1000" name="User" className={mb4} />
-      </UserTitle>
+      <Percentage 
+        number={80} 
+        className={percentage}
+        mainClassName={percentRow}
+        precentClassName={percent}
+      />
+      <Button className={button} containerClassName={buttonContainer} active onClick={onAddClick}>+ Add funds</Button>
+      <Funds>Your funds: 3% / {yourPaid} ETH</Funds>
+      <Hr />
+      <UserTitle>User party name</UserTitle>
+      <UserBadge number="1000" name="User" className={mb4} textClassName={userText}/>
+      <UserBadge number="1000" name="User" className={mb4} textClassName={userText}/>
+      <UserBadge number="1000" name="User" className={mb4} textClassName={userText}/>
     </Card>
   )
 }

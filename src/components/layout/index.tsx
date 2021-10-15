@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren, ReactElement } from 'react'
 import Navbar from '../navbar/index';
 
 //#region styles
@@ -12,14 +12,19 @@ interface RootProps {
 
 const Root = styled.div<RootProps>`
   background: ${({ background }) => `url(${background})`};
-  height: 100%;
+  background-size: cover;
 `;
 //#endregion
 
-const Layout: FC = ({ children }) => {
+interface Props {
+  balance: string;
+  className?: string;
+}
+
+const Layout = ({ balance, children, className }: PropsWithChildren<Props>): ReactElement => {
   return (
-    <Root background={background}>
-      <Navbar />
+    <Root background={background} className={className}>
+      <Navbar balance={balance} />
       {children}
     </Root>
   )

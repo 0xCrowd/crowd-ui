@@ -23,8 +23,8 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   width: 1220px;
-  margin-top: 64px;
   margin: auto;
+  margin-top: 64px;
 `;
 
 const MainBlock = styled.div`
@@ -36,30 +36,48 @@ const NftBlock = styled.div`
   display: flex;
   flex-direction: column;
   width: 800px;
+  margin-right: 40px;
 `
 
 const UserRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 `;
 
 const UserName = styled.div`
   font-family: Inter;
-  font-weight: bold;
+  font-weight: 700;
   font-size: 18px;
   line-height: 20px;
+  color: #fff;
 `;
 
 const Preview = styled.img`
   height: 440px;
   width: 800px;
   margin-bottom: 18px;
+  border-radius: 10px;
 `;
 
 const badge = css`
   margin-bottom: 12px;
+`;
+
+const badgeText = css`
+  color: #fff;
+  font-weight: 700;
+`;
+
+const button = css`
+  width: calc(100% - 2px);
+  height: 46px;
+`;
+
+const buttonContainer = css`
+  width: 100%;
+  height: 48px;
 `;
 //#endregion
 
@@ -92,6 +110,9 @@ const CrowdPage: FC = observer(() => {
     proposals,
     voteFor,
     clearPool,
+    balance,
+    loadWeb3,
+    loadBlockChain,
   } = chainStore;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -106,6 +127,11 @@ const CrowdPage: FC = observer(() => {
   const [addModalVisible, setAddModalVisible] = useState(false);
 
   const location = useLocation();
+
+  useEffect(() => {
+    loadWeb3();
+    loadBlockChain();
+  }, [])
 
   useEffect(() => {
     if (poolContract) {
@@ -206,7 +232,7 @@ const CrowdPage: FC = observer(() => {
   }
 
   return (
-    <Layout>
+    <Layout balance={balance}>
       <Modal
         isOpen={isOpen}
         onRequestClose={onCloseModal}
@@ -226,13 +252,29 @@ const CrowdPage: FC = observer(() => {
               <UserName>User party name</UserName>
               <img src={rarible} alt="rarible" />
             </UserRow>
-            <UserBadge name="user" className={badge} />
+            <UserBadge name="user" className={badge} textClassName={badgeText}/>
             <Preview src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hashmask_15753.jpg/1024px-Hashmask_15753.jpg" alt="" />
-            <Button onClick={() => onOpenModal(ModalModeEnum.Proposal)}>New proposal</Button>
+            <Button 
+              onClick={() => onOpenModal(ModalModeEnum.Proposal)}
+              className={button}
+              containerClassName={buttonContainer}
+              active
+            >
+              New proposal
+            </Button>
           </NftBlock>
-          <CrowdBlock partyName="" description="" price={1000} tokenName="$Holder" />
+          <CrowdBlock 
+            partyName="asdasdasd" 
+            description="asdasd asdasd asdas asd" 
+            price={1000} 
+            tokenName="$Holder" 
+            collected={80}
+            participants={1111}
+            yourPaid={0.4}
+            onAddClick={() => onOpenModal(ModalModeEnum.Eth)}
+          />
         </MainBlock>
-        <Proposals proposals={[]} />
+        <Proposals proposals={proposals} />
       </Root>
     </Layout>
   );

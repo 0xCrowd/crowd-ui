@@ -16,6 +16,7 @@ class ChainStore {
   }
 
   address = "";
+  balance = "";
 
   poolContract!: any;
   factoryContract!: any;
@@ -62,7 +63,24 @@ class ChainStore {
   depositeLoading = false;
 
   addProposalLoading = false;
-  proposals: any[] = [];
+  proposals: any[] = [
+    {
+      title: 'Proposal',
+      description: 'DEsc desc desc desc desc desc desc desc',
+    },
+    {
+      title: 'Proposal',
+      description: 'DEsc desc desc desc desc desc desc desc',
+    },
+    {
+      title: 'Proposal',
+      description: 'DEsc desc desc desc desc desc desc desc',
+    },
+    {
+      title: 'Proposal',
+      description: 'DEsc desc desc desc desc desc desc desc',
+    }
+  ];
 
   loadWeb3 = async (): Promise<void> => {
     try {
@@ -83,10 +101,13 @@ class ChainStore {
 
   loadBlockChain = async (): Promise<void> => {
     const web3 = window.web3;
-
+    console.log(web3.currentProvider, 'curr')
     const accounts = await web3.eth.getAccounts();
-
+    console.log(accounts, 'acs');
     this.address = accounts[0];
+
+    const weiBalance = await web3.eth.getBalance(accounts[0]);
+    this.balance = await web3.utils.fromWei(weiBalance, 'ether');
 
     // const poolAbi = PoolAbi.abi;
     // const factoryAbi = FactoryAbi.abi;

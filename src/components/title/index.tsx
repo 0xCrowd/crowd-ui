@@ -8,9 +8,7 @@ const Root = styled.p`
   font-weight: bold;
   font-size: 18px;
   line-height: 20px;
-  margin-top: 18px;
-  margin-bottom: 18px;
-  color: #6C5CE7;
+  color: #fff;
 `;
 //#endregion
 
