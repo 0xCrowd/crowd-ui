@@ -6,18 +6,20 @@ import Layout from '@app/components/layout';
 import UserBadge from "@app/components/user-badge";
 import Modal from "@app/components/modal";
 import Proposals from "./components/proposals";
+import Button from "@app/components/button";
+import CrowdBlock from "./components/crowd-block";
+import ProposalForm from "./components/proposal-form";
+import EthForm from "./components/eth-form";
 
 import chainStore from '@app/stores/chainStore';
+
+import { IProposalFormData } from './components/proposal-form/constants';
 
 //#region styles
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
 
 import rarible from '@assets/images/rarible.svg';
-import Button from "@app/components/button";
-import CrowdBlock from "./components/crowd-block";
-import ProposalForm from "./components/proposal-form";
-import EthForm from "./components/eth-form";
 
 const Root = styled.div`
   display: flex;
@@ -80,11 +82,6 @@ const buttonContainer = css`
   height: 48px;
 `;
 //#endregion
-
-export interface IProposalFormData {
-  header: string;
-  description: string;
-}
 
 export interface IEthFormData {
   deposite: string;

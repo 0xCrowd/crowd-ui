@@ -4,11 +4,12 @@ import Loader from 'react-loader-spinner';
 import Input from '@app/components/input';
 import Button from '@app/components/button';
 
-import { IProposalFormData } from '@pages/crowd-page';
+import { IProposalFormData, validate, initialValues } from './constants';
 
 //#region styles
 import { css } from '@linaria/core';
 import { mb12 } from '@assets/styles/constants';
+import { useFormik } from 'formik';
 
 
 const buttonContainer = css`
@@ -27,16 +28,13 @@ interface Props {
 }
 
 const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
-  const [header, setHeader] = useState('');
-  const [description, setDescription] = useState('');
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onSubmit({
-      header,
-      description,
-    });
-  };
+  const { handleSubmit, handleChange, values } = useFormik({
+    initialValues,
+    onSubmit: values => {
+      onSubmit(values);
+    },
+    validate: validate,
+  });
 
   return (
     <form onSubmit={handleSubmit}>
@@ -45,22 +43,23 @@ const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
         label="Header"
         id="header"
         placeholder="Crowd Protocol"
-        value={header}
-        onChange={(e) => setHeader(e.target.value)}
+        value={values.header}
+        onChange={handleChange}
       />
       <Input
         className={mb12}
         label="Description"
         id="description"
         placeholder="description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        value={values.description}
+        onChange={handleChange}
       />
       <Button
         containerClassName={buttonContainer}
         className={button}
         form="data"
         type="submit"
+        disabled={loading}
       >
         {loading ? (
           <Loader

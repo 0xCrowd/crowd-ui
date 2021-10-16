@@ -2,25 +2,24 @@ import React, { FC, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 
 import Layout from "@app/components/layout";
-import Button from "@app/components/button/index";
 import Modal from '@app/components/modal';
 import PartyForm from "./components/party-form";
 import NftPreview from "./components/nft-preview";
 import Parties from './components/parties';
+import TabButtons from './components/tab-buttons/index';
 
 import raribleStore from "@stores/raribleStore";
 import chainStore from "@stores/chainStore";
 
 import { TabsEnum } from "@enums/tabs";
 import { StateEnum } from "@enums/state-enum";
+import { IPartyFormData } from './components/party-form/constants';
 
 import plus from "@app/assets/images/plus.svg";
 
 //#region styles
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
-import { mr24 } from '@assets/styles/constants';
-import TabButtons from './components/tab-buttons/index';
 
 const AddButton = styled.button`
   width: 36px;
@@ -75,12 +74,6 @@ const layout = css`
   height: 100%;
 `;
 //#endregion
-
-export interface IPartyFormData {
-  url: string;
-  partyName: string;
-  tokenName: string;
-}
 
 const MainPage: FC = observer(() => {
   const { order, orderState, getOrder, clearOrder } = raribleStore;

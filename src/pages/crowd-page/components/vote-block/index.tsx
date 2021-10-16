@@ -47,7 +47,6 @@ const ButtonRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 8px;
 `;
 
 const card = css`
@@ -59,15 +58,23 @@ const card = css`
 
 const lightButton = css`
   height: 28px;
+  width: 136px;
 `;
 
 const lightContainer = css`
   height: 32px;
+  width: 140px;
 `;
 
 const button = css`
   height: 32px;
   border: 2px solid #FF1CF7;
+  width: 140px;
+`;
+
+const buttonContainer = css`
+  height: 32px;
+  width: 140px;
 `;
 
 const percentage = css`
@@ -110,8 +117,13 @@ const VoteBlock = ({ forVote, againstVote, tokenName }: Props): ReactElement => 
         <BoldText>3% / 0.5 Rari</BoldText>
       </ValueRow>
       <ButtonRow>
-        <Button className={lightButton} containerClassName={lightContainer}>Vote For</Button>
-        <Button className={button}>Vote Against</Button>
+        <Button 
+          className={lightButton} 
+          containerClassName={lightContainer} 
+          mode="light"
+          active
+        >Vote For</Button>
+        <Button className={button} containerClassName={buttonContainer}>Vote Against</Button>
       </ButtonRow>
     </Card>
   );
