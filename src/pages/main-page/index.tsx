@@ -113,7 +113,11 @@ const MainPage: FC = observer(() => {
 
   const openModal = () => setIsOpen(true);
 
-  const closeModal = () => setIsOpen(false);
+  const closeModal = () => {
+    clearOrder();
+    setIsOpen(false);
+    setParty(null);
+  }
 
   const onSubmit = (data: IPartyFormData) => {
     setParty(data);

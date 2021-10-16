@@ -160,6 +160,7 @@ const title = css`
   transform: translate(-50%, -50%);
   color: #fff;
   z-index: 100;
+  text-shadow: 0px 0px 8px rgb(38 50 56 / 50%);
 `;
 
 const badge = css`
