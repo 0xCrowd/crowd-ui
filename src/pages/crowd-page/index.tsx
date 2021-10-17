@@ -234,7 +234,7 @@ const CrowdPage: FC = observer(() => {
         isOpen={isOpen}
         onRequestClose={onCloseModal}
         isLight
-        title="New Proposal"
+        title={modalMode === ModalModeEnum.Proposal ? "New Proposal" : "Add ETH"}
       >
         {modalMode === ModalModeEnum.Proposal ? (
           <ProposalForm onSubmit={onProposalSubmit} loading={false} />
