@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@app/*": ["*"],
+      "@assets/*": ["assets/*"],
+      "@stores/*": ["stores/*"],
+      "@components/*": ["components/*"],
+      "@pages/*": ["pages/*"],
+      "@enums/*": ["enums/*"],
+      "@constants/*": ["constants/*"],
+    },
+    "jsx": "react",
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES6",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "./src/typings",
+      "./node_modules/@types"
+    ],
+    "strict": true,
+    "alwaysStrict": true,
+    "downlevelIteration": true,
+    "skipLibCheck": true,
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "suppressImplicitAnyIndexErrors": true,
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
