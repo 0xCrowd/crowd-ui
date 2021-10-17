@@ -5,6 +5,8 @@ npm-debug.log*
 
 coverage
 node_modules
+.linaria-cache
+.vscode
 build
 cache
 public/static
@@ -12,5 +14,3 @@ public/static
 .env.development.local
 .env.test.local
 .env.production.local
-.linaria-cache
-.vscode
