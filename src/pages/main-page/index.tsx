@@ -65,9 +65,12 @@ const AddButtonContainer = styled.div`
 
 const modalLarge = css`
   padding: 0;
-  overflow-y: scroll;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  overflow: hidden;
+  height: 818px;
+  width: 404px;
+  @media (max-height: 800px) {
+    height: 650px
+  }
 `;
 
 const layout = css`
@@ -141,12 +144,13 @@ const MainPage: FC = observer(() => {
           />
         ) : (
           <NftPreview 
-            price={order.bestSellOrder.take.valueDecimal}
+            price={order.bestSellOrder?.take.valueDecimal}
             nftName={order.meta.name}
             partyName={party?.partyName || ''}
             userName={order.owners[0]}
             description={order.meta.description}
             image={order.meta.image.url.PREVIEW}
+            nftId={order.id}
           />
         )}
       </Modal>

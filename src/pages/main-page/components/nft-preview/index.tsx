@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import { Scrollbars } from "react-custom-scrollbars";
 
 import Button from '@app/components/button';
 import Title from '@app/components/title';
@@ -10,11 +11,13 @@ import { css } from '@linaria/core';
 
 import share from '@assets/images/share.svg';
 import rarible from '@assets/images/rarible.svg';
+import { useHistory } from 'react-router-dom';
 
 const Root = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  height: 814px;
 `;
 
 interface BackgroundProps {
@@ -129,7 +132,7 @@ const Preview = styled.img`
   position: absolute;
   top: 80px;
   right: 48px;
-  height: 480px;
+  height: 460px;
   width: 304px;
   border-radius: 40px;
   z-index: 100;
@@ -150,6 +153,10 @@ const Header = styled.div`
   transform: translate(-50%, -50%);
   text-shadow: 0px 0px 8px rgba(38, 50, 56, 0.5);
   z-index: 100;
+`;
+
+const RaribleIcon = styled.img`
+  cursor: pointer;
 `;
 
 const title = css`
@@ -175,6 +182,12 @@ const Icons = styled.div`
   display: flex;
   align-items: center;
 `;
+
+const scroll = css`
+  @media (max-height: 800px) {
+    height: 650px
+  }
+`;
 //#endregion
 
 interface Props {
@@ -184,6 +197,7 @@ interface Props {
   description: string;
   price: number;
   userName: string;
+  nftId: string;
 }
 
 const NftPreview = ({ 
@@ -193,38 +207,43 @@ const NftPreview = ({
   description,
   price,
   image,
+  nftId,
 }: Props): ReactElement => {
+  const { push } = useHistory();
+
   return (
-    <Root>
-      <Header>Start a PARTY</Header>
-      <Title className={title}>{partyName}</Title>
-      <Preview src={image} alt="preview" />
-      <Background background={image}>
-        <BackgroundBlur />
-      </Background>
-      <Info>
-        <NftBlock>
-          <NftName>{nftName}</NftName>
-          <Icons>
-            <ShareIcon src={share} alt="share"/>
-            <img src={rarible} alt="rari"/>
-          </Icons>
-        </NftBlock>
-        <UserBadge className={badge} name={userName}/>
-        <DescriptionTitle>Description</DescriptionTitle>
-        <Description>{description}</Description>
-        <Footer>
-          <PriceBlock>
-            <PriceLabel>CURRENT PRICE</PriceLabel>
-            <PriceRow>
-              <Icon />
-              <Price>{price}</Price>
-            </PriceRow>
-          </PriceBlock>
-          <Button>View the Party</Button>
-        </Footer>
-      </Info>
-    </Root>
+    <Scrollbars className={scroll}>
+      <Root>
+        <Header>Start a PARTY</Header>
+        <Title className={title}>{partyName}</Title>
+        <Preview src={image} alt="preview" />
+        <Background background={image}>
+          <BackgroundBlur />
+        </Background>
+        <Info>
+          <NftBlock>
+            <NftName>{nftName}</NftName>
+            <Icons>
+              <ShareIcon src={share} alt="share"/>
+              <RaribleIcon src={rarible} alt="rari" onClick={() => push(`https://rarible.com/token/${nftId}`)}/>
+            </Icons>
+          </NftBlock>
+          <UserBadge className={badge} name={userName}/>
+          <DescriptionTitle>Description</DescriptionTitle>
+          <Description>{description}</Description>
+          <Footer>
+            <PriceBlock>
+              <PriceLabel>CURRENT PRICE</PriceLabel>
+              <PriceRow>
+                <Icon />
+                <Price>{price}</Price>
+              </PriceRow>
+            </PriceBlock>
+            <Button>View the Party</Button>
+          </Footer>
+        </Info>
+      </Root>
+    </Scrollbars>
   )
 }
 
