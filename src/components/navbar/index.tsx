@@ -1,23 +1,32 @@
 import React, { ReactElement } from 'react';
 
+import SearchInput from '@components/search-input';
+
 //#region styles
 import { styled } from '@linaria/react';
+
 import eth from '@app/assets/images/eth_wh.png';
-import { SearchInput } from '../search-input';
+import logo from '@assets/images/logo.png';
+
 
 const Root = styled.div`
-  height: 69px;
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 24px;
+  padding-left: 23px;
   padding-right: 71px;
-  background: linear-gradient(90deg, #FF1EAD 0%, #B829FF 37.5%, #3FBFFF 63.54%, #FF09A5 92.71%, #FF09A5 100%);
+  background: linear-gradient(0deg, rgba(63, 155, 215, 0.12), rgba(63, 155, 215, 0.12)), linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), linear-gradient(0deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), linear-gradient(0deg, #000000, #000000);
 `;
 
-const Logo = styled.p`
+const Logo = styled.img`
+  margin-right: 12px;
+`;
+
+const LogoText = styled.p`
   margin: 0;
   margin-right: 64px;
+  font-family: 'Alata', sans-serif;
   font-weight: bold;
   font-size: 18px;
   line-height: 24px;
@@ -59,7 +68,8 @@ const Navbar = ({ balance }: Props): ReactElement => {
   return (
     <Root>
       <Row>
-        <Logo>CROWD PROTCOL</Logo>
+        <Logo src={logo} alt="logo" />
+        <LogoText>Crowd protocol</LogoText>
         <SearchInput />
       </Row>
       <PriceBlock>

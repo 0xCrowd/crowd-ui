@@ -28,11 +28,13 @@ const Icon = styled.img`
 `;
 //#endregion
 
-export const SearchInput = () => {
+const SearchInput = () => {
   return (
     <Root>
       <StyledInput />
       <Icon src={search} />
     </Root>
-  )
-}
+  );
+};
+
+export default SearchInput;

@@ -29,14 +29,24 @@ const LoaderContainer = styled.div`
 const EmptyTitle = styled.p`
   margin-bottom: 84px;
   font-weight: bold;
-  font-size: 48px;
+  font-size: 36px;
   line-height: 24px;
   letter-spacing: 0.44px;
-  color: #6c5ce7;
+  color: #fff;
 `;
 
 const card = css`
   margin-bottom: 60px;
+`;
+
+const button = css`
+  width: 302px;
+  height: 50px;
+`;
+
+const buttonContainer = css`
+  width: 304px;
+  height: 52px;
 `;
 //#endregion
 
@@ -92,7 +102,11 @@ const Parties = ({ pools, loading, onCreateClick }: Props): ReactElement => {
       ) : (
         <LoaderContainer>
           <EmptyTitle>There is no parties yet!</EmptyTitle>
-          <Button onClick={onCreateClick}>Try to start a new one</Button>
+          <Button 
+            className={button}
+            containerClassName={buttonContainer}
+            onClick={onCreateClick}
+          >Try to start a new one</Button>
         </LoaderContainer>
       )}
     </>

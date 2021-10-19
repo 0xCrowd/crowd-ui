@@ -8,3 +8,5 @@ html { font-family: 'Inter', sans-serif; }
 @supports (font-variation-settings: normal) {
   html { font-family: 'Inter var', sans-serif; }
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
