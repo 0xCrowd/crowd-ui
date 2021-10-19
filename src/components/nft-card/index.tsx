@@ -5,12 +5,12 @@ import Percentage from '@app/components/percentage';
 
 import { round } from '@app/utils/round';
 
-import eth from '@app/assets/images/eth.svg';
+import eth from '@app/assets/images/eth_wh.png';
 
 //#region styles
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
-import { mb8, mb12 } from '@app/assets/styles/constants';
+import { mb12 } from '@app/assets/styles/constants';
 import Button from '../button';
 
 const Root = styled.div`
@@ -110,13 +110,10 @@ const CollectedValue = styled(CollectedText)`
   line-height: 18px;
 `;
 
-const IconContainer = styled.div`
-  display: flex;
+const IconContainer = styled.img`
   width: 18px;
   height: 18px;
   margin-right: 6px;
-  border-radius: 50%;
-  border: 1px solid #6C5CE7;
 `;
 
 const Name = styled.p`
@@ -201,9 +198,7 @@ const NftCard = ({
             <PriceBlock>
               <PriceTitle>CURRENT PRICE</PriceTitle>
               <PriceRow>
-                <IconContainer>
-                  <img src={eth} alt="eth" />
-                </IconContainer>
+                <IconContainer src={eth} alt="eth" />
                 <Price>10000</Price>
               </PriceRow>
             </PriceBlock>

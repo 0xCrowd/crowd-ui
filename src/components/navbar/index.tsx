@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 
 //#region styles
 import { styled } from '@linaria/react';
-import eth from '@app/assets/images/eth.svg';
+import eth from '@app/assets/images/eth_wh.png';
 import { SearchInput } from '../search-input';
 
 const Root = styled.div`
@@ -44,6 +44,11 @@ const Row = styled.div`
   display: flex;
   align-items: center;
 `;
+
+const Icon = styled.img`
+  width: 36px;
+  height: 36px;
+`;
 //#endregion
 
 interface Props {
@@ -59,7 +64,7 @@ const Navbar = ({ balance }: Props): ReactElement => {
       </Row>
       <PriceBlock>
         <Price>{balance}</Price>
-        <img src={eth} alt="eth" />
+        <Icon src={eth} alt="eth" />
       </PriceBlock>
     </Root>
   )
