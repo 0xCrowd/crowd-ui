@@ -1,28 +1,42 @@
 import React, { ReactElement } from 'react';
 
+import SearchInput from '@components/search-input';
+
 //#region styles
 import { styled } from '@linaria/react';
-import eth from '@app/assets/images/eth.svg';
-import { SearchInput } from '../search-input';
+
+import eth from '@app/assets/images/eth_wh.png';
+import logo from '@assets/images/logo.png';
+
 
 const Root = styled.div`
-  height: 69px;
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 24px;
+  padding-left: 23px;
   padding-right: 71px;
-  background: linear-gradient(90deg, #FF1EAD 0%, #B829FF 37.5%, #3FBFFF 63.54%, #FF09A5 92.71%, #FF09A5 100%);
+  background: #263238;
 `;
 
-const Logo = styled.p`
+const Logo = styled.img`
+  margin-right: 12px;
+  width: 54px;
+  height: 44px;
+  cursor: pointer;
+`;
+
+const LogoText = styled.a`
   margin: 0;
   margin-right: 64px;
+  font-family: 'Alata', sans-serif;
   font-weight: bold;
   font-size: 18px;
   line-height: 24px;
   letter-spacing: 0.44px;
   color: #FFFFFF;
+  outline: none;
+  text-decoration: none;
 `;
 
 const PriceBlock = styled.div`
@@ -44,6 +58,11 @@ const Row = styled.div`
   display: flex;
   align-items: center;
 `;
+
+const Icon = styled.img`
+  width: 36px;
+  height: 36px;
+`;
 //#endregion
 
 interface Props {
@@ -54,12 +73,15 @@ const Navbar = ({ balance }: Props): ReactElement => {
   return (
     <Root>
       <Row>
-        <Logo>CROWD PROTCOL</Logo>
+        <a href="/">
+          <Logo src={logo} alt="logo" />
+        </a>
+        <LogoText href="/">Crowd protocol</LogoText>
         <SearchInput />
       </Row>
       <PriceBlock>
         <Price>{balance}</Price>
-        <img src={eth} alt="eth" />
+        <Icon src={eth} alt="eth" />
       </PriceBlock>
     </Root>
   )

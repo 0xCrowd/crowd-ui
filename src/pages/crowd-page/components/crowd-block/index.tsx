@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import Scrollbars from 'react-custom-scrollbars';
 
 import Card from '@app/components/card';
 import Title from '@components/title';
@@ -10,6 +11,8 @@ import Button from '@app/components/button';
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
 import { mb4 } from '@assets/styles/constants';
+
+import eth from '@assets/images/eth_gr.png';
 
 const card = css`
   box-sizing: border-box;
@@ -43,6 +46,7 @@ const button = css`
 `;
 
 const buttonContainer = css`
+  flex-shrink: 0;
   height: 32px;
   width: 304px;
   margin-bottom: 18px;
@@ -52,6 +56,10 @@ const userText = css`
   font-size: 10px;
   line-height: 20px;
   color: #C5C5C5;
+`;
+
+const scroller = css`
+  height: 60px;
 `;
 
 const Header = styled.div`
@@ -88,12 +96,11 @@ const PriceBlock = styled.div`
   display: flex;
 `;
 
-const Icon = styled.div`
+const Icon = styled.img`
   height: 44px;
   width: 44px;
   margin-right: 12px;
   border-radius: 50%;
-  border: 1px solid #fff;
 `;
 
 const PriceInfo = styled.div`
@@ -204,7 +211,7 @@ const CrowdBlock = ({
       </Header>
       <Description>{description}</Description>
       <PriceBlock>
-        <Icon />
+        <Icon src={eth} alt="eth" />
         <PriceInfo>
           <Current>Current price</Current>
           <Price>ETH {price}</Price>
@@ -228,9 +235,11 @@ const CrowdBlock = ({
       <Funds>Your funds: 3% / {yourPaid} ETH</Funds>
       <Hr />
       <UserTitle>User party name</UserTitle>
-      <UserBadge number="1000" name="User" className={mb4} textClassName={userText}/>
-      <UserBadge number="1000" name="User" className={mb4} textClassName={userText}/>
-      <UserBadge number="1000" name="User" className={mb4} textClassName={userText}/>
+      <Scrollbars className={scroller}>
+        <UserBadge number="1000" name="User" className={mb4} textClassName={userText}/>
+        <UserBadge number="1000" name="User" className={mb4} textClassName={userText}/>
+        <UserBadge number="1000" name="User" className={mb4} textClassName={userText}/>
+      </Scrollbars>
     </Card>
   )
 }
