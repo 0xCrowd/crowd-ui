@@ -44,9 +44,8 @@ const Preview = styled.div`
   filter: drop-shadow(0px 0px 10px rgba(38, 50, 56, 0.06));
 `;
 
-const InfoBlockWrapper = styled.div<PreviewProps>`
+const InfoBlockWrapper = styled.div`
   position: relative;
-  background-image: ${({ backgroundUrl }) => `url(${backgroundUrl})`};
   background-size: cover;
   border-radius: 0px 0px 20px 20px;
 `;
@@ -61,15 +60,6 @@ const InfoBlock = styled.div<PreviewProps>`
   border-radius: 0px 0px 20px 20px;
   background-image: ${({ backgroundUrl }) => `url(${backgroundUrl})`};
   z-index: 1000;
-`;
-
-const Asd = styled.div`
-position: absolute;
-top: 0;
-bottom: 0;
-left: 0;
-right: 0;
-  filter: blur(5px);
 `;
 
 const PriceBlock = styled.div`
@@ -202,7 +192,7 @@ const NftCard = ({
           </Name>
         </Preview>
       </PreviewContainer>
-      <InfoBlockWrapper backgroundUrl={image}>
+      <InfoBlockWrapper>
         <InfoBlock backgroundUrl={glass}>
             <CollectedBlock>
               <CollectedRow>
