@@ -16,14 +16,17 @@ const Root = styled.div`
   justify-content: space-between;
   padding-left: 23px;
   padding-right: 71px;
-  background: linear-gradient(0deg, rgba(63, 155, 215, 0.12), rgba(63, 155, 215, 0.12)), linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), linear-gradient(0deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), linear-gradient(0deg, #000000, #000000);
+  background: #263238;
 `;
 
 const Logo = styled.img`
   margin-right: 12px;
+  width: 54px;
+  height: 44px;
+  cursor: pointer;
 `;
 
-const LogoText = styled.p`
+const LogoText = styled.a`
   margin: 0;
   margin-right: 64px;
   font-family: 'Alata', sans-serif;
@@ -32,6 +35,8 @@ const LogoText = styled.p`
   line-height: 24px;
   letter-spacing: 0.44px;
   color: #FFFFFF;
+  outline: none;
+  text-decoration: none;
 `;
 
 const PriceBlock = styled.div`
@@ -68,8 +73,10 @@ const Navbar = ({ balance }: Props): ReactElement => {
   return (
     <Root>
       <Row>
-        <Logo src={logo} alt="logo" />
-        <LogoText>Crowd protocol</LogoText>
+        <a href="/">
+          <Logo src={logo} alt="logo" />
+        </a>
+        <LogoText href="/">Crowd protocol</LogoText>
         <SearchInput />
       </Row>
       <PriceBlock>

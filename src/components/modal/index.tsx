@@ -34,7 +34,7 @@ const overlay = css`
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(0deg, rgba(63, 155, 215, 0.18), rgba(63, 155, 215, 0.18)), rgba(0, 0, 0, 0.5);
+  background-color: rgba(20, 20, 20, 0.6);
 `;
 
 const Header = styled.p`

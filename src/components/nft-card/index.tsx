@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react'
 import { useHistory } from 'react-router-dom';
 
 import Percentage from '@app/components/percentage';
+import Button from '@app/components/button';
 
 import { round } from '@app/utils/round';
 
@@ -11,7 +12,9 @@ import eth from '@app/assets/images/eth_wh.png';
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
 import { mb12 } from '@app/assets/styles/constants';
-import Button from '../button';
+
+import glass from '@assets/images/glass.png'
+
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -27,29 +30,46 @@ interface PreviewProps {
   backgroundUrl: string;
 }
 
-const Preview = styled.div<PreviewProps>`
+const PreviewContainer = styled.div<PreviewProps>`
   height: 264px;
   border-radius: 20px 20px 0 0;
   background-image: ${({ backgroundUrl }) => `url(${backgroundUrl})`};
   background-size: cover;
 `;
 
+const Preview = styled.div`
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(38, 50, 56, 0.3) 0%, rgba(38, 50, 56, 0) 100%);
+  filter: drop-shadow(0px 0px 10px rgba(38, 50, 56, 0.06));
+`;
+
 const InfoBlockWrapper = styled.div<PreviewProps>`
+  position: relative;
   background-image: ${({ backgroundUrl }) => `url(${backgroundUrl})`};
   background-size: cover;
   border-radius: 0px 0px 20px 20px;
 `;
 
-const InfoBlock = styled.div`
+const InfoBlock = styled.div<PreviewProps>`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   width: 100%;
   padding: 8px 24px 13px 24px;
-  background: linear-gradient(0deg, rgba(63, 155, 215, 0.18), rgba(63, 155, 215, 0.18));
   box-shadow: 0px -4px 12px rgba(63, 155, 215, 0.12);
-  backdrop-filter: blur(40px);
   border-radius: 0px 0px 20px 20px;
+  background-image: ${({ backgroundUrl }) => `url(${backgroundUrl})`};
+  z-index: 1000;
+`;
+
+const Asd = styled.div`
+position: absolute;
+top: 0;
+bottom: 0;
+left: 0;
+right: 0;
+  filter: blur(5px);
 `;
 
 const PriceBlock = styled.div`
@@ -127,7 +147,6 @@ const Name = styled.p`
   color: #FFFFFF;
   text-shadow: 0px 0px 12px rgba(38, 50, 56, 0.23);
   text-align: center;
-  background: linear-gradient(180deg, rgba(38, 50, 56, 0.6) 0%, rgba(38, 50, 56, 0.282) 53.12%, rgba(38, 50, 56, 0) 100%);
   border-radius: 20px 20px 0 0;
 `;
 
@@ -176,37 +195,39 @@ const NftCard = ({
 
   return (
     <Root className={className}>
-      <Preview backgroundUrl={image}>
-        <Name>
-          {title}
-        </Name>
-      </Preview>
+      <PreviewContainer backgroundUrl={image}>
+        <Preview>
+          <Name>
+            {title}
+          </Name>
+        </Preview>
+      </PreviewContainer>
       <InfoBlockWrapper backgroundUrl={image}>
-        <InfoBlock>
-          <CollectedBlock>
-            <CollectedRow>
-              <CollectedText>Collected</CollectedText>
-              <CollectedText>Participants</CollectedText>
-            </CollectedRow>
-            <CollectedRow>
-              <CollectedValue>{rounded > 100 ? 100 : rounded}%</CollectedValue>
-              <CollectedValue>{participants}</CollectedValue>
-            </CollectedRow>
-          </CollectedBlock>
-          <Percentage number={collected} className={mb12}/>
-          <Footer>
-            <PriceBlock>
-              <PriceTitle>CURRENT PRICE</PriceTitle>
-              <PriceRow>
-                <IconContainer src={eth} alt="eth" />
-                <Price>10000</Price>
-              </PriceRow>
-            </PriceBlock>
-            <Button onClick={() => push(`/${id}`)} className={button} containerClassName={container}>
-              VIEW PARTY
-            </Button>
-          </Footer>
-        </InfoBlock>
+        <InfoBlock backgroundUrl={glass}>
+            <CollectedBlock>
+              <CollectedRow>
+                <CollectedText>Collected</CollectedText>
+                <CollectedText>Participants</CollectedText>
+              </CollectedRow>
+              <CollectedRow>
+                <CollectedValue>{rounded > 100 ? 100 : rounded}%</CollectedValue>
+                <CollectedValue>{participants}</CollectedValue>
+              </CollectedRow>
+            </CollectedBlock>
+            <Percentage number={collected} className={mb12}/>
+            <Footer>
+              <PriceBlock>
+                <PriceTitle>CURRENT PRICE</PriceTitle>
+                <PriceRow>
+                  <IconContainer src={eth} alt="eth" />
+                  <Price>10000</Price>
+                </PriceRow>
+              </PriceBlock>
+              <Button onClick={() => push(`/${id}`)} className={button} containerClassName={container}>
+                VIEW PARTY
+              </Button>
+            </Footer>
+          </InfoBlock>
       </InfoBlockWrapper>
     </Root>
   )
