@@ -89,6 +89,7 @@ const MainPage: FC = observer(() => {
     pools,
     poolLoading,
     balance,
+    blockChainState,
   } = chainStore;
 
   const [activeTab, setActiveTab] = useState(TabsEnum.All);
@@ -127,7 +128,7 @@ const MainPage: FC = observer(() => {
   };
 
   return (
-    <Layout balance={balance} className={layout}>
+    <Layout balance={balance} blockChainState={blockChainState} className={layout}>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}

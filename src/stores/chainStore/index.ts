@@ -4,6 +4,7 @@ import Web3 from "web3";
 import raribleStore from '@stores/raribleStore';
 
 import { TabsEnum } from '@app/enums/tabs';
+import { StateEnum } from '../../enums/state-enum/index';
 
 const POOL_ADRESS = "0xdd074C2D5F230E1BAa9B9250DC9d6223C80d93E6";
 const FACTORY_ADRESS = "0xfc0B796D7A56B4CA112F48D17d1989892717dc77";
@@ -22,8 +23,8 @@ class ChainStore {
   factoryContract!: any;
   daoContract!: any;
 
-  connected = false;
-  web3Loading = true;
+  web3State: StateEnum = StateEnum.Empty;
+  blockChainState: StateEnum = StateEnum.Empty;
 
   pools: any[] = [{
     price: 100,
@@ -84,30 +85,36 @@ class ChainStore {
 
   loadWeb3 = async (): Promise<void> => {
     try {
-      this.web3Loading = true;
+      this.web3State = StateEnum.Loading;
+
       if (window.ethereum) {
         window.web3 = new Web3(window.ethereum);
         await window.ethereum.enable();
       } else if (window.web3) {
         window.web3 = new Web3(window.web3.currentProvider);
       }
-      this.connected = true;
-      this.web3Loading = false;
+
+      this.web3State = StateEnum.Success;
     } catch (error) {
-      this.web3Loading = false;
+      this.web3State = StateEnum.Error;
       throw error;
     }
   };
 
   loadBlockChain = async (): Promise<void> => {
-    const web3 = window.web3;
-    console.log(web3.currentProvider, 'curr')
-    const accounts = await web3.eth.getAccounts();
-    console.log(accounts, 'acs');
-    this.address = accounts[0];
+    try {
+      this.blockChainState = StateEnum.Loading;
 
-    const weiBalance = await web3.eth.getBalance(accounts[0]);
-    this.balance = await web3.utils.fromWei(weiBalance, 'ether');
+      const web3 = window.web3;
+      const accounts = await web3.eth.getAccounts();
+      this.address = accounts[0];
+  
+      const weiBalance = await web3.eth.getBalance(accounts[0]);
+      this.balance = await web3.utils.fromWei(weiBalance, 'ether');
+      this.blockChainState = StateEnum.Success;
+    } catch (error) {
+      this.blockChainState = StateEnum.Error;
+    }
 
     // const poolAbi = PoolAbi.abi;
     // const factoryAbi = FactoryAbi.abi;
