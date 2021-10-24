@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import Web3 from "web3";
 
 import raribleStore from '@stores/raribleStore';
@@ -86,15 +86,23 @@ class ChainStore {
   loadWeb3 = async (): Promise<void> => {
     try {
       this.web3State = StateEnum.Loading;
+      const { ethereum } = window;
+      if (ethereum) {
+        window.web3 = new Web3(ethereum);
 
-      if (window.ethereum) {
-        window.web3 = new Web3(window.ethereum);
-        await window.ethereum.enable();
+        ethereum.on('accountsChanged', (accounts) => {
+          this.loadBlockChain();
+        });
+        ethereum.on('connect', () => {
+          this.loadWeb3();
+        });
+
+        await ethereum.enable();
       } else if (window.web3) {
         window.web3 = new Web3(window.web3.currentProvider);
       }
 
-      this.web3State = StateEnum.Success;
+      runInAction(() => this.web3State = StateEnum.Success);
     } catch (error) {
       this.web3State = StateEnum.Error;
       throw error;
@@ -107,11 +115,15 @@ class ChainStore {
 
       const web3 = window.web3;
       const accounts = await web3.eth.getAccounts();
-      this.address = accounts[0];
   
       const weiBalance = await web3.eth.getBalance(accounts[0]);
-      this.balance = await web3.utils.fromWei(weiBalance, 'ether');
-      this.blockChainState = StateEnum.Success;
+      const balance = await web3.utils.fromWei(weiBalance, 'ether');
+
+      runInAction(() => {
+        this.address = accounts[0];
+        this.balance = balance
+        this.blockChainState = StateEnum.Success;
+      });
     } catch (error) {
       this.blockChainState = StateEnum.Error;
     }

@@ -114,16 +114,35 @@ const MainPage: FC = observer(() => {
     clearOrder();
     setIsOpen(false);
     setParty(null);
-  }
+  };
 
   const onSubmit = (data: IPartyFormData) => {
-    setParty(data);
-    const urlSplit = data.url.split("/");
-    if (urlSplit[2] !== "rarible.com" && urlSplit[3] !== "token") {
-      console.log("err");
-    } else {
-      const id = urlSplit[4].split("?")[0];
+    try {
+      setParty(data);
+    
+      let id = '';
+
+      const [,, domain, page, address, nftId] = data.url.split("/");
+
+      if (domain === "rarible.com") {
+        if (page === "token") {
+          id = address.split("?")[0];
+        } else {
+          throw new Error();
+        }
+      } else if (domain === "opensea.io") {
+        if (page === "assets") {
+          id = `${address}:${nftId}`;
+        } else {
+          throw new Error();
+        }
+      } else {
+        throw new Error();
+      }
+
       getOrder(id);
+    } catch (error) {
+      console.log('err');
     }
   };
 
