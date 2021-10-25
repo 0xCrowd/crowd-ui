@@ -21,7 +21,7 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   width: 264px;
-  height: 440px;
+  height: 340px;
   box-shadow: 0px -4px 12px rgba(63, 155, 215, 0.12);
   border-radius: 20px;
 `;
@@ -42,6 +42,7 @@ const Preview = styled.div`
   height: 100%;
   background: linear-gradient(180deg, rgba(38, 50, 56, 0.3) 0%, rgba(38, 50, 56, 0) 100%);
   filter: drop-shadow(0px 0px 10px rgba(38, 50, 56, 0.06));
+  border-radius: 10px;
 `;
 
 const InfoBlockWrapper = styled.div`
