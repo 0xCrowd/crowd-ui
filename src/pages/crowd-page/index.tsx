@@ -110,6 +110,7 @@ const CrowdPage: FC = observer(() => {
     balance,
     loadWeb3,
     loadBlockChain,
+    blockChainState,
   } = chainStore;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -229,7 +230,7 @@ const CrowdPage: FC = observer(() => {
   }
 
   return (
-    <Layout balance={balance}>
+    <Layout balance={balance} blockChainState={blockChainState}>
       <Modal
         isOpen={isOpen}
         onRequestClose={onCloseModal}

@@ -11,7 +11,7 @@ import { css } from '@linaria/core';
 const Root = styled.div`
   padding: 1px;
   height: 36px;
-  width: 220px;
+  width: 239px;
   border-radius: 27px;
   background: linear-gradient(97.56deg, #00f0ff 8.07%, #ff1cf7 91.93%);
 `;
@@ -20,7 +20,7 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: 27px;
   background: #263238;
 `;
