@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import { observer } from 'mobx-react-lite';
-import { useLocation } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 import Layout from '@app/components/layout';
 import UserBadge from "@app/components/user-badge";
@@ -10,28 +10,39 @@ import Button from "@app/components/button";
 import CrowdBlock from "./components/crowd-block";
 import ProposalForm from "./components/proposal-form";
 import EthForm from "./components/eth-form";
+import MobilePage from './mobile/index';
 
 import chainStore from '@app/stores/chainStore';
+import daoStore from "@app/stores/daoStore";
 
 import { IProposalFormData } from './components/proposal-form/constants';
+import { StateEnum } from '@enums/state-enum/index';
 
 //#region styles
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
+import { media } from "@app/assets/styles/constants";
 
 import rarible from '@assets/images/rarible.svg';
 
 const Root = styled.div`
   display: flex;
   flex-direction: column;
-  width: 1220px;
   margin: auto;
-  margin-top: 64px;
+  
+  ${media('large')} {
+    margin-top: 64px;
+    width: 1220px;
+  }
 `;
 
 const MainBlock = styled.div`
   display: flex;
   margin-bottom: 40px;
+
+  ${media('mobile')} {
+    display: none;
+  }
 `;
 
 const NftBlock = styled.div`
@@ -81,6 +92,12 @@ const buttonContainer = css`
   width: 100%;
   height: 48px;
 `;
+
+const proposalVisible = css`
+  ${media('mobile')} {
+    display: none;
+  }
+`;
 //#endregion
 
 export interface IEthFormData {
@@ -93,124 +110,49 @@ export enum ModalModeEnum {
 }
 
 const CrowdPage: FC = observer(() => {
+  const { pathname } = useLocation();
+
   const { 
-    getPool,
-    getUserData,
-    setDeposite,
-    createProposal,
-    getAllProposals,
-    pool,
-    poolContract,
     address,
-    depositeLoading,
-    daoContract,
-    proposals,
-    voteFor,
-    clearPool,
     balance,
     loadWeb3,
     loadBlockChain,
     blockChainState,
   } = chainStore;
 
+  const {
+    getDao,
+    getProposals,
+    donate,
+    adaptedDao,
+    daoState,
+    donateState,
+    originalDao,
+    proposalsList,
+  } = daoStore;
+  console.log(adaptedDao, 'dao');
   const [isOpen, setIsOpen] = useState(false);
   const [proposalFormData, setProposalFormData] = useState<IProposalFormData | null>(null);
   const [ethFormData, setEthFormData] = useState<IEthFormData | null>(null);
   const [modalMode, setModalMode] = useState(ModalModeEnum.Proposal);
-  const [poolId, setPoolId] = useState(0);
-  const [myCrowd, setMyCrowd] = useState(0);
-  const [userData, setUserData] = useState<any[]>([]);
-  const [addLoading, setAddLoading] = useState(false);
-
-  const [addModalVisible, setAddModalVisible] = useState(false);
-
-  const location = useLocation();
+  const [ceramicStream, setCeramicStream] = useState('');
 
   useEffect(() => {
     loadWeb3();
     loadBlockChain();
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if (poolContract) {
-      clearPool();
-      const id = +location.pathname.split('/')[2]
-      setPoolId(id)
-      getPool(id);
-      //getDaoContract(id);
-    }
-  }, [location.pathname, getPool, clearPool, getAllProposals, poolContract]);
+    const id = pathname.split('/')[1];
+    setCeramicStream(id);
+    getDao(id);
+  }, [pathname]);
 
   useEffect(() => {
-    getAllProposals();
-  }, [daoContract, getAllProposals]);
-
-  useEffect(() => {
-    const getAllUserData = async () => {
-      const promises = pool.participants.map(async (item: string) => {
-        let eth = await getUserData(item, poolId);
-        console.log(eth, 'eth');
-        return {
-          eth: +eth,
-          user: item,
-        }
-      });
-
-      const all = await Promise.all(promises);
-      console.log(all, 'all')
-      setUserData(all);
-    };
-
-    if (pool && pool.participants) {
-      getAllUserData()
+    if (adaptedDao) {
+      getProposals(ceramicStream);
     }
-
-    const getMyCrowd = async () => {
-      const myCrowd = await getUserData(address, poolId);
-      setMyCrowd(myCrowd);
-    }
-
-    getMyCrowd();
-  }, [pool, getUserData, poolId, address]);
-
-  const handleDeposite = async (value: string) => {
-    const hash = await setDeposite(poolId, value);
-    await window.web3.eth.getTransaction(
-      hash.transactionHash,
-      async (error, trans) => {
-        clearPool();
-        getPool(poolId);
-        setAddModalVisible(false);
-      }
-    );
-  };
-
-  const createNewProposal = async () => {
-    if (proposalFormData) {
-      setAddLoading(true);
-      const { header, description } = proposalFormData;
-      const hash = await createProposal(header, description, pool.nft_address, pool.nft_id);
-      await window.web3.eth.getTransaction(
-        hash.transactionHash,
-        async (error, trans) => {
-          clearPool();
-          getPool(poolId);
-          setIsOpen(false);
-          setAddLoading(false);
-        }
-      );
-    }
-  };
-
-  const vote = async (value: boolean, id: number) => {
-    const hash = await voteFor(id, value);
-    await window.web3.eth.getTransaction(
-      hash.transactionHash,
-      async (error, trans) => {
-        getAllProposals();
-      }
-    );
-  }
+  }, [adaptedDao]);
 
   const onCloseModal = () => setIsOpen(false);
 
@@ -225,8 +167,8 @@ const CrowdPage: FC = observer(() => {
   };
 
   const onEthSubmit = (data: IEthFormData) => {
-    console.log(data)
     setEthFormData(data);
+    donate(address, adaptedDao.ceramic_stream, data.deposite, originalDao.l1_vault);
   }
 
   return (
@@ -238,20 +180,23 @@ const CrowdPage: FC = observer(() => {
         title={modalMode === ModalModeEnum.Proposal ? "New Proposal" : "Add ETH"}
       >
         {modalMode === ModalModeEnum.Proposal ? (
-          <ProposalForm onSubmit={onProposalSubmit} loading={false} />
+          <ProposalForm onSubmit={onProposalSubmit} loading={donateState === StateEnum.Loading} />
         ) : (
-          <EthForm onSubmit={onEthSubmit} loading={false} />
+          <EthForm onSubmit={onEthSubmit} loading={donateState === StateEnum.Loading} />
         )}
       </Modal>
       <Root>
-        <MainBlock>
+        {/* ортобразится только при ширине экрана меньше 420px */}
+        <MobilePage />
+        {/* ортобразится только при ширине экрана больше 420px */}
+        {daoState === StateEnum.Success && <MainBlock>
           <NftBlock>
             <UserRow>
-              <UserName>User party name</UserName>
+              <UserName>{adaptedDao.partyName}</UserName>
               <img src={rarible} alt="rarible" />
             </UserRow>
             <UserBadge name="user" className={badge} textClassName={badgeText}/>
-            <Preview src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hashmask_15753.jpg/1024px-Hashmask_15753.jpg" alt="" />
+            <Preview src={adaptedDao.image} alt="preview" />
             <Button 
               onClick={() => onOpenModal(ModalModeEnum.Proposal)}
               className={button}
@@ -262,17 +207,17 @@ const CrowdPage: FC = observer(() => {
             </Button>
           </NftBlock>
           <CrowdBlock 
-            partyName="asdasdasd" 
-            description="asdasd asdasd asdas asd" 
-            price={1000} 
+            partyName={adaptedDao.partyName} 
+            description={adaptedDao.description}
+            price={adaptedDao.price} 
             tokenName="$Holder" 
-            collected={80}
-            participants={1111}
-            yourPaid={0.4}
+            collected={adaptedDao.percentage}
+            participants={adaptedDao.users}
+            myPaid={adaptedDao.myPaid}
             onAddClick={() => onOpenModal(ModalModeEnum.Eth)}
           />
-        </MainBlock>
-        <Proposals proposals={proposals} />
+        </MainBlock>}
+        <Proposals proposals={proposalsList} className={proposalVisible} />
       </Root>
     </Layout>
   );

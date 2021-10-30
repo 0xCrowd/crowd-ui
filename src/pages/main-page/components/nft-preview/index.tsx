@@ -12,6 +12,7 @@ import { css } from '@linaria/core';
 import share from '@assets/images/share.svg';
 import rarible from '@assets/images/rarible.svg';
 import { useHistory } from 'react-router-dom';
+import RaribleButton from '../../../../components/rarible-button/index';
 
 const Root = styled.div`
   display: flex;
@@ -25,6 +26,7 @@ interface BackgroundProps {
 }
 
 const Background = styled.div<BackgroundProps>`
+  flex-shrink: 0;
   background-image: ${({ background }) => `url(${background})`};
   background-size: cover;
   height: 520px;
@@ -155,10 +157,6 @@ const Header = styled.div`
   z-index: 100;
 `;
 
-const RaribleIcon = styled.img`
-  cursor: pointer;
-`;
-
 const title = css`
   position: absolute;
   top: 52px;
@@ -198,6 +196,7 @@ interface Props {
   price: number;
   userName: string;
   nftId: string;
+  onSubmit: () => void;
 }
 
 const NftPreview = ({ 
@@ -208,6 +207,7 @@ const NftPreview = ({
   price,
   image,
   nftId,
+  onSubmit,
 }: Props): ReactElement => {
   const { push } = useHistory();
 
@@ -225,7 +225,7 @@ const NftPreview = ({
             <NftName>{nftName}</NftName>
             <Icons>
               <ShareIcon src={share} alt="share"/>
-              <RaribleIcon src={rarible} alt="rari" onClick={() => push(`https://rarible.com/token/${nftId}`)}/>
+              <RaribleButton href={`https://rarible.com/token/${nftId}`}/>
             </Icons>
           </NftBlock>
           <UserBadge className={badge} name={userName}/>
@@ -239,7 +239,7 @@ const NftPreview = ({
                 <Price>{price}</Price>
               </PriceRow>
             </PriceBlock>
-            <Button>View the Party</Button>
+            <Button onClick={onSubmit}>View the Party</Button>
           </Footer>
         </Info>
       </Root>

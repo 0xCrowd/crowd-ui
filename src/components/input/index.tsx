@@ -2,7 +2,11 @@ import React, { FC } from 'react';
 
 //#region styles
 import { styled } from '@linaria/react';
+
+
+
 const Root = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 18px;
@@ -21,7 +25,11 @@ const Label = styled.label`
   color: #263238;
 `;
 
-const StyledInput = styled.input`
+interface InputProps {
+  error?: string;
+}
+
+const StyledInput = styled.input<InputProps>`
   box-sizing: border-box;
   padding: 8px 12px;
   font-family: Inter;
@@ -30,7 +38,7 @@ const StyledInput = styled.input`
   letter-spacing: 0.25px;
   background: rgba(255, 255, 255, 0.53);
   border-radius: 15px;
-  border: none;
+  border: ${({ error }) => error ? '1px solid red' : 'none'};
   outline: none;
   font-size: 14px;
   line-height: 16px;
@@ -45,6 +53,15 @@ const StyledInput = styled.input`
     color: #828282;
   }
 `;
+
+const ErrorText = styled.p`
+  margin: 0;
+  font-size: 9px;
+  position: absolute;
+  bottom: 5px;
+  left: 24px;
+  color: red;
+`;
 //#endregion
 
 type PropsType = {
@@ -53,14 +70,16 @@ type PropsType = {
   placeholder?: string;
   className?: string;
   value?: string;
+  error?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Input: FC<PropsType> = ({ label, id, placeholder, value, onChange, className }) => {
+const Input: FC<PropsType> = ({ label, id, placeholder, value, error, onChange, className }) => {
   return (
     <Root className={className}>
       <Label htmlFor={id}>{label}</Label>
-      <StyledInput value={value} onChange={onChange} placeholder={placeholder} id={id} />
+      <StyledInput value={value} onChange={onChange} placeholder={placeholder} id={id} error={error}/>
+      {error && <ErrorText>{error}</ErrorText>}
     </Root>
   );
 };

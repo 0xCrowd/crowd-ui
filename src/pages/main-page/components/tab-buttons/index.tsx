@@ -51,11 +51,12 @@ const container = css`
 interface Props {
   activeTab: TabsEnum;
   onChange: (value: TabsEnum) => void;
+  className?: string;
 }
 
-const TabButtons = ({ activeTab, onChange }: Props): ReactElement => {
+const TabButtons = ({ activeTab, onChange, className }: Props): ReactElement => {
   return (
-    <Root>
+    <Root className={className}>
       <ButtonContainer>
         <Button
           active={activeTab === TabsEnum.All}

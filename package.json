@@ -36,6 +36,7 @@
     "@types/lodash": "^4.14.172",
     "@types/qs": "^6.9.7",
     "@types/react": "^17.0.14",
+    "@types/react-alert": "^5.2.1",
     "@types/react-beautiful-dnd": "^13.1.2",
     "@types/react-custom-scrollbars": "^4.0.8",
     "@types/react-dom": "^17.0.9",
@@ -81,6 +82,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@ceramicnetwork/http-client": "^1.4.2",
     "Buffer": "0.0.0",
     "assert": "^2.0.0",
     "axios": "^0.21.1",
@@ -98,6 +100,8 @@
     "plural-ru": "^2.0.2",
     "qs": "^6.10.1",
     "react": "^17.0.2",
+    "react-alert": "^7.0.3",
+    "react-alert-template-mui": "^1.0.7",
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^17.0.2",
     "react-infinite-scroll-component": "^6.1.0",

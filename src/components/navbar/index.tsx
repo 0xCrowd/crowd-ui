@@ -67,11 +67,12 @@ const Icon = styled.img`
 
 interface Props {
   balance: string;
+  className?: string;
 }
 
-const Navbar = ({ balance }: Props): ReactElement => {
+const Navbar = ({ balance, className }: Props): ReactElement => {
   return (
-    <Root>
+    <Root className={className}>
       <Row>
         <a href="/">
           <Logo src={logo} alt="logo" />

@@ -35,7 +35,7 @@ const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} id="eth">
       <Input
         className={mb12}
         label="Deposite"
@@ -47,7 +47,7 @@ const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
       <Button
         containerClassName={buttonContainer}
         className={button}
-        form="data"
+        form="eth"
         type="submit"
       >
         {loading ? (

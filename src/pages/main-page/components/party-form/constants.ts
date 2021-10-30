@@ -15,21 +15,21 @@ export const initialValues: IPartyFormData = {
 export const validate = (values: IPartyFormData): ErrorType => {
   const errors: ErrorType = {};
   if (!values.partyName) {
-    errors.partyName = 'Обязательное поле';
+    errors.partyName = 'Required field';
   } else if (values.partyName.length > 10) {
     errors.partyName = 'Не больше 10 символов';
   }
 
   if (!values.tokenName) {
-    errors.tokenName = 'Обязательное поле';
+    errors.tokenName = 'Required field';
   } else if (values.tokenName.length > 10) {
     errors.tokenName = 'Не больше 10 символов';
   }
 
   if (!values.url) {
-    errors.url = 'Обязательное поле';
+    errors.url = 'Required field';
   } else if (!validateUrl(values.url)) {
-    errors.url = 'Невалидая ссылка';
+    errors.url = 'Invalid url';
   }
 
   return errors;

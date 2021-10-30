@@ -164,7 +164,7 @@ const container = css`
 interface Props {
   id: string;
   title: string;
-  collected: number;
+  percentage: number;
   price: number;
   image?: string;
   participants: number;
@@ -176,13 +176,13 @@ const NftCard = ({
   title,
   image = "https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png",
   price,
-  collected = 0,
+  percentage = 0,
   participants = 0,
   className 
 }: Props): ReactElement => {
   const { push } = useHistory();
 
-  const rounded = round(collected, 1);
+  const rounded = round(percentage, 1);
 
   return (
     <Root className={className}>
@@ -205,13 +205,13 @@ const NftCard = ({
                 <CollectedValue>{participants}</CollectedValue>
               </CollectedRow>
             </CollectedBlock>
-            <Percentage number={collected} className={mb12}/>
+            <Percentage number={percentage} className={mb12}/>
             <Footer>
               <PriceBlock>
                 <PriceTitle>CURRENT PRICE</PriceTitle>
                 <PriceRow>
                   <IconContainer src={eth} alt="eth" />
-                  <Price>10000</Price>
+                  <Price>{price}</Price>
                 </PriceRow>
               </PriceBlock>
               <Button onClick={() => push(`/${id}`)} className={button} containerClassName={container}>
