@@ -27,7 +27,7 @@ interface PropsType {
 };
 
 const PartyForm = ({ loading, onSubmit }: PropsType): ReactElement => {
-  const { handleSubmit, handleChange, values } = useFormik({
+  const { handleSubmit, handleChange, values, errors, touched } = useFormik({
     initialValues,
     onSubmit: values => {
       onSubmit(values);
@@ -45,6 +45,7 @@ const PartyForm = ({ loading, onSubmit }: PropsType): ReactElement => {
           placeholder={placeholder}
           value={values[id]}
           onChange={handleChange}
+          error={touched[id] && errors[id]}
         />
       ))}
       <Button

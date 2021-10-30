@@ -5,6 +5,7 @@ import Modal from "react-modal";
 //#region styles
 import { css } from '@linaria/core';
 import { styled } from '@linaria/react';
+import { media } from '@app/assets/styles/constants';
 
 import close from '@assets/images/close.svg';
 import closeDark from '@assets/images/closeDark.svg';
@@ -25,6 +26,10 @@ const modal = css`
 
   @media (max-height: 800px) {
     max-height: 650px;
+  }
+
+  ${media('mobile')} {
+    width: 340px;
   }
 `;
 

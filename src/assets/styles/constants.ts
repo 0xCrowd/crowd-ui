@@ -46,4 +46,17 @@ export const mt20 = css`
   margin-top: 20px;
 `;
 
+export const media = (size: 'mobile' | 'large') => {
+  switch (size) {
+    case 'mobile':
+      return '@media (max-width: 420px)';
+
+    case 'large':
+      return '@media (min-width: 420px)';
+    
+    default:
+      return '@media (max-width: 420px)'
+  }
+};
+
 //#endregion

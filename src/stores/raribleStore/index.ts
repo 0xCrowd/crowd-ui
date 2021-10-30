@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import axios from 'axios';
 
 import { StateEnum } from '@app/enums/state-enum/index';
@@ -11,21 +11,30 @@ class RaribleStore {
   order: any = null;
   orderState: StateEnum = StateEnum.Empty;
 
-  getOrder = async (id: string) => {
+  getOrder = async (id: string, isSetOrder = true) => {
     try {
-      this.orderState = StateEnum.Loading;
-
+      if (isSetOrder) {
+        runInAction(() => {
+          this.orderState = StateEnum.Loading;
+        });
+      }
+      
       const response = await axios({
-        url: `https://ethereum-api-staging.rarible.org/v0.1/nft-order/items/${id}`,
+        url: `https://ethereum-api.rarible.org/v0.1/nft-order/items/${id}`,
         withCredentials: false,
         params: {
           includeMeta: true,
         }
       });
 
-      this.order = response.data;
-      this.orderState = StateEnum.Success;  
-      return response.data;
+      if (isSetOrder) {
+        runInAction(() => {
+          this.order = response.data;
+          this.orderState = StateEnum.Success;  
+        });
+      } else {
+        return response.data;
+      }
     } catch (error) {
       this.orderState = StateEnum.Error;
     }

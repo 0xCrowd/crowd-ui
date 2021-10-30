@@ -1,6 +1,8 @@
-html, body, #root {
-  height: 100%;
-  min-width: 1220px;
+@media (min-width: 420px) {
+  html, body, #root {
+    height: 100%;
+    min-width: 1220px;
+  }
 }
 
 @import url('https://rsms.me/inter/inter.css');

@@ -5,6 +5,8 @@ import Title from '@components/title';
 import Percentage from '@components/percentage';
 import Button from '@components/button';
 
+import { ProposalStatusEnum } from '@enums/proposal-status-enum/index';
+
 //#region styles
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
@@ -98,12 +100,24 @@ const percent = css`
 //#endregion
 
 interface Props {
-  forVote: string;
-  againstVote: string;
-  tokenName: string
+  forVote: number;
+  againstVote: number;
+  voteAgainstPercent: number;
+  voteForPercent: number;
+  tokenName?: string;
+  status: ProposalStatusEnum;
 }
 
-const VoteBlock = ({ forVote, againstVote, tokenName }: Props): ReactElement => {
+const VoteBlock = ({ 
+  forVote,
+  againstVote,
+  voteForPercent,
+  voteAgainstPercent,
+  status,
+  tokenName 
+}: Props): ReactElement => {
+  console.log(voteForPercent, 'perc');
+
   return (
     <Card className={card}>
       <Title>Voting</Title>
@@ -111,12 +125,12 @@ const VoteBlock = ({ forVote, againstVote, tokenName }: Props): ReactElement => 
         <Text>For</Text>
         <Text>Against</Text>
       </TextRow>
-      <Percentage number={10} className={percentage} mainClassName={main} precentClassName={percent} />
+      <Percentage number={voteForPercent} className={percentage} mainClassName={main} precentClassName={percent} />
       <ValueRow>
-        <BoldText>3% / 0.5 Rari</BoldText>
-        <BoldText>3% / 0.5 Rari</BoldText>
+        <BoldText>{`${voteForPercent}%`}</BoldText>
+        <BoldText>{`${voteAgainstPercent}%`}</BoldText>
       </ValueRow>
-      <ButtonRow>
+      {status !== ProposalStatusEnum.Success && <ButtonRow>
         <Button 
           className={lightButton} 
           containerClassName={lightContainer} 
@@ -124,7 +138,7 @@ const VoteBlock = ({ forVote, againstVote, tokenName }: Props): ReactElement => 
           active
         >Vote For</Button>
         <Button className={button} containerClassName={buttonContainer}>Vote Against</Button>
-      </ButtonRow>
+      </ButtonRow>}
     </Card>
   );
 };

@@ -45,7 +45,7 @@ const Price = styled.p`
 
 type PropsType = {
   name: string;
-  number?: string;
+  number?: number;
   className?: string;
   textClassName?: string;
   substrParam?: number

@@ -7,9 +7,11 @@ import PartyForm from "./components/party-form";
 import NftPreview from "./components/nft-preview";
 import Parties from './components/parties';
 import TabButtons from './components/tab-buttons/index';
+import MobileTopline from './components/mobile-topline/index';
 
 import raribleStore from "@stores/raribleStore";
 import chainStore from "@stores/chainStore";
+import daoStore from "@app/stores/daoStore";
 
 import { TabsEnum } from "@enums/tabs";
 import { StateEnum } from "@enums/state-enum";
@@ -20,6 +22,9 @@ import plus from "@app/assets/images/plus.svg";
 //#region styles
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
+import { media } from "@app/assets/styles/constants";
+import { useAlert } from 'react-alert';
+
 
 const AddButton = styled.button`
   width: 36px;
@@ -68,6 +73,7 @@ const modalLarge = css`
   overflow: hidden;
   height: 818px;
   width: 404px;
+
   @media (max-height: 800px) {
     height: 650px
   }
@@ -76,21 +82,34 @@ const modalLarge = css`
 const layout = css`
   height: 100%;
 `;
+
+const tabs = css`
+  ${media('mobile')} {
+    display: none;
+  }
+`;
 //#endregion
 
 const MainPage: FC = observer(() => {
   const { order, orderState, getOrder, clearOrder } = raribleStore;
   const { 
-    getPartyNumber,
-    clearPool,
     loadWeb3, 
     loadBlockChain,
-    poolContract,
-    pools,
-    poolLoading,
     balance,
     blockChainState,
+    factoryContract
   } = chainStore;
+
+  const { 
+    getDaosList, 
+    loadMoreDaos,
+    createDao,
+    daos, 
+    totalDaos,
+    daoState,
+  } = daoStore;
+
+  const { show } = useAlert();
 
   const [activeTab, setActiveTab] = useState(TabsEnum.All);
   const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -102,11 +121,9 @@ const MainPage: FC = observer(() => {
   }, []);
 
   useEffect(() => {
-    if (poolContract) {
-      clearPool();
-      getPartyNumber(activeTab);
-    }
-  }, [poolContract, activeTab, getPartyNumber, clearPool]);
+    console.log(blockChainState, 'check');
+    if (blockChainState === StateEnum.Success) { console.log('start'); getDaosList()};
+  }, [blockChainState]);
 
   const openModal = () => setIsOpen(true);
 
@@ -142,6 +159,7 @@ const MainPage: FC = observer(() => {
 
       getOrder(id);
     } catch (error) {
+      show('Что-то пошло не так')
       console.log('err');
     }
   };
@@ -169,12 +187,18 @@ const MainPage: FC = observer(() => {
             partyName={party?.partyName || ''}
             userName={order.owners[0]}
             description={order.meta.description}
-            image={order.meta.image.url.PREVIEW}
+            image={order.meta.image.url.PREVIEW || order.meta.image.url.ORIGINAL}
             nftId={order.id}
+            onSubmit={() => createDao(party as IPartyFormData)}
           />
         )}
       </Modal>
-      <ButtonsRow>
+      <MobileTopline
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        onAdd={openModal}
+      />
+      <ButtonsRow className={tabs}>
         <TabButtons 
           activeTab={activeTab}
           onChange={setActiveTab}
@@ -186,7 +210,13 @@ const MainPage: FC = observer(() => {
           </AddButton>
         </AddButtonContainer>
       </ButtonsRow>
-      <Parties loading={false} pools={pools} onCreateClick={openModal} />
+      <Parties 
+        loading={daoState === StateEnum.Loading} 
+        daos={daos} 
+        onCreateClick={openModal} 
+        loadMore={loadMoreDaos} 
+        hasMore={daos.length < totalDaos}
+      />
     </Layout>
   );
 });

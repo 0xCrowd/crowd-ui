@@ -188,8 +188,8 @@ interface Props {
   price: number;
   tokenName: string;
   collected: number;
-  participants: number;
-  yourPaid: number;
+  participants: IDeposits[];
+  myPaid?: IDeposits;
   onAddClick: () => void;
 }
 
@@ -200,7 +200,7 @@ const CrowdBlock = ({
   tokenName,
   collected,
   participants,
-  yourPaid,
+  myPaid,
   onAddClick,
 }: Props): ReactElement => {
   return (
@@ -223,22 +223,22 @@ const CrowdBlock = ({
       </Row>
       <Row>
         <CollectedValue>{collected}%</CollectedValue>
-        <CollectedValue>{participants}</CollectedValue>
+        <CollectedValue>{participants.length}</CollectedValue>
       </Row>
       <Percentage 
-        number={80} 
+        number={collected} 
         className={percentage}
         mainClassName={percentRow}
         precentClassName={percent}
       />
       <Button className={button} containerClassName={buttonContainer} active onClick={onAddClick}>+ Add funds</Button>
-      <Funds>Your funds: 3% / {yourPaid} ETH</Funds>
+      <Funds>Your funds: {myPaid?.total_deposit || 0} ETH</Funds>
       <Hr />
       <UserTitle>User party name</UserTitle>
       <Scrollbars className={scroller}>
-        <UserBadge number="1000" name="User" className={mb4} textClassName={userText}/>
-        <UserBadge number="1000" name="User" className={mb4} textClassName={userText}/>
-        <UserBadge number="1000" name="User" className={mb4} textClassName={userText}/>
+        {participants.map(({ address, total_deposit }) => {
+          <UserBadge key={address} number={total_deposit} name={address} className={mb4} textClassName={userText}/>
+        })}
       </Scrollbars>
     </Card>
   )

@@ -20,16 +20,33 @@ const Row = styled.div`
 //#endregion
 
 interface Props {
-  proposals: any[];
+  proposals: IAdaptedProposal[];
+  className?: string;
 }
 
-const Proposals = ({ proposals }: Props): ReactElement => {
+const Proposals = ({ proposals, className }: Props): ReactElement => {
   return (
-    <Root>
-      {proposals.map((item: any) => (
+    <Root className={className}>
+      {proposals.map(({
+        title, 
+        description,
+        voteAgainst,
+        voteFor,
+        voteAgainstPercent,
+        voteForPercent,
+        status,
+        tokenName,
+      }) => (
         <Row>
-          <Proposal title={item.title} description={item.description}/>
-          <VoteBlock forVote={item.forVote} againstVote={item.againstVote} tokenName={item.tokenName} />
+          <Proposal title={title} description={description}/>
+          <VoteBlock 
+            forVote={voteFor} 
+            againstVote={voteAgainst} 
+            status={status}
+            voteAgainstPercent={voteAgainstPercent}
+            voteForPercent={voteForPercent}
+            tokenName={tokenName}
+          />
         </Row>
       ))}
     </Root>
