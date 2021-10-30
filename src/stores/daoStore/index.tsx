@@ -11,7 +11,7 @@ import { IPartyFormData } from '@pages/main-page/components/party-form/constants
 import DAO from "../../../ABI/DAO.json";
 
 
-const POTTERY_ENDPOINT = "https://7f76-2a00-1370-8137-a39b-70-9b54-ed0d-accd.ngrok.io"
+// const POTTERY_ENDPOINT = "https://7f76-2a00-1370-8137-a39b-70-9b54-ed0d-accd.ngrok.io"
 
 const { getOrder } = raribleStore;
 
@@ -42,7 +42,7 @@ class DaoStore {
     try {
       this.daoState = StateEnum.Loading;
 
-      const response = await axios.get(`${POTTERY_ENDPOINT}/dao`, {
+      const response = await axios.get(`${localStorage.getItem('test')}/dao`, {
         params: {
           offset: this.daosPage * this.daosLimit,
           limit: this.daosLimit,
@@ -77,7 +77,7 @@ class DaoStore {
     try {
       this.daoState = StateEnum.Loading;
 
-      const response = await axios.get(`${POTTERY_ENDPOINT}/dao`, {
+      const response = await axios.get(`${localStorage.getItem('test')}/dao`, {
         params: {
           stream,
         },
@@ -159,7 +159,7 @@ class DaoStore {
         .call({ from: address });
 
       // Create new Ceramic DAO and link it with L1 (Eth) DAO
-      await axios.post(`${POTTERY_ENDPOINT}/dao`, {
+      await axios.post(`${localStorage.getItem('test')}/dao`, {
         name: partyName,
         l1_type: "ethereum",
         l1_vault: daoAddress,
@@ -190,7 +190,7 @@ class DaoStore {
       
       await l1Dao.methods.recieveDeposit(address).send({ from: address, value: amount });
 
-      await axios.post(`${POTTERY_ENDPOINT}/deposit`, {
+      await axios.post(`${localStorage.getItem('test')}/deposit`, {
         address,
         dao_stream: daoStream,
         amount,
@@ -213,7 +213,7 @@ class DaoStore {
         this.proposalState = StateEnum.Loading;
       });
 
-      const response = await axios.get(`${POTTERY_ENDPOINT}/proposals`,{
+      const response = await axios.get(`${localStorage.getItem('test')}/proposals`,{
         params: {
           dao_stream: daoStream,
           offset: this.proposalPage * this.proposalLimit,

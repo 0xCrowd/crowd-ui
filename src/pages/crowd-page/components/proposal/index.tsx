@@ -20,6 +20,9 @@ const Description = styled.div`
 
 const titleClass = css`
   margin-bottom: 12px;
+  white-space: nowrap; /* Отменяем перенос текста */
+  overflow: hidden; /* Обрезаем содержимое */
+  text-overflow: ellipsis; /* Многоточие */
 `;
 
 const card = css`
