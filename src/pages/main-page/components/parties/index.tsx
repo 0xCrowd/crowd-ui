@@ -101,6 +101,8 @@ const Parties = ({ daos, loading, onCreateClick, loadMore, hasMore }: Props): Re
     );
   }
 
+  console.log(daos, 'ddd')
+
   return (
     <>
       {daos && daos.length ? (

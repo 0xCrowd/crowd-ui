@@ -201,11 +201,11 @@ const CrowdPage: FC = observer(() => {
         {daoState === StateEnum.Success && <MainBlock>
           <NftBlock>
             <UserRow>
-              <UserName>{adaptedDao.partyName}</UserName>
+              <UserName>{adaptedDao?.partyName}</UserName>
               <img src={rarible} alt="rarible" />
             </UserRow>
             <UserBadge name="user" className={badge} textClassName={badgeText}/>
-            <Preview src={adaptedDao.image} alt="preview" />
+            <Preview src={adaptedDao?.image} alt="preview" />
             <Button 
               onClick={() => onOpenModal(ModalModeEnum.Proposal)}
               className={button}
@@ -216,13 +216,13 @@ const CrowdPage: FC = observer(() => {
             </Button>
           </NftBlock>
           <CrowdBlock 
-            partyName={adaptedDao.partyName} 
-            description={adaptedDao.description}
-            price={adaptedDao.price} 
+            partyName={adaptedDao?.partyName} 
+            description={adaptedDao?.description}
+            price={adaptedDao?.price} 
             tokenName="$Holder" 
-            collected={adaptedDao.percentage}
-            participants={adaptedDao.users}
-            myPaid={adaptedDao.myPaid}
+            collected={adaptedDao?.percentage}
+            participants={adaptedDao?.users}
+            myPaid={adaptedDao?.myPaid}
             onAddClick={() => onOpenModal(ModalModeEnum.Eth)}
           />
         </MainBlock>}

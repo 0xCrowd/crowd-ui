@@ -1,18 +1,20 @@
 import React, { ReactElement } from 'react';
 import { Scrollbars } from "react-custom-scrollbars";
+import { useHistory } from 'react-router-dom';
 
 import Button from '@app/components/button';
 import Title from '@app/components/title';
 import UserBadge from '@app/components/user-badge';
+import RaribleButton from '@app/components/rarible-button/index';
 
 //#region styles
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
 
 import share from '@assets/images/share.svg';
-import rarible from '@assets/images/rarible.svg';
-import { useHistory } from 'react-router-dom';
-import RaribleButton from '../../../../components/rarible-button/index';
+import eth from '@assets/images/eth_gr.png';
+
+
 
 const Root = styled.div`
   display: flex;
@@ -112,12 +114,11 @@ const PriceRow = styled.div`
   align-items: center;
 `;
 
-const Icon = styled.div`
+const Icon = styled.img`
   height: 24px;
   width: 24px;
   margin-right: 8px;
   border-radius: 50%;
-  border: 1px solid #000;
 `;
 
 const Price = styled.p`
@@ -235,11 +236,11 @@ const NftPreview = ({
             <PriceBlock>
               <PriceLabel>CURRENT PRICE</PriceLabel>
               <PriceRow>
-                <Icon />
+                <Icon src={eth}/>
                 <Price>{price}</Price>
               </PriceRow>
             </PriceBlock>
-            <Button onClick={onSubmit}>View the Party</Button>
+            <Button onClick={onSubmit}>Start crowd in</Button>
           </Footer>
         </Info>
       </Root>
