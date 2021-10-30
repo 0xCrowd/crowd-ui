@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
+import Loader from "react-loader-spinner";
 
 import Layout from '@app/components/layout';
 import UserBadge from "@app/components/user-badge";
@@ -72,6 +73,14 @@ const Preview = styled.img`
   width: 800px;
   margin-bottom: 18px;
   border-radius: 10px;
+`;
+
+const Loading = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
 `;
 
 const badge = css`
@@ -185,7 +194,7 @@ const CrowdPage: FC = observer(() => {
           <EthForm onSubmit={onEthSubmit} loading={donateState === StateEnum.Loading} />
         )}
       </Modal>
-      <Root>
+      {daoState !== StateEnum.Loading ? <Root>
         {/* ортобразится только при ширине экрана меньше 420px */}
         <MobilePage />
         {/* ортобразится только при ширине экрана больше 420px */}
@@ -218,7 +227,15 @@ const CrowdPage: FC = observer(() => {
           />
         </MainBlock>}
         <Proposals proposals={proposalsList} className={proposalVisible} />
-      </Root>
+      </Root> : <Loading>
+          <Loader
+            type="Puff"
+            color="#6200E8"
+            height={100}
+            width={100}
+            timeout={3000}
+          />
+        </Loading>}
     </Layout>
   );
 });

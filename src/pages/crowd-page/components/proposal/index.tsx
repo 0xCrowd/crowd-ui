@@ -36,8 +36,8 @@ interface Props {
 const Proposal = ({ title, description }: Props): ReactElement => {
   return (
     <Card className={card}>
-      <Title className={titleClass}>Voting</Title>
-      <Description>adasdadad asdasd adasd das asd asd a</Description>
+      <Title className={titleClass}>{title}</Title>
+      <Description>{description}</Description>
     </Card>
   );
 };
