@@ -223,7 +223,7 @@ const CrowdBlock = ({
       </Row>
       <Row>
         <CollectedValue>{collected}%</CollectedValue>
-        <CollectedValue>{participants.length}</CollectedValue>
+        <CollectedValue>{participants?.length}</CollectedValue>
       </Row>
       <Percentage 
         number={collected} 
@@ -236,7 +236,7 @@ const CrowdBlock = ({
       <Hr />
       <UserTitle>User party name</UserTitle>
       <Scrollbars className={scroller}>
-        {participants.map(({ address, total_deposit }) => {
+        {participants && participants.map(({ address, total_deposit }) => {
           <UserBadge key={address} number={total_deposit} name={address} className={mb4} textClassName={userText}/>
         })}
       </Scrollbars>

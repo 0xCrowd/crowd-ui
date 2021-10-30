@@ -109,12 +109,12 @@ class DaoStore {
       const { address } = chainStore
 
       const { meta, bestSellOrder } = await getOrder(dao.buyout_target, false);
-
+      console.log(meta, 'mettt')
       return {
         ceramic_stream: dao.ceramic_stream,
         partyName: meta.name,
         description: meta.description,
-        image: meta.image.PREVIEW,
+        image: meta.image.url.PREVIEW || meta.image.url.ORIGINAL,
         price: bestSellOrder.take.valueDecimal,
         collected,
         users: dao.deposits,
@@ -188,7 +188,7 @@ class DaoStore {
       //@ts-ignore
       const l1Dao = new window.web3.eth.Contract(DAO.abi, l1_vault);
       
-      await l1Dao.methods.recieveDeposit(address).send({ from: address, value: amount });
+      await l1Dao.methods.recieveDeposit(address).send({ from: address, value });
 
       await axios.post(`${localStorage.getItem('test')}/deposit`, {
         address,
