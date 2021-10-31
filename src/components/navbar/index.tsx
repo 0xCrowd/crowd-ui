@@ -5,7 +5,7 @@ import SearchInput from '@components/search-input';
 //#region styles
 import { styled } from '@linaria/react';
 
-import eth from '@app/assets/images/eth_wh.png';
+import eth from '@app/assets/images/bnb.png';
 import logo from '@assets/images/logo.png';
 
 

@@ -84,13 +84,13 @@ const MobileTopline = ({ activeTab, onChange, onAdd }: Props): ReactElement => {
           active={activeTab === TabsEnum.All}
           onClick={() => onChange(TabsEnum.All)}
         >
-          All parties
+          All Crowds
         </TabButton>
         <TabButton
           active={activeTab === TabsEnum.My}
           onClick={() => onChange(TabsEnum.My)}
         >
-          My parties
+          My Crowds
         </TabButton>
       </Tabs>
       <ButtonPlus onClick={onAdd}>

@@ -6,7 +6,7 @@ import Button from '@app/components/button';
 
 import { round } from '@app/utils/round';
 
-import eth from '@app/assets/images/eth_wh.png';
+import eth from '@app/assets/images/bnb.png';
 
 //#region styles
 import { styled } from '@linaria/react';

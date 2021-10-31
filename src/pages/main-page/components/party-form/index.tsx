@@ -39,6 +39,7 @@ const PartyForm = ({ loading, onSubmit }: PropsType): ReactElement => {
     <form onSubmit={handleSubmit} id="party-form-data">
       {inputs.map(({ label, id, placeholder }) => (
         <Input
+          key={id}
           className={mb12}
           label={label}
           id={id}

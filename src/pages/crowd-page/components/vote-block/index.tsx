@@ -116,8 +116,6 @@ const VoteBlock = ({
   status,
   tokenName 
 }: Props): ReactElement => {
-  console.log(voteForPercent, 'perc');
-
   return (
     <Card className={card}>
       <Title>Voting</Title>

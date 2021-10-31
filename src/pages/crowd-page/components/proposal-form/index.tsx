@@ -28,7 +28,7 @@ interface Props {
 }
 
 const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
-  const { handleSubmit, handleChange, values } = useFormik({
+  const { handleSubmit, handleChange, values, errors, touched } = useFormik({
     initialValues,
     onSubmit: values => {
       onSubmit(values);
@@ -37,7 +37,7 @@ const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
   });
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} id="proposal">
       <Input
         className={mb12}
         label="Header"
@@ -45,6 +45,7 @@ const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
         placeholder="Crowd Protocol"
         value={values.header}
         onChange={handleChange}
+        error={touched.header && errors.header || ''}
       />
       <Input
         className={mb12}
@@ -53,11 +54,12 @@ const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
         placeholder="description"
         value={values.description}
         onChange={handleChange}
+        error={touched.description && errors.header || ''}
       />
       <Button
         containerClassName={buttonContainer}
         className={button}
-        form="data"
+        form="proposal"
         type="submit"
         disabled={loading}
       >
@@ -69,7 +71,7 @@ const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
             width={20}
             timeout={3000}
           />
-          )  : 'Preview'}
+          )  : 'Create'}
       </Button>
     </form>
   )

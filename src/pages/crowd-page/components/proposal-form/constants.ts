@@ -13,14 +13,14 @@ export const initialValues: IProposalFormData = {
 export const validate = (values: IProposalFormData): ErrorType => {
   const errors: ErrorType = {};
   if (!values.header) {
-    errors.partyName = 'Обязательное поле';
-  } else if (values.header.length > 10) {
+    errors.partyName = 'Required field';
+  } else if (values.header.length > 30) {
     errors.header = 'Не больше 10 символов';
   }
 
   if (!values.description) {
-    errors.description = 'Обязательное поле';
-  } else if (values.description.length > 10) {
+    errors.description = 'Required field';
+  } else if (values.description.length > 100) {
     errors.description = 'Не больше 10 символов';
   }
 

@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { Scrollbars } from "react-custom-scrollbars";
-import { useHistory } from 'react-router-dom';
+import Loader from 'react-loader-spinner';
 
 import Button from '@app/components/button';
 import Title from '@app/components/title';
@@ -12,9 +12,7 @@ import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
 
 import share from '@assets/images/share.svg';
-import eth from '@assets/images/eth_gr.png';
-
-
+import eth from '@assets/images/bnb.png';
 
 const Root = styled.div`
   display: flex;
@@ -197,6 +195,7 @@ interface Props {
   price: number;
   userName: string;
   nftId: string;
+  loading: boolean;
   onSubmit: () => void;
 }
 
@@ -208,10 +207,9 @@ const NftPreview = ({
   price,
   image,
   nftId,
+  loading,
   onSubmit,
 }: Props): ReactElement => {
-  const { push } = useHistory();
-
   return (
     <Scrollbars className={scroll}>
       <Root>
@@ -240,7 +238,17 @@ const NftPreview = ({
                 <Price>{price}</Price>
               </PriceRow>
             </PriceBlock>
-            <Button onClick={onSubmit}>Start crowd in</Button>
+            <Button onClick={onSubmit}>
+            {loading ? (
+              <Loader
+                type="Puff"
+                color="#6200E8"
+                height={20}
+                width={20}
+                timeout={3000}
+              />
+              )  : 'Start Crowd'}
+            </Button>
           </Footer>
         </Info>
       </Root>

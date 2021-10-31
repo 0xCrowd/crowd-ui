@@ -38,9 +38,9 @@ const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
     <form onSubmit={handleSubmit} id="eth">
       <Input
         className={mb12}
-        label="Deposite"
+        label="Deposit"
         id="deposite"
-        placeholder="ETH 100000"
+        placeholder="BNB 100000"
         value={deposite}
         onChange={(e) => setDeposite(e.target.value)}
       />
@@ -58,7 +58,7 @@ const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
             width={20}
             timeout={3000}
           />
-          )  : 'Preview'}
+          )  : 'Add funds'}
       </Button>
     </form>
   )

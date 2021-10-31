@@ -37,7 +37,7 @@ const Proposals = ({ proposals, className }: Props): ReactElement => {
         status,
         tokenName,
       }) => (
-        <Row>
+        <Row key={title}>
           <Proposal title={title} description={description}/>
           <VoteBlock 
             forVote={voteFor} 
