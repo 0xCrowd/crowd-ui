@@ -106,6 +106,8 @@ interface Props {
   voteForPercent: number;
   tokenName?: string;
   status: ProposalStatusEnum;
+  ceramicStream: string;
+  onVoteFor: () => void;
 }
 
 const VoteBlock = ({ 
@@ -114,7 +116,9 @@ const VoteBlock = ({
   voteForPercent,
   voteAgainstPercent,
   status,
-  tokenName 
+  tokenName,
+  ceramicStream,
+  onVoteFor,
 }: Props): ReactElement => {
   return (
     <Card className={card}>
@@ -134,6 +138,7 @@ const VoteBlock = ({
           containerClassName={lightContainer} 
           mode="light"
           active
+          onClick={onVoteFor}
         >Vote For</Button>
         <Button className={button} containerClassName={buttonContainer}>Vote Against</Button>
       </ButtonRow>}

@@ -119,7 +119,7 @@ class DaoStore {
         price: bestSellOrder.take.valueDecimal,
         collected,
         users: dao.deposits,
-        percentage: (collected / bestSellOrder.take.valueDecimal) * 100,
+        percentage: Math.ceil((collected / bestSellOrder.take.valueDecimal) * 100),
         myPaid: dao.deposits.find(elem => elem.address === address)
       };
     } catch (error) {
@@ -202,7 +202,6 @@ class DaoStore {
         this.donateState = StateEnum.Success;
       });
     } catch (error) {
-      console.log(error);
       this.donateState = StateEnum.Error;
     }
   };
@@ -236,14 +235,28 @@ class DaoStore {
   };
 
   adaptProposal = (proposal: IProposal): IAdaptedProposal => {
+    let voteForPercent = 100;
+    let voteAgainstPercent = 0;
+
+    if (proposal.status !== ProposalStatusEnum.Success) {
+      const item = localStorage.getItem('for');
+      if (item) {
+        voteForPercent = +item;
+        voteAgainstPercent = 100 - voteForPercent;
+      } else {
+        voteForPercent = 50;
+        voteAgainstPercent = 50;
+      }
+    }
+
     return {
       ...proposal,
       voteFor: this.adaptedDao.users.length,
       voteAgainst: this.adaptedDao.users.length,
-      voteForPercent: proposal.status === ProposalStatusEnum.Success ? 100 : 50,
-      voteAgainstPercent: proposal.status === ProposalStatusEnum.Success ? 0 : 50,
-    }
-  }
+      voteForPercent,
+      voteAgainstPercent,
+    };
+  };
 
   loadMoreProposals = async (daoStream: string) => {
     try {
@@ -273,7 +286,22 @@ class DaoStore {
     } catch (error) {
       this.createProposalState = StateEnum.Error;
     }
-  }
+  };
+
+  voteFor = (ceramicStream: string) => {
+    const proposalIndex = this.proposalsList.findIndex(elem => elem.ceramic_stream === ceramicStream);
+    const editedProposals = [...this.proposalsList];
+
+    if (proposalIndex !== undefined) {
+      editedProposals[proposalIndex].voteForPercent += 25;
+      editedProposals[proposalIndex].voteAgainstPercent -= 25;
+
+      localStorage.setItem('for', `${editedProposals[proposalIndex].voteForPercent}`);
+    }
+
+    this.proposalsList = editedProposals;
+    console.log(this.proposalsList, 'lsit')
+  };
 
 }
 

@@ -69,10 +69,11 @@ const UserName = styled.div`
 `;
 
 const Preview = styled.img`
-  height: 440px;
-  width: 800px;
+  height: 250px;
+  width: 186px;
   margin-bottom: 18px;
   border-radius: 10px;
+  margin: auto;
 `;
 
 const Loading = styled.div`
@@ -134,6 +135,7 @@ const CrowdPage: FC = observer(() => {
     getProposals,
     donate,
     createProposal,
+    voteFor,
     adaptedDao,
     daoState,
     donateState,
@@ -188,7 +190,7 @@ const CrowdPage: FC = observer(() => {
       await donate(address, adaptedDao.ceramic_stream, data.deposite, originalDao.l1_vault);
       onCloseModal();
     } catch (error) {}
-  }
+  };
 
   return (
     <Layout balance={balance} blockChainState={blockChainState}>
@@ -242,7 +244,7 @@ const CrowdPage: FC = observer(() => {
             onAddClick={() => onOpenModal(ModalModeEnum.Eth)}
           />
         </MainBlock>}
-        <Proposals proposals={proposalsList} className={proposalVisible} />
+        <Proposals onVoteFor={voteFor} proposals={proposalsList} className={proposalVisible} />
       </Root> : <Loading>
           <Loader
             type="Puff"

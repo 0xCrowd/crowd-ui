@@ -204,7 +204,6 @@ const CrowdBlock = ({
   myPaid,
   onAddClick,
 }: Props): ReactElement => {
-  console.log(participants, 'pat')
   return (
     <Card className={card}>
       <Header>

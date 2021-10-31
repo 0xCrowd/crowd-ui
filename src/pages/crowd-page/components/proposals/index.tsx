@@ -21,10 +21,11 @@ const Row = styled.div`
 
 interface Props {
   proposals: IAdaptedProposal[];
+  onVoteFor: (ceramicStream: string) => void;
   className?: string;
 }
 
-const Proposals = ({ proposals, className }: Props): ReactElement => {
+const Proposals = ({ proposals, onVoteFor, className }: Props): ReactElement => {
   return (
     <Root className={className}>
       {proposals.map(({
@@ -36,16 +37,19 @@ const Proposals = ({ proposals, className }: Props): ReactElement => {
         voteForPercent,
         status,
         tokenName,
+        ceramic_stream,
       }) => (
         <Row key={title}>
           <Proposal title={title} description={description}/>
-          <VoteBlock 
+          <VoteBlock
+            ceramicStream={ceramic_stream}
             forVote={voteFor} 
             againstVote={voteAgainst} 
             status={status}
             voteAgainstPercent={voteAgainstPercent}
             voteForPercent={voteForPercent}
             tokenName={tokenName}
+            onVoteFor={() => onVoteFor(ceramic_stream)}
           />
         </Row>
       ))}
