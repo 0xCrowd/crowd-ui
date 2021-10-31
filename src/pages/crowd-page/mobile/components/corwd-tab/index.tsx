@@ -9,7 +9,7 @@ import UserBadge from "@app/components/user-badge";
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
 
-import eth from '@assets/images/eth_gr_wh.png';
+import eth from '@assets/images/bnb.png';
 
 
 const CrowdInfo = styled.div`

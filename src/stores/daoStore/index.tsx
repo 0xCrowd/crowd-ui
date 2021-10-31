@@ -4,12 +4,12 @@ import axios from 'axios';
 import chainStore from '@stores/chainStore';
 import raribleStore from "@stores/raribleStore";
 
-import { StateEnum } from '@app/enums/state-enum/index';
+import { StateEnum } from '@enums/state-enum/index';
+import { ProposalStatusEnum } from '@enums/proposal-status-enum/index';
 import { IPartyFormData } from '@pages/main-page/components/party-form/constants';
 
 
 import DAO from "../../../ABI/DAO.json";
-
 
 // const POTTERY_ENDPOINT = "https://7f76-2a00-1370-8137-a39b-70-9b54-ed0d-accd.ngrok.io"
 
@@ -33,6 +33,7 @@ class DaoStore {
   donateState: StateEnum = StateEnum.Empty;
 
   proposalState: StateEnum = StateEnum.Empty;
+  createProposalState: StateEnum = StateEnum.Empty;
   proposalPage: number = 0;
   proposalLimit: number = 10;
   proposalsList: IAdaptedProposal[] =[];
@@ -109,7 +110,7 @@ class DaoStore {
       const { address } = chainStore
 
       const { meta, bestSellOrder } = await getOrder(dao.buyout_target, false);
-      console.log(meta, 'mettt')
+
       return {
         ceramic_stream: dao.ceramic_stream,
         partyName: meta.name,
@@ -148,7 +149,6 @@ class DaoStore {
         .new_dao(partyName, tokenName, 100)
         .send({ from: address, value: 0 });
 
-      console.log(tx, "tx");
       const daoAddress = tx.events.NewDao.returnValues.dao;
 
       // Get L1 DAO token address
@@ -213,7 +213,7 @@ class DaoStore {
         this.proposalState = StateEnum.Loading;
       });
 
-      const response = await axios.get(`${localStorage.getItem('test')}/proposals`,{
+      const response = await axios.get(`${localStorage.getItem('test')}/proposals`, {
         params: {
           dao_stream: daoStream,
           offset: this.proposalPage * this.proposalLimit,
@@ -240,8 +240,8 @@ class DaoStore {
       ...proposal,
       voteFor: this.adaptedDao.users.length,
       voteAgainst: this.adaptedDao.users.length,
-      voteForPercent: 100,
-      voteAgainstPercent: 0,
+      voteForPercent: proposal.status === ProposalStatusEnum.Success ? 100 : 50,
+      voteAgainstPercent: proposal.status === ProposalStatusEnum.Success ? 0 : 50,
     }
   }
 
@@ -252,6 +252,28 @@ class DaoStore {
       this.getProposals(daoStream);
     } catch (error) {}
   };
+
+  createProposal = async (daoStream: string, title: string, description: string) => {
+    try {
+      runInAction(() => {
+        this.createProposalState = StateEnum.Loading;
+      });
+
+      await axios.post(`${localStorage.getItem('test')}/proposal`, {
+        dao_stream: daoStream,
+        title,
+        description,
+      });
+
+      this.getProposals(daoStream);
+
+      runInAction(() => {
+        this.createProposalState = StateEnum.Success;        
+      })
+    } catch (error) {
+      this.createProposalState = StateEnum.Error;
+    }
+  }
 
 }
 

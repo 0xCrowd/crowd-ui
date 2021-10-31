@@ -65,7 +65,7 @@ const TabButtons = ({ activeTab, onChange, className }: Props): ReactElement => 
           className={activeTab === TabsEnum.All ? acitveButton : button}
           containerClassName={container}
         >
-          ALL PARTIES
+          ALL CROWDS
         </Button>
         <Button
           active={activeTab === TabsEnum.My}
@@ -74,7 +74,7 @@ const TabButtons = ({ activeTab, onChange, className }: Props): ReactElement => 
           className={activeTab === TabsEnum.My ? acitveButton : button}
           containerClassName={container}
         >
-          MY PARTIES
+          MY CROWDS
         </Button>
       </ButtonContainer>
     </Root>

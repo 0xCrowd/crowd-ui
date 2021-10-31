@@ -64,7 +64,7 @@ const UserBadge: FC<PropsType> = ({
         <Avatar />
         <Name className={textClassName}>{`${name.substr(0, substrParam)}...`}</Name>
       </NameBlock>
-      {number && <Price className={textClassName}>{number} ETH</Price>}
+      {number && <Price className={textClassName}>{number} BNB</Price>}
     </Root>
   )
 }

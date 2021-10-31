@@ -107,6 +107,7 @@ const MainPage: FC = observer(() => {
     daos, 
     totalDaos,
     daoState,
+    createDaoState,
   } = daoStore;
 
   const { show } = useAlert();
@@ -121,8 +122,7 @@ const MainPage: FC = observer(() => {
   }, []);
 
   useEffect(() => {
-    console.log(blockChainState, 'check');
-    if (blockChainState === StateEnum.Success) { console.log('start'); getDaosList()};
+    if (blockChainState === StateEnum.Success) getDaosList()
   }, [blockChainState]);
 
   const openModal = () => setIsOpen(true);
@@ -164,6 +164,13 @@ const MainPage: FC = observer(() => {
     }
   };
 
+  const onCreate = async () => {
+    try {
+      await createDao(party as IPartyFormData);
+      setIsOpen(false);
+    } catch (error) {}
+  };
+
   return (
     <Layout balance={balance} blockChainState={blockChainState} className={layout}>
       <Modal
@@ -181,7 +188,8 @@ const MainPage: FC = observer(() => {
             onSubmit={onSubmit}
           />
         ) : (
-          <NftPreview 
+          <NftPreview
+            loading={createDaoState === StateEnum.Loading}
             price={order.bestSellOrder?.take.valueDecimal}
             nftName={order.meta.name}
             partyName={party?.partyName || ''}
@@ -189,7 +197,7 @@ const MainPage: FC = observer(() => {
             description={order.meta.description}
             image={order.meta.image.url.PREVIEW || order.meta.image.url.ORIGINAL}
             nftId={order.id}
-            onSubmit={() => createDao(party as IPartyFormData)}
+            onSubmit={onCreate}
           />
         )}
       </Modal>

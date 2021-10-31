@@ -133,13 +133,15 @@ const CrowdPage: FC = observer(() => {
     getDao,
     getProposals,
     donate,
+    createProposal,
     adaptedDao,
     daoState,
     donateState,
     originalDao,
     proposalsList,
+    createProposalState,
   } = daoStore;
-  console.log(adaptedDao, 'dao');
+
   const [isOpen, setIsOpen] = useState(false);
   const [proposalFormData, setProposalFormData] = useState<IProposalFormData | null>(null);
   const [ethFormData, setEthFormData] = useState<IEthFormData | null>(null);
@@ -170,14 +172,22 @@ const CrowdPage: FC = observer(() => {
     setModalMode(mode);
   };
 
-  const onProposalSubmit = (data: IProposalFormData) => {
-    console.log(data);
-    setProposalFormData(data);
+  const onProposalSubmit = async (data: IProposalFormData) => {
+    try {
+      const { header, description } = data;
+
+      setProposalFormData(data);
+      await createProposal(adaptedDao.ceramic_stream, header, description)
+      onCloseModal();
+    } catch (error) {}
   };
 
-  const onEthSubmit = (data: IEthFormData) => {
-    setEthFormData(data);
-    donate(address, adaptedDao.ceramic_stream, data.deposite, originalDao.l1_vault);
+  const onEthSubmit = async (data: IEthFormData) => {
+    try {
+      setEthFormData(data);
+      await donate(address, adaptedDao.ceramic_stream, data.deposite, originalDao.l1_vault);
+      onCloseModal();
+    } catch (error) {}
   }
 
   return (
@@ -186,12 +196,18 @@ const CrowdPage: FC = observer(() => {
         isOpen={isOpen}
         onRequestClose={onCloseModal}
         isLight
-        title={modalMode === ModalModeEnum.Proposal ? "New Proposal" : "Add ETH"}
+        title={modalMode === ModalModeEnum.Proposal ? "New Proposal" : "Add BNB"}
       >
         {modalMode === ModalModeEnum.Proposal ? (
-          <ProposalForm onSubmit={onProposalSubmit} loading={donateState === StateEnum.Loading} />
+          <ProposalForm 
+            onSubmit={onProposalSubmit} 
+            loading={createProposalState === StateEnum.Loading} 
+          />
         ) : (
-          <EthForm onSubmit={onEthSubmit} loading={donateState === StateEnum.Loading} />
+          <EthForm 
+            onSubmit={onEthSubmit} 
+            loading={donateState === StateEnum.Loading} 
+          />
         )}
       </Modal>
       {daoState !== StateEnum.Loading ? <Root>
