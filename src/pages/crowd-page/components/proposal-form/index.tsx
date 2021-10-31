@@ -54,7 +54,7 @@ const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
         placeholder="description"
         value={values.description}
         onChange={handleChange}
-        error={touched.description && errors.header || ''}
+        error={touched.description && errors.description || ''}
       />
       <Button
         containerClassName={buttonContainer}
