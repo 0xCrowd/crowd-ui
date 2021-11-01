@@ -32,6 +32,20 @@ export const validate = (values: IPartyFormData): ErrorType => {
     errors.url = 'Invalid url';
   }
 
+  const [, , domain, page] = values.url.split("/");
+
+  if (domain === "rarible.com") {
+    if (page !== "token") {
+      errors.url = 'Invalid url'
+    }
+  } else if (domain === "opensea.io") {
+    if (page !== "assets") {
+      errors.url = 'Invalid url'
+    }
+  } else {
+    errors.url = 'Invalid url'
+  }
+
   return errors;
 };
 

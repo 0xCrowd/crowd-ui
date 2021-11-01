@@ -108,6 +108,7 @@
     "react-loader-spinner": "^4.0.0",
     "react-modal": "^3.14.3",
     "react-router-dom": "^5.2.0",
+    "tiny-skeleton-loader-react": "^1.1.6",
     "web3": "^1.6.0"
   },
   "husky": {

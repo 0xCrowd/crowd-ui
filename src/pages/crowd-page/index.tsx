@@ -1,17 +1,13 @@
 import React, { FC, useEffect, useState } from "react";
 import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
-import Loader from "react-loader-spinner";
 
 import Layout from '@app/components/layout';
-import UserBadge from "@app/components/user-badge";
 import Modal from "@app/components/modal";
-import Proposals from "./components/proposals";
-import Button from "@app/components/button";
-import CrowdBlock from "./components/crowd-block";
-import ProposalForm from "./components/proposal-form";
 import EthForm from "./components/eth-form";
+import ProposalForm from "./components/proposal-form";
 import MobilePage from './mobile/index';
+import DesktopPage from "./desktop";
 
 import chainStore from '@app/stores/chainStore';
 import daoStore from "@app/stores/daoStore";
@@ -21,10 +17,7 @@ import { StateEnum } from '@enums/state-enum/index';
 
 //#region styles
 import { styled } from '@linaria/react';
-import { css } from '@linaria/core';
 import { media } from "@app/assets/styles/constants";
-
-import rarible from '@assets/images/rarible.svg';
 
 const Root = styled.div`
   display: flex;
@@ -34,78 +27,6 @@ const Root = styled.div`
   ${media('large')} {
     margin-top: 64px;
     width: 1220px;
-  }
-`;
-
-const MainBlock = styled.div`
-  display: flex;
-  margin-bottom: 40px;
-
-  ${media('mobile')} {
-    display: none;
-  }
-`;
-
-const NftBlock = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 800px;
-  margin-right: 40px;
-`
-
-const UserRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-`;
-
-const UserName = styled.div`
-  font-family: Inter;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 20px;
-  color: #fff;
-`;
-
-const Preview = styled.img`
-  height: 250px;
-  width: 186px;
-  margin-bottom: 18px;
-  border-radius: 10px;
-  margin: auto;
-`;
-
-const Loading = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100%;
-`;
-
-const badge = css`
-  margin-bottom: 12px;
-`;
-
-const badgeText = css`
-  color: #fff;
-  font-weight: 700;
-`;
-
-const button = css`
-  width: calc(100% - 2px);
-  height: 46px;
-`;
-
-const buttonContainer = css`
-  width: 100%;
-  height: 48px;
-`;
-
-const proposalVisible = css`
-  ${media('mobile')} {
-    display: none;
   }
 `;
 //#endregion
@@ -142,6 +63,7 @@ const CrowdPage: FC = observer(() => {
     originalDao,
     proposalsList,
     createProposalState,
+    proposalState,
   } = daoStore;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -212,48 +134,19 @@ const CrowdPage: FC = observer(() => {
           />
         )}
       </Modal>
-      {daoState !== StateEnum.Loading ? <Root>
+      <Root>
         {/* ортобразится только при ширине экрана меньше 420px */}
         <MobilePage />
         {/* ортобразится только при ширине экрана больше 420px */}
-        {daoState === StateEnum.Success && <MainBlock>
-          <NftBlock>
-            <UserRow>
-              <UserName>{adaptedDao?.partyName}</UserName>
-              <img src={rarible} alt="rarible" />
-            </UserRow>
-            <UserBadge name="user" className={badge} textClassName={badgeText}/>
-            <Preview src={adaptedDao?.image} alt="preview" />
-            <Button 
-              onClick={() => onOpenModal(ModalModeEnum.Proposal)}
-              className={button}
-              containerClassName={buttonContainer}
-              active
-            >
-              New proposal
-            </Button>
-          </NftBlock>
-          <CrowdBlock 
-            partyName={adaptedDao?.partyName} 
-            description={adaptedDao?.description}
-            price={adaptedDao?.price} 
-            tokenName="$Holder" 
-            collected={adaptedDao?.percentage}
-            participants={adaptedDao?.users}
-            myPaid={adaptedDao?.myPaid}
-            onAddClick={() => onOpenModal(ModalModeEnum.Eth)}
-          />
-        </MainBlock>}
-        <Proposals onVoteFor={voteFor} proposals={proposalsList} className={proposalVisible} />
-      </Root> : <Loading>
-          <Loader
-            type="Puff"
-            color="#6200E8"
-            height={100}
-            width={100}
-            timeout={3000}
-          />
-        </Loading>}
+        <DesktopPage 
+          adaptedDao={adaptedDao}
+          proposalsList={proposalsList}
+          onOpenModal={onOpenModal}
+          onVoteFor={voteFor}
+          proposalsLoading={proposalState === StateEnum.Loading}
+          daoLoading={daoState === StateEnum.Loading}
+        />
+      </Root>
     </Layout>
   );
 });
