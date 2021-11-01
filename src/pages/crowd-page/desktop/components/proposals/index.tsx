@@ -1,10 +1,11 @@
 import React, { ReactElement } from 'react';
-
-//#region styles
-import { styled } from '@linaria/react';
+import SkeletonLoader from "tiny-skeleton-loader-react";
 
 import Proposal from '../proposal';
 import VoteBlock from '../vote-block';
+
+//#region styles
+import { styled } from '@linaria/react';
 
 const Root = styled.div`
   display: flex;
@@ -19,13 +20,65 @@ const Row = styled.div`
 `;
 //#endregion
 
+//#region const
+const SKELETON_ROWS = [
+  {
+    proposal: {
+      width: 800,
+      height: 192,
+      styles: { marginRight: 40 }
+    },
+    vote: {
+      width: 380,
+      height: 192,
+    },
+  },
+  {
+    proposla: {
+      width: 800,
+      height: 192,
+      styles: { marginRight: 40 }
+    },
+    vote: {
+      width: 380,
+      height: 192,
+    },
+  },
+  {
+    proposla: {
+      width: 800,
+      height: 192,
+      styles: { marginRight: 40 }
+    },
+    vote: {
+      width: 380,
+      height: 192,
+    },
+  },
+]
+//#endregion
+
 interface Props {
   proposals: IAdaptedProposal[];
   onVoteFor: (ceramicStream: string) => void;
+  loading: boolean;
   className?: string;
 }
 
-const Proposals = ({ proposals, onVoteFor, className }: Props): ReactElement => {
+const Proposals = ({ proposals, onVoteFor, loading, className }: Props): ReactElement => {
+  console.log(loading);
+  if (loading) {
+    return (
+      <Root className={className}>
+        {SKELETON_ROWS.map(({ proposal, vote }) => (
+          <Row>
+            <SkeletonLoader {...proposal} />
+            <SkeletonLoader {...vote} />
+          </Row>
+        ))}
+      </Root>
+    )
+  }
   return (
     <Root className={className}>
       {proposals.map(({

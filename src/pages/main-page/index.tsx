@@ -79,10 +79,6 @@ const modalLarge = css`
   }
 `;
 
-const layout = css`
-  height: 100%;
-`;
-
 const tabs = css`
   ${media('mobile')} {
     display: none;
@@ -134,34 +130,25 @@ const MainPage: FC = observer(() => {
   };
 
   const onSubmit = (data: IPartyFormData) => {
-    try {
-      setParty(data);
+    setParty(data);
     
-      let id = '';
+    let id = '';
 
-      const [,, domain, page, address, nftId] = data.url.split("/");
+    const [,, domain, page, address, nftId] = data.url.split("/");
 
-      if (domain === "rarible.com") {
-        if (page === "token") {
-          id = address.split("?")[0];
-        } else {
-          throw new Error();
-        }
-      } else if (domain === "opensea.io") {
-        if (page === "assets") {
-          id = `${address}:${nftId}`;
-        } else {
-          throw new Error();
-        }
-      } else {
-        throw new Error();
+    if (domain === "rarible.com") {
+      if (page === "token") {
+        id = address.split("?")[0];
       }
-
-      getOrder(id);
-    } catch (error) {
-      show('Что-то пошло не так')
-      console.log('err');
     }
+      
+    if (domain === "opensea.io") {
+      if (page === "assets") {
+        id = `${address}:${nftId}`;
+      }
+    }
+
+    getOrder(id);
   };
 
   const onCreate = async () => {
@@ -172,7 +159,7 @@ const MainPage: FC = observer(() => {
   };
 
   return (
-    <Layout balance={balance} blockChainState={blockChainState} className={layout}>
+    <Layout balance={balance} blockChainState={blockChainState}>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}

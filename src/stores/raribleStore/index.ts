@@ -28,6 +28,9 @@ class RaribleStore {
       });
 
       if (isSetOrder) {
+        if (!response.data.bestSellOrder) {
+          throw new Error('this nft without fixed price')
+        }
         runInAction(() => {
           this.order = response.data;
           this.orderState = StateEnum.Success;  
