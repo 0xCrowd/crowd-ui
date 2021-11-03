@@ -154,7 +154,7 @@ const MainPage: FC = observer(() => {
   const onCreate = async () => {
     try {
       await createDao(party as IPartyFormData);
-      setIsOpen(false);
+      closeModal();
     } catch (error) {}
   };
 
