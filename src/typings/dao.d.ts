@@ -5,6 +5,12 @@ declare global {
     address: string,
     total_deposit: number,
   }
+
+  interface IImageMeta {
+    height: number
+    type: string
+    width: number
+  }
   
   interface IDao {
     ceramic_stream: string;
@@ -26,6 +32,7 @@ declare global {
     partyName: string;
     description: string;
     myPaid?: IDeposits;
+    imageMeta: IImageMeta
   }
   
   interface IProposal {

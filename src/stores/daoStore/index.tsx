@@ -25,7 +25,7 @@ class DaoStore {
   daosOriginal: IDao[] = [];
   totalDaos = 0;
   daosPage = 0;
-  daosLimit = 10;
+  daosLimit = 9;
   daos: IAdaptedDao[] = [];
   daoState: StateEnum = StateEnum.Empty;
   createDaoState: StateEnum = StateEnum.Empty;
@@ -111,16 +111,22 @@ class DaoStore {
 
       const { meta, bestSellOrder } = await getOrder(dao.buyout_target, false);
 
+      const imageMeta: IImageMeta = meta.image.meta.ORIGINAL || meta.image.meta.PREVIEW;
+
+      if (imageMeta.height > 440) imageMeta.height = 440;
+      if (imageMeta.width > 800) imageMeta.width = 800;
+
       return {
         ceramic_stream: dao.ceramic_stream,
         partyName: meta.name,
         description: meta.description,
-        image: meta.image.url.PREVIEW || meta.image.url.ORIGINAL,
+        image: meta.image.url.ORIGINAL || meta.image.url.PREVIEW,
         price: bestSellOrder.take.valueDecimal,
         collected,
         users: dao.deposits,
         percentage: Math.ceil((collected / bestSellOrder.take.valueDecimal) * 100),
-        myPaid: dao.deposits.find(elem => elem.address === address)
+        myPaid: dao.deposits.find(elem => elem.address === address),
+        imageMeta: meta.image.meta.ORIGINAL || meta.image.meta.PREVIEW,
       };
     } catch (error) {
       throw error;

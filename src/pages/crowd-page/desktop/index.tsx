@@ -46,9 +46,14 @@ const UserName = styled.div`
   color: #fff;
 `;
 
-const Preview = styled.img`
-  height: 250px;
-  width: 186px;
+interface PreviewProps {
+  height: number;
+  width: number;
+}
+
+const Preview = styled.img<PreviewProps>`
+  height: ${({ height }) => `${height}px`};
+  width: ${({ width }) => `${width}px`};
   margin-bottom: 18px;
   border-radius: 10px;
   margin: auto;
@@ -131,7 +136,12 @@ const DesktopPage = ({
             <img src={rarible} alt="rarible" />
           </UserRow>
           <UserBadge name="user" className={badge} textClassName={badgeText} />
-          <Preview src={adaptedDao?.image} alt="preview"></Preview>
+          <Preview 
+            height={adaptedDao.imageMeta.height} 
+            width={adaptedDao.imageMeta.width} 
+            src={adaptedDao?.image} 
+            alt="preview"
+          ></Preview>
           <Button
             onClick={() => onOpenModal(ModalModeEnum.Proposal)}
             className={button}

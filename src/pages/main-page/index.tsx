@@ -182,7 +182,7 @@ const MainPage: FC = observer(() => {
             partyName={party?.partyName || ''}
             userName={order.owners[0]}
             description={order.meta.description}
-            image={order.meta.image.url.PREVIEW || order.meta.image.url.ORIGINAL}
+            image={order.meta.image.url.ORIGINAL || order.meta.image.url.PREVIEW}
             nftId={order.id}
             onSubmit={onCreate}
           />
