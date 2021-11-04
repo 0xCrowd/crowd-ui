@@ -14,6 +14,13 @@ import { mb4 } from '@assets/styles/constants';
 
 import eth from '@assets/images/bnb.png';
 
+const title = css`
+  height: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 const card = css`
   box-sizing: border-box;
   height: 566px;
@@ -84,6 +91,8 @@ const Badge = styled.div`
 `;
 
 const Description = styled.p`
+  flex-shrink: 0;
+  max-height: 56px;
   margin: 0;
   margin-bottom: 28px;
   font-family: Inter;
@@ -91,6 +100,8 @@ const Description = styled.p`
   font-size: 10px;
   line-height: 14px;
   color: #C5C5C5;
+  overflow: hidden; /* Обрезаем все, что не помещается в область */
+  text-overflow: ellipsis; /* Добавляем многоточие */
 `;
 
 const PriceBlock = styled.div`
@@ -207,7 +218,7 @@ const CrowdBlock = ({
   return (
     <Card className={card}>
       <Header>
-        <Title>{partyName}</Title>
+        <Title className={title}>{partyName}</Title>
         <Badge>{tokenName}</Badge>
       </Header>
       <Description>{description}</Description>
