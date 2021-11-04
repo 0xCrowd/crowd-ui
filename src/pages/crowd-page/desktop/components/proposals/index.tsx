@@ -34,7 +34,7 @@ const SKELETON_ROWS = [
     },
   },
   {
-    proposla: {
+    proposal: {
       width: 800,
       height: 192,
       styles: { marginRight: 40 }
@@ -45,7 +45,7 @@ const SKELETON_ROWS = [
     },
   },
   {
-    proposla: {
+    proposal: {
       width: 800,
       height: 192,
       styles: { marginRight: 40 }
@@ -72,8 +72,8 @@ const Proposals = ({ proposals, onVoteFor, loading, className }: Props): ReactEl
       <Root className={className}>
         {SKELETON_ROWS.map(({ proposal, vote }) => (
           <Row>
-            <SkeletonLoader {...proposal} />
-            <SkeletonLoader {...vote} />
+            <SkeletonLoader {...proposal} background="linear-gradient(0deg,#263238,#263238)"/>
+            <SkeletonLoader {...vote} background="linear-gradient(0deg,#263238,#263238)"/>
           </Row>
         ))}
       </Root>

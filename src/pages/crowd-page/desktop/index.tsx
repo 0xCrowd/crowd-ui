@@ -137,8 +137,8 @@ const DesktopPage = ({
           </UserRow>
           <UserBadge name="user" className={badge} textClassName={badgeText} />
           <Preview 
-            height={adaptedDao.imageMeta.height} 
-            width={adaptedDao.imageMeta.width} 
+            height={adaptedDao?.imageMeta.height} 
+            width={adaptedDao?.imageMeta.width} 
             src={adaptedDao?.image} 
             alt="preview"
           ></Preview>
