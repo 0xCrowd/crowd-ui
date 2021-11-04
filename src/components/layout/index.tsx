@@ -10,7 +10,7 @@ import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
 
 const Root = styled.div`
-  height: 100%;
+  min-height: 100vh;
   background-color: #141414;
 `;
 
