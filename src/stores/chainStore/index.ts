@@ -6,11 +6,9 @@ import raribleStore from '@stores/raribleStore';
 import { StateEnum } from '@app/enums/state-enum/index';
 
 
-import Factory from "../../../ABI/DAOFactory.json";
+import Factory from "../../../ABI/Factory.json";
 
-const FACTORY_ADRESS = "0x0D74A7CD417303795E3C36201FEEC2DdDBD2a5c6";
-
-const { getOrder } = raribleStore;
+const FACTORY_ADRESS = "0x47c5EF471475b2EdB950DF4a20E9e538f67F3fb3";
 
 class ChainStore {
   constructor() {

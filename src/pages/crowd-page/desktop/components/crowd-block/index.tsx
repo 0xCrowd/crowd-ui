@@ -12,7 +12,7 @@ import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
 import { mb4 } from '@assets/styles/constants';
 
-import eth from '@assets/images/bnb.png';
+import eth from '@assets/images/eth_gr.png';
 
 const title = css`
   height: 18px;
@@ -226,7 +226,7 @@ const CrowdBlock = ({
         <Icon src={eth} alt="eth" />
         <PriceInfo>
           <Current>Current price</Current>
-          <Price>BNB {price}</Price>
+          <Price>ETH {price}</Price>
         </PriceInfo>
       </PriceBlock>
       <Row>
@@ -244,7 +244,7 @@ const CrowdBlock = ({
         precentClassName={percent}
       />
       <Button className={button} containerClassName={buttonContainer} active onClick={onAddClick}>+ Add funds</Button>
-      <Funds>Your funds: {myPaid?.total_deposit || 0} BNB</Funds>
+      <Funds>Your funds: {myPaid?.total_deposit || 0} ETH</Funds>
       <Hr />
       {participants?.length > 0 && <UserTitle>User party name</UserTitle>}
       <Scrollbars className={scroller}>

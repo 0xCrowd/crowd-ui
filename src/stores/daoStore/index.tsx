@@ -9,7 +9,7 @@ import { ProposalStatusEnum } from '@enums/proposal-status-enum/index';
 import { IPartyFormData } from '@pages/main-page/components/party-form/constants';
 
 
-import DAO from "../../../ABI/DAO.json";
+import DAO from "../../../ABI/Vault.json";
 
 // const POTTERY_ENDPOINT = "https://7f76-2a00-1370-8137-a39b-70-9b54-ed0d-accd.ngrok.io"
 
@@ -25,7 +25,7 @@ class DaoStore {
   daosOriginal: IDao[] = [];
   totalDaos = 0;
   daosPage = 0;
-  daosLimit = 9;
+  daosLimit = 12;
   daos: IAdaptedDao[] = [];
   daoState: StateEnum = StateEnum.Empty;
   createDaoState: StateEnum = StateEnum.Empty;
@@ -38,15 +38,15 @@ class DaoStore {
   proposalLimit: number = 10;
   proposalsList: IAdaptedProposal[] =[];
 
-  // Get DAOs list from Pottery Master DAOs registry
-  getDaosList = async () => {
+  getDaosList = async (address?: string) => {
     try {
       this.daoState = StateEnum.Loading;
 
-      const response = await axios.get(`${localStorage.getItem('test')}/dao`, {
+      const response = await axios.get(`${localStorage.getItem('test')}/daos`, {
         params: {
           offset: this.daosPage * this.daosLimit,
           limit: this.daosLimit,
+          address,
         },
         withCredentials: false,
       });
@@ -78,7 +78,7 @@ class DaoStore {
     try {
       this.daoState = StateEnum.Loading;
 
-      const response = await axios.get(`${localStorage.getItem('test')}/dao`, {
+      const response = await axios.get(`${localStorage.getItem('test')}/daos`, {
         params: {
           stream,
         },
@@ -114,13 +114,19 @@ class DaoStore {
       const imageMeta: IImageMeta = meta.image.meta.ORIGINAL || meta.image.meta.PREVIEW;
 
       if (imageMeta.height > 440) imageMeta.height = 440;
-      if (imageMeta.width > 800) imageMeta.width = 800;
+      if (imageMeta.width > 800) imageMeta.width = 440;
+
+      let imageUrl = meta.image.url.ORIGINAL || meta.image.url.PREVIEW;
+
+      const [ protocol, url ] = imageUrl.split('://');
+
+      if (protocol === 'ipfs') imageUrl = `https://ipfs.io/${url}`
 
       return {
         ceramic_stream: dao.ceramic_stream,
         partyName: meta.name,
         description: meta.description,
-        image: meta.image.url.ORIGINAL || meta.image.url.PREVIEW,
+        image: imageUrl,
         price: bestSellOrder.take.valueDecimal,
         collected,
         users: dao.deposits,
@@ -133,11 +139,11 @@ class DaoStore {
     }
   };
 
-  loadMoreDaos = async () => {
+  loadMoreDaos = async (address?: string) => {
     try {
       this.daosPage += 1;
 
-      this.getDaosList();
+      this.getDaosList(address);
     } catch (error) {
       this.daoState = StateEnum.Error;
     }
@@ -176,7 +182,6 @@ class DaoStore {
         pool_target: order.id,
       });
 
-      this.getDaosList();
       this.createDaoState = StateEnum.Success;
     } catch (error) {
       console.log(error, "err");

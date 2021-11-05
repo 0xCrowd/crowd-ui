@@ -93,7 +93,7 @@ const MainPage: FC = observer(() => {
     loadBlockChain,
     balance,
     blockChainState,
-    factoryContract
+    address,
   } = chainStore;
 
   const { 
@@ -118,8 +118,8 @@ const MainPage: FC = observer(() => {
   }, []);
 
   useEffect(() => {
-    if (blockChainState === StateEnum.Success) getDaosList()
-  }, [blockChainState]);
+    if (blockChainState === StateEnum.Success) getDaosList(activeTab === TabsEnum.My ? address : '');
+  }, [blockChainState, activeTab]);
 
   const openModal = () => setIsOpen(true);
 
@@ -155,7 +155,14 @@ const MainPage: FC = observer(() => {
     try {
       await createDao(party as IPartyFormData);
       closeModal();
+      getDaosList(activeTab === TabsEnum.My ? address : '');
     } catch (error) {}
+  };
+
+  const onTabChange = (active: TabsEnum) => {
+    if (daoState !== StateEnum.Loading) {
+      setActiveTab(active);
+    }
   };
 
   return (
@@ -190,13 +197,13 @@ const MainPage: FC = observer(() => {
       </Modal>
       <MobileTopline
         activeTab={activeTab}
-        onChange={setActiveTab}
+        onChange={onTabChange}
         onAdd={openModal}
       />
       <ButtonsRow className={tabs}>
         <TabButtons 
           activeTab={activeTab}
-          onChange={setActiveTab}
+          onChange={onTabChange}
         />
         <AddButtonContainer>
           <ButtonText>START A PARTY</ButtonText>

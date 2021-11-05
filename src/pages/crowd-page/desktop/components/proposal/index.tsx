@@ -16,6 +16,7 @@ const Description = styled.div`
   line-height: 14px;
   letter-spacing: 0.25px;
   color: #FFFFFF;
+  word-break: break-all;
 `;
 
 const titleClass = css`

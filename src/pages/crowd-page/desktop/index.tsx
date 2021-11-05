@@ -141,7 +141,7 @@ const DesktopPage = ({
             width={adaptedDao?.imageMeta.width} 
             src={adaptedDao?.image} 
             alt="preview"
-          ></Preview>
+          />
           <Button
             onClick={() => onOpenModal(ModalModeEnum.Proposal)}
             className={button}

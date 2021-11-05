@@ -6,7 +6,7 @@ import Button from '@app/components/button';
 
 import { round } from '@app/utils/round';
 
-import eth from '@app/assets/images/bnb.png';
+import eth from '@app/assets/images/eth_gr_wh.png';
 
 //#region styles
 import { styled } from '@linaria/react';
@@ -42,7 +42,7 @@ const Preview = styled.div`
   height: 100%;
   background: linear-gradient(180deg, rgba(38, 50, 56, 0.3) 0%, rgba(38, 50, 56, 0) 100%);
   filter: drop-shadow(0px 0px 10px rgba(38, 50, 56, 0.06));
-  border-radius: 10px;
+  border-radius: 20px;
 `;
 
 const InfoBlockWrapper = styled.div`
