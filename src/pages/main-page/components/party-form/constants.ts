@@ -2,21 +2,21 @@ import { validateUrl } from '@app/utils/validateUrl';
 
 export interface IPartyFormData {
   url: string;
-  partyName: string;
+  tokenTicker: string;
   tokenName: string;
 }
 
 export const initialValues: IPartyFormData = {
   url: '',
   tokenName: '',
-  partyName: '',
+  tokenTicker: '',
 };
 
 export const validate = (values: IPartyFormData): ErrorType => {
   const errors: ErrorType = {};
-  if (!values.partyName) {
+  if (!values.tokenTicker) {
     errors.partyName = 'Required field';
-  } else if (values.partyName.length > 10) {
+  } else if (values.tokenTicker.length > 10) {
     errors.partyName = 'Не больше 10 символов';
   }
 
@@ -51,14 +51,14 @@ export const validate = (values: IPartyFormData): ErrorType => {
 
 export const inputs = [
   {
-    label: "What’s your party name?",
-    id: "partyName",
-    placeholder:"Qroud Party",
-  },
-  {
     label: "If you win, what’s your token?",
     id: "tokenName",
     placeholder: "$HOLDER",
+  },
+  {
+    label: "What’s token ticker?",
+    id: "tokenTicker",
+    placeholder:"HLD",
   },
   {
     label: "The auction URL is",

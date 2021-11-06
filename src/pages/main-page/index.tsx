@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
+import { useAlert } from 'react-alert';
 
 import Layout from "@app/components/layout";
 import Modal from '@app/components/modal';
@@ -16,6 +17,7 @@ import daoStore from "@app/stores/daoStore";
 import { TabsEnum } from "@enums/tabs";
 import { StateEnum } from "@enums/state-enum";
 import { IPartyFormData } from './components/party-form/constants';
+import { getImageUrl } from "@app/utils/getImageUrl";
 
 import plus from "@app/assets/images/plus.svg";
 
@@ -23,8 +25,6 @@ import plus from "@app/assets/images/plus.svg";
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
 import { media } from "@app/assets/styles/constants";
-import { useAlert } from 'react-alert';
-
 
 const AddButton = styled.button`
   width: 36px;
@@ -93,7 +93,7 @@ const MainPage: FC = observer(() => {
     loadBlockChain,
     balance,
     blockChainState,
-    factoryContract
+    address,
   } = chainStore;
 
   const { 
@@ -118,8 +118,8 @@ const MainPage: FC = observer(() => {
   }, []);
 
   useEffect(() => {
-    if (blockChainState === StateEnum.Success) getDaosList()
-  }, [blockChainState]);
+    if (blockChainState === StateEnum.Success) getDaosList(activeTab === TabsEnum.My ? address : '');
+  }, [blockChainState, activeTab]);
 
   const openModal = () => setIsOpen(true);
 
@@ -155,7 +155,14 @@ const MainPage: FC = observer(() => {
     try {
       await createDao(party as IPartyFormData);
       closeModal();
+      getDaosList(activeTab === TabsEnum.My ? address : '');
     } catch (error) {}
+  };
+
+  const onTabChange = (active: TabsEnum) => {
+    if (daoState !== StateEnum.Loading) {
+      setActiveTab(active);
+    }
   };
 
   return (
@@ -179,10 +186,10 @@ const MainPage: FC = observer(() => {
             loading={createDaoState === StateEnum.Loading}
             price={order.bestSellOrder?.take.valueDecimal}
             nftName={order.meta.name}
-            partyName={party?.partyName || ''}
+            partyName="Crowd party"
             userName={order.owners[0]}
             description={order.meta.description}
-            image={order.meta.image.url.ORIGINAL || order.meta.image.url.PREVIEW}
+            image={getImageUrl(order.meta.image.url.ORIGINAL || order.meta.image.url.PREVIEW)}
             nftId={order.id}
             onSubmit={onCreate}
           />
@@ -190,13 +197,13 @@ const MainPage: FC = observer(() => {
       </Modal>
       <MobileTopline
         activeTab={activeTab}
-        onChange={setActiveTab}
+        onChange={onTabChange}
         onAdd={openModal}
       />
       <ButtonsRow className={tabs}>
         <TabButtons 
           activeTab={activeTab}
-          onChange={setActiveTab}
+          onChange={onTabChange}
         />
         <AddButtonContainer>
           <ButtonText>START A PARTY</ButtonText>

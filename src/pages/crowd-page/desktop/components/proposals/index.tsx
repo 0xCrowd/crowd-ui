@@ -70,8 +70,8 @@ const Proposals = ({ proposals, onVoteFor, loading, className }: Props): ReactEl
   if (loading) {
     return (
       <Root className={className}>
-        {SKELETON_ROWS.map(({ proposal, vote }) => (
-          <Row>
+        {SKELETON_ROWS.map(({ proposal, vote }, index) => (
+          <Row key={index}>
             <SkeletonLoader {...proposal} background="linear-gradient(0deg,#263238,#263238)"/>
             <SkeletonLoader {...vote} background="linear-gradient(0deg,#263238,#263238)"/>
           </Row>

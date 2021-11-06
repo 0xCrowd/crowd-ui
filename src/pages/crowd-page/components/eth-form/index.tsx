@@ -40,7 +40,7 @@ const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
         className={mb12}
         label="Deposit"
         id="deposite"
-        placeholder="BNB 100000"
+        placeholder="ETH 100000"
         value={deposite}
         onChange={(e) => setDeposite(e.target.value)}
       />
