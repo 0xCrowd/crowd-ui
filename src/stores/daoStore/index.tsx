@@ -7,7 +7,7 @@ import raribleStore from "@stores/raribleStore";
 import { StateEnum } from '@enums/state-enum/index';
 import { ProposalStatusEnum } from '@enums/proposal-status-enum/index';
 import { IPartyFormData } from '@pages/main-page/components/party-form/constants';
-
+import { getImageUrl } from "@app/utils/getImageUrl";
 
 import DAO from "../../../ABI/Vault.json";
 
@@ -36,7 +36,9 @@ class DaoStore {
   createProposalState: StateEnum = StateEnum.Empty;
   proposalPage: number = 0;
   proposalLimit: number = 10;
-  proposalsList: IAdaptedProposal[] =[];
+  proposalsList: IAdaptedProposal[] = [];
+
+  tokenTicker = '';
 
   getDaosList = async (address?: string) => {
     try {
@@ -62,7 +64,6 @@ class DaoStore {
         daos.push(adaptedDao);
       }));
 
-      console.log(daos, "daos");
       runInAction(() => {
         this.daos = daos;
         this.totalDaos = response.data.total;
@@ -85,7 +86,7 @@ class DaoStore {
         withCredentials: false,
       });
 
-      const adaptedDao = await this.getDaoInfo(response.data.items[0]);
+      const adaptedDao = await this.getDaoInfo(response.data.items[0], true);
 
       runInAction(() => {
         this.originalDao = response.data.items[0]
@@ -99,7 +100,7 @@ class DaoStore {
   }
 
   // Get every DAO from the registry with the ceramic_client
-  getDaoInfo = async (dao: IDao): Promise<IAdaptedDao> => {
+  getDaoInfo = async (dao: IDao, withToken?: boolean): Promise<IAdaptedDao> => {
     try {
       // @ts-ignore
       const l1Dao = new window.web3.eth.Contract(DAO.abi, dao.l1_vault);
@@ -116,23 +117,22 @@ class DaoStore {
       if (imageMeta.height > 440) imageMeta.height = 440;
       if (imageMeta.width > 800) imageMeta.width = 440;
 
-      let imageUrl = meta.image.url.ORIGINAL || meta.image.url.PREVIEW;
+      let tokenTicker = '';
 
-      const [ protocol, url ] = imageUrl.split('://');
-
-      if (protocol === 'ipfs') imageUrl = `https://ipfs.io/${url}`
+      //if (withToken) tokenTicker = await l1Dao.methods.getTokenTicker().call();
 
       return {
         ceramic_stream: dao.ceramic_stream,
         partyName: meta.name,
         description: meta.description,
-        image: imageUrl,
+        image: getImageUrl(meta.image.url.ORIGINAL || meta.image.url.PREVIEW),
         price: bestSellOrder.take.valueDecimal,
         collected,
         users: dao.deposits,
         percentage: Math.ceil((collected / bestSellOrder.take.valueDecimal) * 100),
         myPaid: dao.deposits.find(elem => elem.address === address),
         imageMeta: meta.image.meta.ORIGINAL || meta.image.meta.PREVIEW,
+        tokenTicker,
       };
     } catch (error) {
       throw error;
@@ -149,7 +149,7 @@ class DaoStore {
     }
   };
 
-  createDao = async ({ tokenName, partyName }: IPartyFormData) => {
+  createDao = async ({ tokenName, tokenTicker }: IPartyFormData) => {
     try {
       const { address, factoryContract } = chainStore;
       const { order } = raribleStore;
@@ -158,24 +158,19 @@ class DaoStore {
 
       //const initAmount = window.web3.utils.toWei('1000');
       const tx = await factoryContract.methods
-        .new_dao(partyName, tokenName, 100)
+        .newVault(tokenName, tokenTicker, 100)
         .send({ from: address, value: 0 });
 
-      const daoAddress = tx.events.NewDao.returnValues.dao;
+      const vaultAddress = tx.events.NewVault.returnValues.vault;
 
-      // Get L1 DAO token address
       // @ts-ignore
-      const l1Dao = new window.web3.eth.Contract(DAO.abi, daoAddress);
-      const daoToken = await l1Dao.methods
-        .getTokenAddress()
-        .call({ from: address });
+      const l1Dao = new window.web3.eth.Contract(DAO.abi, vaultAddress);
 
-      // Create new Ceramic DAO and link it with L1 (Eth) DAO
       await axios.post(`${localStorage.getItem('test')}/dao`, {
-        name: partyName,
+        name: tokenName,
         l1_type: "ethereum",
-        l1_vault: daoAddress,
-        l1_token: daoToken,
+        l1_vault: vaultAddress,
+        l1_token: tx.events.NewVault.returnValues.tokenAddress,
         proposal_total_threshold: 0.5,
         proposal_for_threshold: 0.5,
         proposal_timeout: 3600,

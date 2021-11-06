@@ -32,7 +32,8 @@ declare global {
     partyName: string;
     description: string;
     myPaid?: IDeposits;
-    imageMeta: IImageMeta
+    imageMeta: IImageMeta;
+    tokenTicker?: string;
   }
   
   interface IProposal {

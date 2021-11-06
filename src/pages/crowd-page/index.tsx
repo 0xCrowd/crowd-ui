@@ -64,6 +64,7 @@ const CrowdPage: FC = observer(() => {
     proposalsList,
     createProposalState,
     proposalState,
+    tokenTicker,
   } = daoStore;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -103,6 +104,7 @@ const CrowdPage: FC = observer(() => {
       setProposalFormData(data);
       await createProposal(adaptedDao.ceramic_stream, header, description)
       onCloseModal();
+      setProposalFormData(null);
     } catch (error) {}
   };
 
@@ -111,6 +113,7 @@ const CrowdPage: FC = observer(() => {
       setEthFormData(data);
       await donate(address, adaptedDao.ceramic_stream, data.deposite, originalDao.l1_vault);
       onCloseModal();
+      setEthFormData(null);
     } catch (error) {}
   };
 
@@ -145,6 +148,7 @@ const CrowdPage: FC = observer(() => {
           onVoteFor={voteFor}
           proposalsLoading={proposalState === StateEnum.Loading}
           daoLoading={daoState === StateEnum.Loading}
+          tokenTicker={tokenTicker}
         />
       </Root>
     </Layout>

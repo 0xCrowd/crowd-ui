@@ -12,7 +12,7 @@ import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
 
 import share from '@assets/images/share.svg';
-import eth from '@assets/images/eth_gr_wh.png';
+import eth from '@assets/images/eth_gr.png';
 
 const Root = styled.div`
   display: flex;

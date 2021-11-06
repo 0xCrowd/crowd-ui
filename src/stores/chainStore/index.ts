@@ -1,14 +1,12 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import Web3 from "web3";
 
-import raribleStore from '@stores/raribleStore';
-
 import { StateEnum } from '@app/enums/state-enum/index';
 
 
 import Factory from "../../../ABI/Factory.json";
 
-const FACTORY_ADRESS = "0x47c5EF471475b2EdB950DF4a20E9e538f67F3fb3";
+const FACTORY_ADRESS = "0x811ED2d787a4238b2ccf2339346383Fa3f31d0b0";
 
 class ChainStore {
   constructor() {
@@ -18,77 +16,11 @@ class ChainStore {
   address = "";
   balance = "";
 
-  poolContract!: any;
   factoryContract!: any;
   daoContract!: any;
 
   web3State: StateEnum = StateEnum.Empty;
   blockChainState: StateEnum = StateEnum.Empty;
-
-  daosList: string[] = [];
-  totalDaos = 0;
-  daosPage = 1;
-  daosLimit = 10;
-  daos: IDao[] = [];
-  daoState: StateEnum = StateEnum.Empty;
-  createDaoState: StateEnum = StateEnum.Empty;
-
-  pools: any[] = [{
-    price: 100,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hashmask_15753.jpg/1024px-Hashmask_15753.jpg',
-    percentage: 10,
-    id: '1',
-    party_name: 'crowd',
-    description: '123',
-  },
-  {
-    price: 100,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hashmask_15753.jpg/1024px-Hashmask_15753.jpg',
-    percentage: 10,
-    id: '2',
-    party_name: 'crowd',
-    description: '123',
-  },
-  {
-    price: 100,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hashmask_15753.jpg/1024px-Hashmask_15753.jpg',
-    percentage: 10,
-    id: '3',
-    party_name: 'crowd',
-    description: '123',
-  },
-  {
-    price: 100,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hashmask_15753.jpg/1024px-Hashmask_15753.jpg',
-    percentage: 10,
-    id: '3',
-    party_name: 'crowd',
-    description: '123',
-  }];
-  pool!: any;
-  poolLoading = true;
-
-  depositeLoading = false;
-
-  addProposalLoading = false;
-  proposals: any[] = [
-    {
-      title: 'Proposal',
-      description: 'DEsc desc desc desc desc desc desc desc',
-    },
-    {
-      title: 'Proposal',
-      description: 'DEsc desc desc desc desc desc desc desc',
-    },
-    {
-      title: 'Proposal',
-      description: 'DEsc desc desc desc desc desc desc desc',
-    },
-    {
-      title: 'Proposal',
-      description: 'DEsc desc desc desc desc desc desc desc',
-    }
-  ];
 
   loadWeb3 = async (): Promise<void> => {
     try {
@@ -136,14 +68,7 @@ class ChainStore {
       this.blockChainState = StateEnum.Error;
     }
 
-    // const poolAbi = PoolAbi.abi;
     const factoryAbi = Factory.abi;
-
-    // if (poolAbi) {
-    //   // @ts-ignore
-    //   const poolContract = new web3.eth.Contract(poolAbi, POOL_ADRESS);
-    //   this.poolContract = poolContract;
-    // }
 
     if (factoryAbi) {
       // @ts-ignore

@@ -87,7 +87,6 @@ const Badge = styled.div`
   font-size: 8px;
   line-height: 18px;
   letter-spacing: 0.25px;
-  opacity: 0;
 `;
 
 const Description = styled.p`
