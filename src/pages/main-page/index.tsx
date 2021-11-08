@@ -71,12 +71,7 @@ const AddButtonContainer = styled.div`
 const modalLarge = css`
   padding: 0;
   overflow: hidden;
-  height: 818px;
   width: 404px;
-
-  @media (max-height: 800px) {
-    height: 650px
-  }
 `;
 
 const tabs = css`
@@ -136,7 +131,7 @@ const MainPage: FC = observer(() => {
 
     const [,, domain, page, address, nftId] = data.url.split("/");
 
-    if (domain === "rarible.com") {
+    if (domain === "rarible.com" || domain === "rinkeby.rarible.com") {
       if (page === "token") {
         id = address.split("?")[0];
       }

@@ -18,7 +18,7 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  height: 814px;
+  height: 598px;
 `;
 
 interface BackgroundProps {
@@ -29,7 +29,7 @@ const Background = styled.div<BackgroundProps>`
   flex-shrink: 0;
   background-image: ${({ background }) => `url(${background})`};
   background-size: cover;
-  height: 520px;
+  height: 362px;
   width: 100%;
 `;
 
@@ -133,7 +133,7 @@ const Preview = styled.img`
   position: absolute;
   top: 80px;
   right: 48px;
-  height: 460px;
+  height: 304px;
   width: 304px;
   border-radius: 40px;
   z-index: 100;
@@ -181,9 +181,7 @@ const Icons = styled.div`
 `;
 
 const scroll = css`
-  @media (max-height: 800px) {
-    height: 650px
-  }
+  height: 650px;
 `;
 //#endregion
 

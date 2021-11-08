@@ -57,6 +57,7 @@ const Preview = styled.img<PreviewProps>`
   margin-bottom: 18px;
   border-radius: 10px;
   margin: auto;
+  background-size: contain;
 `;
 
 const Loading = styled.div`
