@@ -115,7 +115,7 @@ class DaoStore {
       const imageMeta: IImageMeta = meta.image.meta.ORIGINAL || meta.image.meta.PREVIEW;
 
       if (imageMeta.height > 440) imageMeta.height = 440;
-      if (imageMeta.width > 800) imageMeta.width = 440;
+      if (imageMeta.width > 440) imageMeta.width = 440;
 
       let tokenTicker = '';
 
@@ -149,7 +149,7 @@ class DaoStore {
     }
   };
 
-  createDao = async ({ tokenName, tokenTicker }: IPartyFormData) => {
+  createDao = async ({ tokenName }: IPartyFormData) => {
     try {
       const { address, factoryContract } = chainStore;
       const { order } = raribleStore;
@@ -158,13 +158,10 @@ class DaoStore {
 
       //const initAmount = window.web3.utils.toWei('1000');
       const tx = await factoryContract.methods
-        .newVault(tokenName, tokenTicker, 100)
+        .newVault(tokenName, tokenName.slice(0, 5), 100)
         .send({ from: address, value: 0 });
-
+      console.log(tx.events, 'ev');
       const vaultAddress = tx.events.NewVault.returnValues.vault;
-
-      // @ts-ignore
-      const l1Dao = new window.web3.eth.Contract(DAO.abi, vaultAddress);
 
       await axios.post(`${localStorage.getItem('test')}/dao`, {
         name: tokenName,

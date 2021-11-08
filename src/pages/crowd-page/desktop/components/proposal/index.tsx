@@ -12,7 +12,7 @@ import { css } from '@linaria/core';
 const Description = styled.div`
   font-family: Inter;
   font-weight: 500;
-  font-size: 10px;
+  font-size: 14px;
   line-height: 14px;
   letter-spacing: 0.25px;
   color: #FFFFFF;
