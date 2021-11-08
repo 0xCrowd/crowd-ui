@@ -26,20 +26,7 @@ class DaoStore {
   totalDaos = 0;
   daosPage = 0;
   daosLimit = 12;
-  daos: IAdaptedDao[] = [
-    {
-      ceramic_stream: 'asdasd',
-        partyName: 'adasda',
-        description: 'asdasd',
-        image: "https://img.rarible.com/prod/image/upload/t_big/prod-itemImages/0x7ab2352b1d2e185560494d5e577f9d3c238b78c5:3093/8d3236f2",
-        price: 1000,
-        collected: 100,
-        users: [],
-        percentage: 100,
-        imageMeta: { width: 440, height: 440, type: '' },
-        tokenTicker: 'asd',
-    }
-  ];
+  daos: IAdaptedDao[] = [];
   daoState: StateEnum = StateEnum.Empty;
   createDaoState: StateEnum = StateEnum.Empty;
 
