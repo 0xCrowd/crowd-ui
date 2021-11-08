@@ -1,20 +1,20 @@
-import React, { ReactElement } from 'react'
-import { useHistory } from 'react-router-dom';
+import React, { ReactElement, useRef, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import Loader from "react-loader-spinner";
 
-import Percentage from '@app/components/percentage';
-import Button from '@app/components/button';
+import Percentage from "@app/components/percentage";
+import Button from "@app/components/button";
 
-import { round } from '@app/utils/round';
+import { round } from "@app/utils/round";
 
-import eth from '@app/assets/images/eth_gr_wh.png';
+import eth from "@app/assets/images/eth_gr_wh.png";
 
 //#region styles
-import { styled } from '@linaria/react';
-import { css } from '@linaria/core';
-import { mb12 } from '@app/assets/styles/constants';
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
+import { mb12 } from "@app/assets/styles/constants";
 
-import glass from '@assets/images/glass.png'
-
+import glass from "@assets/images/glass.png";
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -30,19 +30,45 @@ interface PreviewProps {
   backgroundUrl: string;
 }
 
-const PreviewContainer = styled.div<PreviewProps>`
+const PreviewContainer = styled.div`
+  position: relative;
   height: 264px;
   border-radius: 20px 20px 0 0;
-  background-image: ${({ backgroundUrl }) => `url(${backgroundUrl})`};
-  background-size: cover;
+`;
+
+const PreviewImg = styled.img`
+  height: 207px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 20px 20px 0 0;
+  z-index: 98;
+`;
+
+const PreviewLoading = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
 `;
 
 const Preview = styled.div`
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, rgba(38, 50, 56, 0.3) 0%, rgba(38, 50, 56, 0) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(38, 50, 56, 0.3) 0%,
+    rgba(38, 50, 56, 0) 100%
+  );
   filter: drop-shadow(0px 0px 10px rgba(38, 50, 56, 0.06));
   border-radius: 20px;
+  z-index: 100;
 `;
 
 const InfoBlockWrapper = styled.div`
@@ -75,7 +101,7 @@ const PriceTitle = styled.p`
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.25px;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-bottom: 3px;
 `;
 
@@ -91,7 +117,7 @@ const Price = styled.p`
   font-size: 14px;
   line-height: 16px;
   letter-spacing: 0.25px;
-  color: #FFFFFF;
+  color: #ffffff;
 `;
 
 const CollectedBlock = styled.div`
@@ -108,12 +134,12 @@ const CollectedText = styled.p`
   font-weight: 500;
   font-size: 10px;
   letter-spacing: 0.25px;
-  color: #9095B4;
+  color: #9095b4;
   margin: 0;
   font-family: Inter;
   line-height: 18px;
   letter-spacing: 0.25px;
-  color: #FFFFFF;
+  color: #ffffff;
 `;
 
 const CollectedValue = styled(CollectedText)`
@@ -135,7 +161,7 @@ const Name = styled.p`
   font-size: 18px;
   line-height: 20px;
   letter-spacing: 0.25px;
-  color: #FFFFFF;
+  color: #ffffff;
   text-shadow: 0px 0px 12px rgba(38, 50, 56, 0.23);
   text-align: center;
   border-radius: 20px 20px 0 0;
@@ -178,50 +204,79 @@ const NftCard = ({
   price,
   percentage = 0,
   participants = 0,
-  className 
+  className,
 }: Props): ReactElement => {
   const { push } = useHistory();
 
+  const imgEl = useRef<HTMLImageElement>(null);
+
+  const [loaded, setLoaded] = React.useState(false);
+
+  const onImageLoaded = () => setLoaded(true);
+
   const rounded = round(percentage, 1);
+
+  useEffect(() => {
+    const imgElCurrent = imgEl.current;
+
+    if (imgElCurrent) {
+      imgElCurrent.addEventListener("load", onImageLoaded);
+      return () => imgElCurrent.removeEventListener("load", onImageLoaded);
+    }
+  }, []);
 
   return (
     <Root className={className}>
-      <PreviewContainer backgroundUrl={image}>
+      <PreviewContainer>
+        <PreviewImg src={image} alt="img" ref={imgEl} />
+        {!loaded && (
+          <PreviewLoading>
+            <Loader
+              type="Puff"
+              color="#6200E8"
+              height={20}
+              width={20}
+              timeout={0}
+            />
+          </PreviewLoading>
+        )}
         <Preview>
-          <Name>
-            {title}
-          </Name>
+          <Name>{title}</Name>
         </Preview>
       </PreviewContainer>
       <InfoBlockWrapper>
         <InfoBlock backgroundUrl={glass}>
-            <CollectedBlock>
-              <CollectedRow>
-                <CollectedText>Collected</CollectedText>
-                <CollectedText>Participants</CollectedText>
-              </CollectedRow>
-              <CollectedRow>
-                <CollectedValue>{rounded > 100 ? 100 : rounded}%</CollectedValue>
-                <CollectedValue>{participants}</CollectedValue>
-              </CollectedRow>
-            </CollectedBlock>
-            <Percentage number={percentage} className={mb12}/>
-            <Footer>
-              <PriceBlock>
-                <PriceTitle>CURRENT PRICE</PriceTitle>
-                <PriceRow>
-                  <IconContainer src={eth} alt="eth" />
-                  <Price>{price}</Price>
-                </PriceRow>
-              </PriceBlock>
-              <Button onClick={() => push(`/${id}`)} className={button} containerClassName={container}>
-                VIEW PARTY
-              </Button>
-            </Footer>
-          </InfoBlock>
+          <CollectedBlock>
+            <CollectedRow>
+              <CollectedText>Collected</CollectedText>
+              <CollectedText>Participants</CollectedText>
+            </CollectedRow>
+            <CollectedRow>
+              <CollectedValue>{rounded > 100 ? 100 : rounded}%</CollectedValue>
+              <CollectedValue>{participants}</CollectedValue>
+            </CollectedRow>
+          </CollectedBlock>
+          <Percentage number={percentage} className={mb12} />
+          <Footer>
+            <PriceBlock>
+              <PriceTitle>CURRENT PRICE</PriceTitle>
+              <PriceRow>
+                <IconContainer src={eth} alt="eth" />
+                <Price>{price}</Price>
+              </PriceRow>
+            </PriceBlock>
+            <Button
+              onClick={() => push(`/${id}`)}
+              className={button}
+              containerClassName={container}
+            >
+              VIEW PARTY
+            </Button>
+          </Footer>
+        </InfoBlock>
       </InfoBlockWrapper>
     </Root>
-  )
-}
+  );
+};
 
-export default NftCard
+export default NftCard;

@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useRef, useEffect } from 'react';
 import { Scrollbars } from "react-custom-scrollbars";
 import Loader from 'react-loader-spinner';
 
@@ -139,6 +139,20 @@ const Preview = styled.img`
   z-index: 100;
 `;
 
+const PreviewLoader = styled.div`
+  position: absolute;
+  top: 80px;
+  right: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 304px;
+  width: 304px;
+  background: #263238;
+  border-radius: 40px;
+  z-index: 100;
+`;
+
 const Header = styled.div`
   margin: 0;
   position: absolute;
@@ -181,7 +195,7 @@ const Icons = styled.div`
 `;
 
 const scroll = css`
-  height: 650px;
+  height: 650px!important;
 `;
 //#endregion
 
@@ -208,12 +222,38 @@ const NftPreview = ({
   loading,
   onSubmit,
 }: Props): ReactElement => {
+  const imgEl = useRef<HTMLImageElement>(null);
+
+  const [loaded, setLoaded] = React.useState(false);
+
+  const onImageLoaded = () => setLoaded(true);
+
+  useEffect(() => {
+    const imgElCurrent = imgEl.current;
+
+    if (imgElCurrent) {
+      imgElCurrent.addEventListener('load', onImageLoaded);
+      return () => imgElCurrent.removeEventListener('load', onImageLoaded);
+    }
+  }, []);
+
   return (
     <Scrollbars className={scroll}>
       <Root>
         <Header>Start a PARTY</Header>
         <Title className={title}>{partyName}</Title>
-        <Preview src={image} alt="preview" />
+        <Preview src={image} alt="preview" ref={imgEl}/>
+        {!loaded && (
+          <PreviewLoader>
+            <Loader
+              type="Puff"
+              color="#6200E8"
+              height={20}
+              width={20}
+              timeout={0}
+            />
+          </PreviewLoader>
+        )}
         <Background background={image}>
           <BackgroundBlur />
         </Background>
@@ -221,37 +261,39 @@ const NftPreview = ({
           <NftBlock>
             <NftName>{nftName}</NftName>
             <Icons>
-              <ShareIcon src={share} alt="share"/>
-              <RaribleButton href={`https://rarible.com/token/${nftId}`}/>
+              <ShareIcon src={share} alt="share" />
+              <RaribleButton href={`https://rarible.com/token/${nftId}`} />
             </Icons>
           </NftBlock>
-          <UserBadge className={badge} name={userName}/>
+          <UserBadge className={badge} name={userName} />
           <DescriptionTitle>Description</DescriptionTitle>
           <Description>{description}</Description>
           <Footer>
             <PriceBlock>
               <PriceLabel>CURRENT PRICE</PriceLabel>
               <PriceRow>
-                <Icon src={eth}/>
+                <Icon src={eth} />
                 <Price>{price}</Price>
               </PriceRow>
             </PriceBlock>
             <Button onClick={onSubmit}>
-            {loading ? (
-              <Loader
-                type="Puff"
-                color="#6200E8"
-                height={20}
-                width={20}
-                timeout={3000}
-              />
-              )  : 'Start Crowd'}
+              {loading ? (
+                <Loader
+                  type="Puff"
+                  color="#6200E8"
+                  height={20}
+                  width={20}
+                  timeout={3000}
+                />
+              ) : (
+                "Start Crowd"
+              )}
             </Button>
           </Footer>
         </Info>
       </Root>
     </Scrollbars>
-  )
+  );
 }
 
 export default NftPreview
