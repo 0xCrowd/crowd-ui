@@ -23,6 +23,7 @@ const modal = css`
   background: linear-gradient(0deg, #FFFFFF, #FFFFFF), #263238;
   border-radius: 15px;
   border: 2px solid #363636;
+  z-index: 1000;
 
   @media (max-height: 800px) {
     max-height: 650px;
@@ -40,6 +41,7 @@ const overlay = css`
   right: 0;
   bottom: 0;
   background-color: rgba(20, 20, 20, 0.6);
+  z-index: 900;
 `;
 
 const Header = styled.p`
