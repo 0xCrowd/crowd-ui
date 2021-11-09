@@ -283,7 +283,6 @@ const NftPreview = ({
                   color="#6200E8"
                   height={20}
                   width={20}
-                  timeout={3000}
                 />
               ) : (
                 "Start Crowd"
