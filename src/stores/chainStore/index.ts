@@ -6,7 +6,7 @@ import { StateEnum } from '@app/enums/state-enum/index';
 
 import Factory from "../../../ABI/Factory.json";
 
-const FACTORY_ADRESS = "0x6f09DB4577084c6ad8d0f5fc0e3551Ed8D85a916";
+const FACTORY_ADRESS = "0x62548aB86998c7466cEe0cAb0A6899491395a6F6";
 
 class ChainStore {
   constructor() {

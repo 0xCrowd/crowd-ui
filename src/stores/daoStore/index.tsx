@@ -157,17 +157,25 @@ class DaoStore {
       this.createDaoState = StateEnum.Loading;
 
       //const initAmount = window.web3.utils.toWei('1000');
-      const tx = await factoryContract.methods
+      let vaultAddress = '';
+      let tokenAddress = '';
+
+      const listner = (err: any, e: any) => {
+        vaultAddress = e.returnValues.vault;
+        tokenAddress = e.returnValues.tokenAddress;
+      };
+
+      await factoryContract.events.NewVault({}, listner);
+
+      await factoryContract.methods
         .newVault(tokenName, tokenName.slice(0, 5), 100)
         .send({ from: address, value: 0 });
-      console.log(tx.events, 'ev');
-      const vaultAddress = tx.events.NewVault.returnValues.vault;
 
       await axios.post(`${localStorage.getItem('test')}/dao`, {
         name: tokenName,
         l1_type: "ethereum",
         l1_vault: vaultAddress,
-        l1_token: tx.events.NewVault.returnValues.tokenAddress,
+        l1_token: tokenAddress,
         proposal_total_threshold: 0.5,
         proposal_for_threshold: 0.5,
         proposal_timeout: 3600,
