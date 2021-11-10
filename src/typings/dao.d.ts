@@ -1,3 +1,4 @@
+import { ProposalTypeEnum } from './../enums/proposalTypeEnum/index';
 import { ProposalStatusEnum } from '../enums/proposal-status-enum/index';
 
 declare global {
@@ -45,6 +46,7 @@ declare global {
     options: string[];
     status: ProposalStatusEnum;
     title: string;
+    type: ProposalTypeEnum;
   }
   
   interface IAdaptedProposal extends IProposal{
