@@ -38,8 +38,6 @@ class DaoStore {
   proposalLimit: number = 10;
   proposalsList: IAdaptedProposal[] = [];
 
-  tokenTicker = '';
-
   getDaosList = async (address?: string) => {
     try {
       this.daoState = StateEnum.Loading;
@@ -110,7 +108,13 @@ class DaoStore {
 
       const { address } = chainStore
 
-      const { meta, bestSellOrder } = await getOrder(dao.buyout_target, false);
+      let data = await getOrder(dao.buyout_target, false);
+
+      if (!data) {
+        data = await getOrder(dao.buyout_target, false, true);
+      }
+
+      const { bestSellOrder, meta } = data;
 
       const imageMeta: IImageMeta = meta.image.meta.ORIGINAL || meta.image.meta.PREVIEW;
 
@@ -119,8 +123,8 @@ class DaoStore {
 
       let tokenTicker = '';
 
-      //if (withToken) tokenTicker = await l1Dao.methods.getTokenTicker().call();
-
+      if (withToken) tokenTicker = await l1Dao.methods.getTokenTicker().call();
+      console.log(tokenTicker, 'ticker');
       return {
         ceramic_stream: dao.ceramic_stream,
         partyName: meta.name,
@@ -135,6 +139,7 @@ class DaoStore {
         tokenTicker,
       };
     } catch (error) {
+      console.log(error);
       throw error;
     }
   };

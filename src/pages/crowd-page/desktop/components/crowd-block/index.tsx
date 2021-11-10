@@ -197,7 +197,7 @@ interface Props {
   partyName: string;
   description: string;
   price: number;
-  tokenName: string;
+  tokenName?: string;
   collected: number;
   participants: IDeposits[];
   myPaid?: IDeposits;

@@ -99,7 +99,6 @@ interface Props {
   daoLoading: boolean;
   proposalsList: IAdaptedProposal[];
   proposalsLoading: boolean;
-  tokenTicker: string;
   onVoteFor: (ceramicStream: string) => void;
   onOpenModal: (mode: ModalModeEnum) => void;
 }
@@ -109,7 +108,6 @@ const DesktopPage = ({
   daoLoading,
   proposalsList,
   proposalsLoading,
-  tokenTicker,
   onVoteFor,
   onOpenModal,
 }: Props): ReactElement => {
@@ -158,7 +156,7 @@ const DesktopPage = ({
           partyName={adaptedDao?.partyName}
           description={adaptedDao?.description}
           price={adaptedDao?.price}
-          tokenName={tokenTicker}
+          tokenName={adaptedDao?.tokenTicker}
           collected={adaptedDao?.percentage}
           participants={adaptedDao?.users}
           myPaid={adaptedDao?.myPaid}

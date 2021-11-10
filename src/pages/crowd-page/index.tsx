@@ -64,7 +64,6 @@ const CrowdPage: FC = observer(() => {
     proposalsList,
     createProposalState,
     proposalState,
-    tokenTicker,
   } = daoStore;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -148,7 +147,6 @@ const CrowdPage: FC = observer(() => {
           onVoteFor={voteFor}
           proposalsLoading={proposalState === StateEnum.Loading}
           daoLoading={daoState === StateEnum.Loading}
-          tokenTicker={tokenTicker}
         />
       </Root>
     </Layout>
