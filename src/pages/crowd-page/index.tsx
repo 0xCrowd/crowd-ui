@@ -182,7 +182,7 @@ const CrowdPage: FC = observer(() => {
           onVoteFor={voteFor}
           proposalsLoading={proposalState === StateEnum.Loading}
           daoLoading={daoState === StateEnum.Loading}
-          nftId={originalDao?.l1_vault}
+          nftId={originalDao?.buyout_target}
         />
       </Root>
     </Layout>

@@ -41,7 +41,7 @@ declare global {
     ceramic_stream: string;
     dao: string;
     description: string;
-    fulfilled: false
+    fulfilled: boolean;
     onsuccess: string;
     options: string[];
     status: ProposalStatusEnum;

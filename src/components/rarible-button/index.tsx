@@ -24,7 +24,7 @@ interface Props {
 
 const RaribleButton = observer(({ tokenId }: Props): ReactElement => {
   const { networkId } = chainStore;
-  return <Root background={rarible} href={`https://${networkId === 4 ? 'rinkeby' : ''}rarible.com/token/${tokenId}`} />;
+  return <Root background={rarible} href={`https://${networkId === 4 ? 'rinkeby.' : ''}rarible.com/token/${tokenId}`} target="_blank" rel="noopener noreferrer" />;
 });
 
 export default RaribleButton;

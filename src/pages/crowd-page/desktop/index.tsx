@@ -137,6 +137,7 @@ const DesktopPage = ({
             className={button}
             containerClassName={buttonContainer}
             active
+            disabled={!proposalsList[0]?.fulfilled}
           >
             New proposal
           </Button>
