@@ -8,6 +8,7 @@ import Button from '@components/button';
 //#region styles
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
+import { ProposalTypeEnum } from '@app/enums/proposalTypeEnum';
 
 const Description = styled.div`
   font-family: Inter;
@@ -26,6 +27,11 @@ const titleClass = css`
   text-overflow: ellipsis; /* Многоточие */
 `;
 
+const buyoutTitle = css`
+  margin-bottom: 12px;
+  word-break: break-all;
+`;
+
 const card = css`
   height: 192px;
   width: 800px;
@@ -35,13 +41,14 @@ const card = css`
 interface Props {
   title: string;
   description: string;
+  type: ProposalTypeEnum
 }
 
-const Proposal = ({ title, description }: Props): ReactElement => {
+const Proposal = ({ title, description, type }: Props): ReactElement => {
   return (
     <Card className={card}>
-      <Title className={titleClass}>{title}</Title>
-      <Description>{description}</Description>
+      <Title className={type === ProposalTypeEnum.Buyout ? buyoutTitle : titleClass}>{title}</Title>
+      {type !== ProposalTypeEnum.Buyout && <Description>{description}</Description>}
     </Card>
   );
 };

@@ -59,6 +59,7 @@ const CrowdPage: FC = observer(() => {
     donate,
     createProposal,
     voteFor,
+    getDelta,
     adaptedDao,
     daoState,
     donateState,
@@ -79,6 +80,7 @@ const CrowdPage: FC = observer(() => {
   useEffect(() => {
     loadWeb3();
     loadBlockChain();
+    getDelta();
   }, []);
 
   useEffect(() => {
@@ -180,7 +182,7 @@ const CrowdPage: FC = observer(() => {
           onVoteFor={voteFor}
           proposalsLoading={proposalState === StateEnum.Loading}
           daoLoading={daoState === StateEnum.Loading}
-          nftId={originalDao?.l1_vault}
+          nftId={originalDao?.buyout_target}
         />
       </Root>
     </Layout>

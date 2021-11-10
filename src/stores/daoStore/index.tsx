@@ -38,6 +38,8 @@ class DaoStore {
   proposalLimit: number = 10;
   proposalsList: IAdaptedProposal[] = [];
 
+  delta = 0;
+
   getDaosList = async (address?: string) => {
     try {
       this.daoState = StateEnum.Loading;
@@ -104,16 +106,11 @@ class DaoStore {
       const l1Dao = new window.web3.eth.Contract(DAO.abi, dao.l1_vault);
 
       const total = await l1Dao.methods.getBalance().call();
-      const collected = +await window.web3.utils.fromWei(total, 'ether');
+      const collected = +await window.web3.utils.fromWei(total, 'ether') + this.delta;
 
       const { address } = chainStore
 
       let { bestSellOrder, meta } = await getOrder(dao.buyout_target, false);
-
-      const imageMeta: IImageMeta = meta.image.meta.ORIGINAL || meta.image.meta.PREVIEW;
-
-      if (imageMeta.height > 440) imageMeta.height = 440;
-      if (imageMeta.width > 440) imageMeta.width = 440;
 
       let tokenTicker = '';
 
@@ -311,6 +308,16 @@ class DaoStore {
 
     this.proposalsList = editedProposals;
     console.log(this.proposalsList, 'lsit')
+  };
+
+  getDelta = async () => {
+    try {
+      const response = await axios.get(`${localStorage.getItem('test')}/health`);
+      console.log(response.data.gas_tank_state.delta, 'healt');
+      runInAction(() => {
+        this.delta = response.data.gas_tank_state.delta.toNumber();
+      })
+    } catch (error) {}
   };
 
 }

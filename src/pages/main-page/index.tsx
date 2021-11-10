@@ -95,6 +95,8 @@ const MainPage: FC = observer(() => {
     getDaosList, 
     loadMoreDaos,
     createDao,
+    getDelta,
+    delta,
     daos, 
     totalDaos,
     daoState,
@@ -110,6 +112,7 @@ const MainPage: FC = observer(() => {
   useEffect(() => {
     loadWeb3();
     loadBlockChain();
+    getDelta();
   }, []);
 
   useEffect(() => {
@@ -179,7 +182,7 @@ const MainPage: FC = observer(() => {
         ) : (
           <NftPreview
             loading={createDaoState === StateEnum.Loading}
-            price={order.bestSellOrder?.take.valueDecimal}
+            price={order.bestSellOrder?.take.valueDecimal + delta}
             nftName={order.meta.name}
             partyName="Crowd party"
             userName={order.owners[0]}

@@ -91,9 +91,10 @@ const Proposals = ({ proposals, onVoteFor, loading, className }: Props): ReactEl
         status,
         tokenName,
         ceramic_stream,
+        type,
       }) => (
         <Row key={title}>
-          <Proposal title={title} description={description}/>
+          <Proposal title={title} description={description} type={type} />
           <VoteBlock
             ceramicStream={ceramic_stream}
             forVote={voteFor} 

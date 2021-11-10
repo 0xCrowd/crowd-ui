@@ -1,3 +1,4 @@
+import { ProposalTypeEnum } from './../enums/proposalTypeEnum/index';
 import { ProposalStatusEnum } from '../enums/proposal-status-enum/index';
 
 declare global {
@@ -40,11 +41,12 @@ declare global {
     ceramic_stream: string;
     dao: string;
     description: string;
-    fulfilled: false
+    fulfilled: boolean;
     onsuccess: string;
     options: string[];
     status: ProposalStatusEnum;
     title: string;
+    type: ProposalTypeEnum;
   }
   
   interface IAdaptedProposal extends IProposal{
