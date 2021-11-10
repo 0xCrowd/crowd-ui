@@ -62,6 +62,12 @@ const ErrorText = styled.p`
   left: 24px;
   color: red;
 `;
+
+const LabelContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 //#endregion
 
 type PropsType = {
@@ -71,13 +77,17 @@ type PropsType = {
   className?: string;
   value?: string;
   error?: string;
+  badge?: JSX.Element;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Input: FC<PropsType> = ({ label, id, placeholder, value, error, onChange, className }) => {
+const Input: FC<PropsType> = ({ label, id, placeholder, value, error, badge, onChange, className }) => {
   return (
     <Root className={className}>
-      <Label htmlFor={id}>{label}</Label>
+      <LabelContainer>
+        <Label htmlFor={id}>{label}</Label>
+        {badge}
+      </LabelContainer>
       <StyledInput value={value} onChange={onChange} placeholder={placeholder} id={id} error={error}/>
       {error && <ErrorText>{error}</ErrorText>}
     </Root>

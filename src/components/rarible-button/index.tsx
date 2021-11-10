@@ -4,6 +4,8 @@ import React, { ReactElement } from "react";
 import { styled } from "@linaria/react";
 
 import rarible from "@assets/images/rarible.svg";
+import { observer } from "mobx-react-lite";
+import chainStore from "@app/stores/chainStore";
 
 interface RootProps {
   background: string;
@@ -17,11 +19,12 @@ const Root = styled.a<RootProps>`
 //#endregion
 
 interface Props {
-  href: string;
+  tokenId: string;
 }
 
-const RaribleButton = ({ href }: Props): ReactElement => {
-  return <Root background={rarible} href={href} />;
-};
+const RaribleButton = observer(({ tokenId }: Props): ReactElement => {
+  const { networkId } = chainStore;
+  return <Root background={rarible} href={`https://${networkId === 4 ? 'rinkeby' : ''}rarible.com/token/${tokenId}`} />;
+});
 
 export default RaribleButton;

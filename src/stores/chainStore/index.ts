@@ -6,7 +6,7 @@ import { StateEnum } from '@app/enums/state-enum/index';
 
 import Factory from "../../../ABI/Factory.json";
 
-const FACTORY_ADRESS = "0x9A5E81BDb499c84f7A43B655C8A6f399a512fbbB";
+const FACTORY_ADRESS = "0x17E5A2eA92AC2fF5E2f68e4bD8ccDB7B8d1C2E74";
 
 class ChainStore {
   constructor() {
@@ -15,6 +15,7 @@ class ChainStore {
 
   address = "";
   balance = "";
+  networkId = 1;
 
   factoryContract!: any;
   daoContract!: any;
@@ -59,9 +60,12 @@ class ChainStore {
 
       const balance = await web3.utils.fromWei(weiBalance, 'ether').split('.')[0];
 
+      const networkId = await web3.eth.net.getId();
+
       runInAction(() => {
         this.address = accounts[0];
-        this.balance = balance
+        this.balance = balance;
+        this.networkId = networkId;
         this.blockChainState = StateEnum.Success;
       });
     } catch (error) {

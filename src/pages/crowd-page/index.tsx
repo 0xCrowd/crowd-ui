@@ -6,6 +6,7 @@ import Layout from '@app/components/layout';
 import Modal from "@app/components/modal";
 import EthForm from "./components/eth-form";
 import ProposalForm from "./components/proposal-form";
+import WithdrawForm from "./components/withdraw-form";
 import MobilePage from './mobile/index';
 import DesktopPage from "./desktop";
 
@@ -38,6 +39,7 @@ export interface IEthFormData {
 export enum ModalModeEnum {
   Proposal = 'proposal',
   Eth = 'eth',
+  Withdraw = 'withdraw',
 }
 
 const CrowdPage: FC = observer(() => {
@@ -70,6 +72,8 @@ const CrowdPage: FC = observer(() => {
   const [proposalFormData, setProposalFormData] = useState<IProposalFormData | null>(null);
   const [ethFormData, setEthFormData] = useState<IEthFormData | null>(null);
   const [modalMode, setModalMode] = useState(ModalModeEnum.Proposal);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalContent, setModalContent] = useState<null | JSX.Element>(null);
   const [ceramicStream, setCeramicStream] = useState('');
 
   useEffect(() => {
@@ -94,6 +98,45 @@ const CrowdPage: FC = observer(() => {
   const onOpenModal = (mode: ModalModeEnum) => {
     setIsOpen(true);
     setModalMode(mode);
+
+    let title = ''
+    let modalContent = null;
+    switch (mode) {
+      case ModalModeEnum.Eth:
+        title = 'Add ETH';
+        modalContent = (
+          <EthForm 
+            onSubmit={onEthSubmit} 
+            loading={donateState === StateEnum.Loading} 
+          />
+        );
+        break;
+      
+      case ModalModeEnum.Proposal:
+        title = 'New Proposal';
+        modalContent = (
+          <ProposalForm 
+            onSubmit={onProposalSubmit} 
+            loading={createProposalState === StateEnum.Loading} 
+          />
+        );
+        break;
+      
+      case ModalModeEnum.Withdraw:
+        title = 'Withdraw Funds';
+        modalContent = (
+          <WithdrawForm 
+            onSubmit={() => {}}
+            loading={false}
+            onAmountButtonClick={(setValue) => {
+              setValue(adaptedDao?.myPaid?.total_deposit.toString() || '');
+            }}
+          />
+        )
+    }
+
+    setModalContent(modalContent);
+    setModalTitle(title);
   };
 
   const onProposalSubmit = async (data: IProposalFormData) => {
@@ -122,19 +165,9 @@ const CrowdPage: FC = observer(() => {
         isOpen={isOpen}
         onRequestClose={onCloseModal}
         isLight
-        title={modalMode === ModalModeEnum.Proposal ? "New Proposal" : "Add ETH"}
+        title={modalTitle}
       >
-        {modalMode === ModalModeEnum.Proposal ? (
-          <ProposalForm 
-            onSubmit={onProposalSubmit} 
-            loading={createProposalState === StateEnum.Loading} 
-          />
-        ) : (
-          <EthForm 
-            onSubmit={onEthSubmit} 
-            loading={donateState === StateEnum.Loading} 
-          />
-        )}
+        {modalContent}
       </Modal>
       <Root>
         {/* ортобразится только при ширине экрана меньше 420px */}
@@ -147,6 +180,7 @@ const CrowdPage: FC = observer(() => {
           onVoteFor={voteFor}
           proposalsLoading={proposalState === StateEnum.Loading}
           daoLoading={daoState === StateEnum.Loading}
+          nftId={originalDao?.l1_vault}
         />
       </Root>
     </Layout>

@@ -108,13 +108,7 @@ class DaoStore {
 
       const { address } = chainStore
 
-      let data = await getOrder(dao.buyout_target, false);
-
-      if (!data) {
-        data = await getOrder(dao.buyout_target, false, true);
-      }
-
-      const { bestSellOrder, meta } = data;
+      let { bestSellOrder, meta } = await getOrder(dao.buyout_target, false);
 
       const imageMeta: IImageMeta = meta.image.meta.ORIGINAL || meta.image.meta.PREVIEW;
 
@@ -124,7 +118,7 @@ class DaoStore {
       let tokenTicker = '';
 
       if (withToken) tokenTicker = await l1Dao.methods.getTokenTicker().call();
-      console.log(tokenTicker, 'ticker');
+
       return {
         ceramic_stream: dao.ceramic_stream,
         partyName: meta.name,

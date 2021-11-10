@@ -132,11 +132,11 @@ const Price = styled.p`
 const Preview = styled.img`
   position: absolute;
   top: 80px;
-  right: 48px;
+  left: 50%;
   height: 304px;
-  width: 304px;
   border-radius: 40px;
   z-index: 100;
+  transform: translate(-50%, 0);
 `;
 
 const PreviewLoader = styled.div`
@@ -262,7 +262,7 @@ const NftPreview = ({
             <NftName>{nftName}</NftName>
             <Icons>
               <ShareIcon src={share} alt="share" />
-              <RaribleButton href={`https://rarible.com/token/${nftId}`} />
+              <RaribleButton tokenId={nftId} />
             </Icons>
           </NftBlock>
           <UserBadge className={badge} name={userName} />

@@ -59,6 +59,22 @@ const buttonContainer = css`
   margin-bottom: 18px;
 `;
 
+const smallButton = css`
+  width: 144px;
+  height: 28px;
+  font-family: Inter;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 12px;
+`;
+
+const smallButtonContainer = css`
+  flex-shrink: 0;
+  height: 32px;
+  width: 148px;
+  margin-bottom: 18px;
+`;
+
 const userText = css`
   font-size: 10px;
   line-height: 20px;
@@ -202,6 +218,7 @@ interface Props {
   participants: IDeposits[];
   myPaid?: IDeposits;
   onAddClick: () => void;
+  onWithdrawClick: () => void;
 }
 
 const CrowdBlock = ({ 
@@ -213,6 +230,7 @@ const CrowdBlock = ({
   participants,
   myPaid,
   onAddClick,
+  onWithdrawClick,
 }: Props): ReactElement => {
   return (
     <Card className={card}>
@@ -242,7 +260,14 @@ const CrowdBlock = ({
         mainClassName={percentRow}
         precentClassName={percent}
       />
-      <Button className={button} containerClassName={buttonContainer} active onClick={onAddClick}>+ Add funds</Button>
+      {participants?.length ? (
+        <Row>
+          <Button className={smallButton} containerClassName={smallButtonContainer} active onClick={onAddClick}>+ Add</Button>
+          <Button className={smallButton} containerClassName={smallButtonContainer} active onClick={onWithdrawClick}>- Witdraw</Button>
+        </Row>
+      ) : (
+        <Button className={button} containerClassName={buttonContainer} active onClick={onAddClick}>+ Add funds</Button>
+      )}
       <Funds>Your funds: {myPaid?.total_deposit || 0} ETH</Funds>
       <Hr />
       {participants?.length > 0 && <UserTitle>User party name</UserTitle>}

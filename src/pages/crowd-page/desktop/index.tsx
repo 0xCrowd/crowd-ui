@@ -14,6 +14,7 @@ import { css } from "@linaria/core";
 import { media } from "@app/assets/styles/constants";
 
 import rarible from "@assets/images/rarible.svg";
+import RaribleButton from "@app/components/rarible-button";
 
 const MainBlock = styled.div`
   display: flex;
@@ -53,7 +54,7 @@ interface PreviewProps {
 
 const Preview = styled.img<PreviewProps>`
   height: ${({ height }) => `${height}px`};
-  width: ${({ width }) => `${width}px`};
+  width: auto;
   margin-bottom: 18px;
   border-radius: 10px;
   margin: auto;
@@ -99,6 +100,7 @@ interface Props {
   daoLoading: boolean;
   proposalsList: IAdaptedProposal[];
   proposalsLoading: boolean;
+  nftId: string
   onVoteFor: (ceramicStream: string) => void;
   onOpenModal: (mode: ModalModeEnum) => void;
 }
@@ -108,6 +110,7 @@ const DesktopPage = ({
   daoLoading,
   proposalsList,
   proposalsLoading,
+  nftId,
   onVoteFor,
   onOpenModal,
 }: Props): ReactElement => {
@@ -134,9 +137,8 @@ const DesktopPage = ({
         <NftBlock>
           <UserRow>
             <UserName>{adaptedDao?.partyName}</UserName>
-            <img src={rarible} alt="rarible" />
+            <RaribleButton tokenId={nftId}/>
           </UserRow>
-          <UserBadge name="user" className={badge} textClassName={badgeText} />
           <Preview 
             height={adaptedDao?.imageMeta.height} 
             width={adaptedDao?.imageMeta.width} 
@@ -161,6 +163,7 @@ const DesktopPage = ({
           participants={adaptedDao?.users}
           myPaid={adaptedDao?.myPaid}
           onAddClick={() => onOpenModal(ModalModeEnum.Eth)}
+          onWithdrawClick={() => onOpenModal(ModalModeEnum.Withdraw)}
         />
       </MainBlock>
       <Proposals

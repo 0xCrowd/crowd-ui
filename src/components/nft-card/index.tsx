@@ -59,6 +59,7 @@ const PreviewLoading = styled.div`
 `;
 
 const Preview = styled.div`
+  position: absolute;
   width: 100%;
   height: 100%;
   background: linear-gradient(
@@ -228,7 +229,6 @@ const NftCard = ({
   return (
     <Root className={className}>
       <PreviewContainer>
-        <PreviewImg src={image} alt="img" ref={imgEl} />
         {!loaded && (
           <PreviewLoading>
             <Loader
@@ -243,6 +243,7 @@ const NftCard = ({
         <Preview>
           <Name>{title}</Name>
         </Preview>
+        <PreviewImg src={image} alt="img" ref={imgEl} />
       </PreviewContainer>
       <InfoBlockWrapper>
         <InfoBlock backgroundUrl={glass}>
