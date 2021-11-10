@@ -47,13 +47,9 @@ const UserName = styled.div`
   color: #fff;
 `;
 
-interface PreviewProps {
-  height: number;
-  width: number;
-}
 
-const Preview = styled.img<PreviewProps>`
-  height: ${({ height }) => `${height}px`};
+const Preview = styled.img`
+  height: 440px;
   width: auto;
   margin-bottom: 18px;
   border-radius: 10px;
@@ -67,15 +63,6 @@ const Loading = styled.div`
   align-items: center;
   height: 100vh;
   width: 100%;
-`;
-
-const badge = css`
-  margin-bottom: 12px;
-`;
-
-const badgeText = css`
-  color: #fff;
-  font-weight: 700;
 `;
 
 const button = css`

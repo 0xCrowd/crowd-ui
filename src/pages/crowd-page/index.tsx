@@ -59,6 +59,7 @@ const CrowdPage: FC = observer(() => {
     donate,
     createProposal,
     voteFor,
+    getDelta,
     adaptedDao,
     daoState,
     donateState,
@@ -79,6 +80,7 @@ const CrowdPage: FC = observer(() => {
   useEffect(() => {
     loadWeb3();
     loadBlockChain();
+    getDelta();
   }, []);
 
   useEffect(() => {
