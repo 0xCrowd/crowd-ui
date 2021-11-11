@@ -13,7 +13,7 @@ import DAO from "../../../ABI/Vault.json";
 
 // const POTTERY_ENDPOINT = "https://7f76-2a00-1370-8137-a39b-70-9b54-ed0d-accd.ngrok.io"
 
-const { getOrder } = raribleStore;
+const { getOrder, getPrice } = raribleStore;
 
 class DaoStore {
   constructor() {
@@ -100,7 +100,7 @@ class DaoStore {
   }
 
   // Get every DAO from the registry with the ceramic_client
-  getDaoInfo = async (dao: IDao, withToken?: boolean): Promise<IAdaptedDao> => {
+  getDaoInfo = async (dao: IDao, withToken = false): Promise<IAdaptedDao> => {
     try {
       // @ts-ignore
       const l1Dao = new window.web3.eth.Contract(DAO.abi, dao.l1_vault);
@@ -110,7 +110,9 @@ class DaoStore {
 
       const { address } = chainStore
 
-      let { bestSellOrder, meta } = await getOrder(dao.buyout_target, false);
+      const { meta, bestSellOrder } = await getOrder(dao.buyout_target, false);
+      const [contract, id] = dao.buyout_target.split(':');
+      const price = await getPrice(contract, id);
 
       let tokenTicker = '';
 
@@ -121,7 +123,7 @@ class DaoStore {
         partyName: meta.name,
         description: meta.description,
         image: getImageUrl(meta.image.url.ORIGINAL || meta.image.url.PREVIEW),
-        price: bestSellOrder.take.valueDecimal,
+        price: price + this.delta,
         collected,
         users: dao.deposits,
         percentage: Math.ceil((collected / bestSellOrder.take.valueDecimal) * 100),
@@ -129,8 +131,7 @@ class DaoStore {
         imageMeta: meta.image.meta.ORIGINAL || meta.image.meta.PREVIEW,
         tokenTicker,
       };
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
       throw error;
     }
   };
