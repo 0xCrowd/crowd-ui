@@ -82,7 +82,7 @@ const tabs = css`
 //#endregion
 
 const MainPage: FC = observer(() => {
-  const { order, orderState, getOrder, clearOrder } = raribleStore;
+  const { order, orderState, price, getOrder, clearOrder, getPrice } = raribleStore;
   const { 
     loadWeb3, 
     loadBlockChain,
@@ -147,6 +147,7 @@ const MainPage: FC = observer(() => {
     }
 
     getOrder(id);
+    getPrice(address, nftId);
   };
 
   const onCreate = async () => {
@@ -182,7 +183,7 @@ const MainPage: FC = observer(() => {
         ) : (
           <NftPreview
             loading={createDaoState === StateEnum.Loading}
-            price={order.bestSellOrder?.take.valueDecimal + delta}
+            price={price || 0 + delta}
             nftName={order.meta.name}
             partyName="Crowd party"
             userName={order.owners[0]}

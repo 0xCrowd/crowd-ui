@@ -18,7 +18,6 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  height: 598px;
 `;
 
 interface BackgroundProps {
@@ -195,7 +194,7 @@ const Icons = styled.div`
 `;
 
 const scroll = css`
-  height: 650px!important;
+  min-height: 650px !important;
 `;
 //#endregion
 
