@@ -85,8 +85,10 @@ interface Props {
   daoLoading: boolean;
   proposalsList: IAdaptedProposal[];
   proposalsLoading: boolean;
-  nftId: string
-  onVoteFor: (ceramicStream: string) => void;
+  nftId: string;
+  isSelled: boolean;
+  isBuyout: boolean;
+  makeVote: (proposalStream: string, option: number, amount: string) => void;
   onOpenModal: (mode: ModalModeEnum) => void;
 }
 
@@ -96,7 +98,9 @@ const DesktopPage = ({
   proposalsList,
   proposalsLoading,
   nftId,
-  onVoteFor,
+  isSelled,
+  isBuyout,
+  makeVote,
   onOpenModal,
 }: Props): ReactElement => {
   if (daoLoading) {
@@ -150,10 +154,12 @@ const DesktopPage = ({
           myPaid={adaptedDao?.myPaid}
           onAddClick={() => onOpenModal(ModalModeEnum.Eth)}
           onWithdrawClick={() => onOpenModal(ModalModeEnum.Withdraw)}
+          isBuyout={isBuyout}
+          isSelled={isSelled}
         />
       </MainBlock>
       {proposalsList.length && proposalsList[0].fulfilled && <Proposals
-        onVoteFor={onVoteFor}
+        makeVote={makeVote}
         proposals={proposalsList}
         className={proposalVisible}
         loading={proposalsLoading}

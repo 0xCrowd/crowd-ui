@@ -1,18 +1,19 @@
-import React, { ReactElement } from 'react';
-import Scrollbars from 'react-custom-scrollbars';
+import React, { ReactElement } from "react";
+import Scrollbars from "react-custom-scrollbars";
+import Loader from "react-loader-spinner";
 
-import Card from '@app/components/card';
-import Title from '@components/title';
-import Percentage from '@app/components/percentage';
-import UserBadge from '@app/components/user-badge';
-import Button from '@app/components/button';
+import Card from "@app/components/card";
+import Title from "@components/title";
+import Percentage from "@app/components/percentage";
+import UserBadge from "@app/components/user-badge";
+import Button from "@app/components/button";
 
 //#region styles
-import { styled } from '@linaria/react';
-import { css } from '@linaria/core';
-import { mb4 } from '@assets/styles/constants';
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
+import { mb4 } from "@assets/styles/constants";
 
-import eth from '@assets/images/eth_gr.png';
+import eth from "@assets/images/eth_gr.png";
 
 const title = css`
   height: 18px;
@@ -78,7 +79,7 @@ const smallButtonContainer = css`
 const userText = css`
   font-size: 10px;
   line-height: 20px;
-  color: #C5C5C5;
+  color: #c5c5c5;
 `;
 
 const scroller = css`
@@ -97,7 +98,7 @@ const Badge = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #E8EEFF;
+  background: #e8eeff;
   border-radius: 15px;
   font-family: Inter;
   font-size: 8px;
@@ -114,7 +115,7 @@ const Description = styled.p`
   font-weight: 500;
   font-size: 10px;
   line-height: 14px;
-  color: #C5C5C5;
+  color: #c5c5c5;
   overflow: hidden; /* Обрезаем все, что не помещается в область */
   text-overflow: ellipsis; /* Добавляем многоточие */
 `;
@@ -144,7 +145,7 @@ const Current = styled.p`
   font-size: 18px;
   line-height: 18px;
   letter-spacing: 0.25px;
-  color: #FFFFFF;
+  color: #ffffff;
 `;
 
 const Price = styled.p`
@@ -205,7 +206,14 @@ const Hr = styled.div`
   width: 100%;
   height: 0.5px;
   margin-bottom: 14px;
-  background: linear-gradient(97.56deg, #00F0FF 8.07%, #FF1CF7 91.93%);
+  background: linear-gradient(97.56deg, #00f0ff 8.07%, #ff1cf7 91.93%);
+`;
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 `;
 //#endregion
 
@@ -217,11 +225,13 @@ interface Props {
   collected: number;
   participants: IDeposits[];
   myPaid?: IDeposits;
+  isSelled: boolean;
+  isBuyout: boolean;
   onAddClick: () => void;
   onWithdrawClick: () => void;
 }
 
-const CrowdBlock = ({ 
+const CrowdBlock = ({
   partyName,
   description,
   price,
@@ -229,6 +239,8 @@ const CrowdBlock = ({
   collected,
   participants,
   myPaid,
+  isSelled,
+  isBuyout,
   onAddClick,
   onWithdrawClick,
 }: Props): ReactElement => {
@@ -246,44 +258,95 @@ const CrowdBlock = ({
           <Price>ETH {price}</Price>
         </PriceInfo>
       </PriceBlock>
-      <Row>
-        <CollectedText>Collected</CollectedText>
-        <CollectedText>Participants</CollectedText>
-      </Row>
-      <Row>
-        <CollectedValue>{parseInt(`${collected}`)}%</CollectedValue>
-        <CollectedValue>{participants?.length}</CollectedValue>
-      </Row>
-      <Percentage 
-        number={collected} 
-        className={percentage}
-        mainClassName={percentRow}
-        precentClassName={percent}
-      />
-      {participants?.length ? (
-        <Row>
-          <Button className={smallButton} containerClassName={smallButtonContainer} active onClick={onAddClick}>+ Add</Button>
-          <Button className={smallButton} containerClassName={smallButtonContainer} active onClick={onWithdrawClick}>- Withdraw</Button>
-        </Row>
+      {isBuyout && collected >= 100 ? (
+        <>
+          <Row>
+            <CollectedText>Collected</CollectedText>
+            <CollectedText>Participants</CollectedText>
+          </Row>
+          <Row>
+            <CollectedValue>{parseInt(`${collected}`)}%</CollectedValue>
+            <CollectedValue>{participants?.length}</CollectedValue>
+          </Row>
+          <Percentage
+            number={collected}
+            className={percentage}
+            mainClassName={percentRow}
+            precentClassName={percent}
+          />
+        </>
       ) : (
-        <Button className={button} containerClassName={buttonContainer} active onClick={onAddClick}>+ Add funds</Button>
+        <LoaderContainer>
+          <Loader
+            type="Puff"
+            color="#6200E8"
+            height={20}
+            width={20}
+            timeout={3000}
+          />
+        </LoaderContainer>
       )}
+      {isSelled && myPaid && (
+        <Button
+          className={button}
+          containerClassName={buttonContainer}
+          active
+          onClick={() => {}}
+        >
+          - Withdraw
+        </Button>
+      )}
+      {!isSelled &&
+        !isBuyout &&
+        collected < 100 &&
+        (myPaid ? (
+          <Row>
+            <Button
+              className={smallButton}
+              containerClassName={smallButtonContainer}
+              active
+              onClick={onAddClick}
+            >
+              + Add
+            </Button>
+            <Button
+              className={smallButton}
+              containerClassName={smallButtonContainer}
+              active
+              onClick={onWithdrawClick}
+            >
+              - Withdraw
+            </Button>
+          </Row>
+        ) : (
+          <Button
+            className={button}
+            containerClassName={buttonContainer}
+            active
+            onClick={onAddClick}
+          >
+            + Add funds
+          </Button>
+        ))}
       <Funds>Your funds: {myPaid?.total_deposit || 0} ETH</Funds>
       <Hr />
       {participants?.length > 0 && <UserTitle>User party name</UserTitle>}
       <Scrollbars className={scroller}>
-        {participants?.length > 0 && participants.map(({ address, total_deposit }) => {
-          return <UserBadge 
-            key={address} 
-            number={total_deposit} 
-            name={address} 
-            className={mb4} 
-            textClassName={userText}
-          />
-        })}
+        {participants?.length > 0 &&
+          participants.map(({ address, total_deposit }) => {
+            return (
+              <UserBadge
+                key={address}
+                number={total_deposit}
+                name={address}
+                className={mb4}
+                textClassName={userText}
+              />
+            );
+          })}
       </Scrollbars>
     </Card>
-  )
-}
+  );
+};
 
-export default CrowdBlock
+export default CrowdBlock;

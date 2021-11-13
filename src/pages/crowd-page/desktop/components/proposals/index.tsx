@@ -60,12 +60,12 @@ const SKELETON_ROWS = [
 
 interface Props {
   proposals: IAdaptedProposal[];
-  onVoteFor: (ceramicStream: string) => void;
+  makeVote: (proposalStream: string, option: number, amount: string) => void;
   loading: boolean;
   className?: string;
 }
 
-const Proposals = ({ proposals, onVoteFor, loading, className }: Props): ReactElement => {
+const Proposals = ({ proposals, makeVote, loading, className }: Props): ReactElement => {
   if (loading) {
     return (
       <Root className={className}>
@@ -96,13 +96,14 @@ const Proposals = ({ proposals, onVoteFor, loading, className }: Props): ReactEl
           <Proposal title={title} description={description} type={type} />
           <VoteBlock
             ceramicStream={ceramic_stream}
-            forVote={voteFor} 
+            voteFor={voteFor} 
             againstVote={voteAgainst} 
             status={status}
             voteAgainstPercent={voteAgainstPercent}
             voteForPercent={voteForPercent}
-            tokenName={tokenName}
-            onVoteFor={() => onVoteFor(ceramic_stream)}
+            tokenTicker={tokenName}
+            onVoteFor={() => makeVote(ceramic_stream, 0, '0')}
+            onVoteAgainst ={() => makeVote(ceramic_stream, 1, '0')}
           />
         </Row>
       ))}
