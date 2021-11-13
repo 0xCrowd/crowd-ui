@@ -1,27 +1,17 @@
-import { validateUrl } from '@app/utils/validateUrl';
-
 export interface IProposalFormData {
-  header: string;
-  description: string;
+  price: string;
 }
 
 export const initialValues: IProposalFormData = {
-  header: '',
-  description: '',
+  price: '',
 };
 
 export const validate = (values: IProposalFormData): ErrorType => {
   const errors: ErrorType = {};
-  if (!values.header) {
-    errors.header = 'Required field';
-  } else if (values.header.length > 30) {
-    errors.header = 'Не больше 10 символов';
-  }
-
-  if (!values.description) {
-    errors.description = 'Required field';
-  } else if (values.description.length > 100) {
-    errors.description = 'Не больше 10 символов';
+  
+  const rx = /^\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?$/;
+  if (!rx.test(values.price)) {
+    errors.price = 'Input correct number';
   }
 
   return errors;

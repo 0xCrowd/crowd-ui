@@ -185,7 +185,9 @@ const MainPage: FC = observer(() => {
             userName={order.owners[0]}
             description={order.meta.description}
             image={getImageUrl(
-              order.meta.image.url.ORIGINAL || order.meta.image.url.PREVIEW
+              order.meta.image ?
+                order.meta.image.url.ORIGINAL || order.meta.image.url.PREVIEW :
+                order.meta.animation.ORIGINAL
             )}
             nftId={order.id}
             onSubmit={onCreate}

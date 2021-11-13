@@ -40,21 +40,12 @@ const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
     <form onSubmit={handleSubmit} id="proposal">
       <Input
         className={mb12}
-        label="Header"
-        id="header"
-        placeholder="Crowd Protocol"
-        value={values.header}
+        label="Sell Price"
+        id="price"
+        placeholder="ETH 1000"
+        value={values.price}
         onChange={handleChange}
-        error={touched.header && errors.header || ''}
-      />
-      <Input
-        className={mb12}
-        label="Description"
-        id="description"
-        placeholder="description"
-        value={values.description}
-        onChange={handleChange}
-        error={touched.description && errors.description || ''}
+        error={touched.price && errors.price || ''}
       />
       <Button
         containerClassName={buttonContainer}

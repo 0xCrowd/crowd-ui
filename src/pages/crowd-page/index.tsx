@@ -20,6 +20,7 @@ import { IEthFormData } from './components/eth-form/constants';
 //#region styles
 import { styled } from '@linaria/react';
 import { media } from "@app/assets/styles/constants";
+import { ProposalTypeEnum } from '../../enums/proposalTypeEnum/index';
 
 const Root = styled.div`
   display: flex;
@@ -57,7 +58,7 @@ const CrowdPage: FC = observer(() => {
     getProposals,
     donate,
     createProposal,
-    voteFor,
+    makeVote,
     getDelta,
     adaptedDao,
     daoState,
@@ -120,12 +121,13 @@ const CrowdPage: FC = observer(() => {
 
   const onProposalSubmit = async (data: IProposalFormData) => {
     try {
-      const { header, description } = data;
+      const { price } = data;
 
       setProposalFormData(data);
-      await createProposal(adaptedDao.ceramic_stream, header, description)
+      await createProposal(adaptedDao.ceramic_stream, price);
       onCloseModal();
       setProposalFormData(null);
+      getProposals(ceramicStream);
     } catch (error) {}
   };
 
@@ -148,7 +150,6 @@ const CrowdPage: FC = observer(() => {
             loading={donateState === StateEnum.Loading} 
           />
         );
-        break;
       
       case ModalModeEnum.Proposal:
         return (
@@ -157,7 +158,6 @@ const CrowdPage: FC = observer(() => {
             loading={createProposalState === StateEnum.Loading} 
           />
         );
-        break;
       
       case ModalModeEnum.Withdraw:
         return (
@@ -170,8 +170,24 @@ const CrowdPage: FC = observer(() => {
           />
         )
     }
-  }
+  };
 
+  const checkIsSell = (): boolean => {
+    if (proposalsList.length) {
+      const sellProposal = proposalsList.find(elem => elem.type === ProposalTypeEnum.Sell);
+      if (sellProposal && sellProposal.fulfilled) {
+        return true
+      }
+      return false;
+    }
+    return false;
+  };
+
+  const checkIsBuyout = () => {
+    if (proposalsList.length && proposalsList[0].fulfilled) return true;
+    return false;
+  }
+  console.log(proposalsList, 'list')
   return (
     <Layout balance={balance} blockChainState={blockChainState}>
       <Modal
@@ -190,10 +206,12 @@ const CrowdPage: FC = observer(() => {
           adaptedDao={adaptedDao}
           proposalsList={proposalsList}
           onOpenModal={onOpenModal}
-          onVoteFor={voteFor}
+          makeVote={makeVote}
           proposalsLoading={proposalState === StateEnum.Loading}
           daoLoading={daoState === StateEnum.Loading}
           nftId={originalDao?.buyout_target}
+          isBuyout={checkIsBuyout()}
+          isSelled={checkIsSell()}
         />
       </Root>
     </Layout>

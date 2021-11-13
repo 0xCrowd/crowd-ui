@@ -5,13 +5,13 @@ import chainStore from '@stores/chainStore';
 import raribleStore from "@stores/raribleStore";
 
 import { StateEnum } from '@enums/state-enum/index';
-import { ProposalStatusEnum } from '@enums/proposal-status-enum/index';
+import { ProposalTypeEnum } from "@app/enums/proposalTypeEnum";
 import { IPartyFormData } from '@pages/main-page/components/party-form/constants';
 import { getImageUrl } from "@app/utils/getImageUrl";
 import { notify } from '@app/utils/notify';
 
 import DAO from "../../../ABI/Vault.json";
-
+import DAOToken from "../../../ABI/Token.json";
 
 // const POTTERY_ENDPOINT = "https://7f76-2a00-1370-8137-a39b-70-9b54-ed0d-accd.ngrok.io"
 
@@ -41,6 +41,10 @@ class DaoStore {
   proposalsList: IAdaptedProposal[] = [];
 
   delta = 0;
+
+  balanceOfDaoToken = 0;
+
+  voteState: StateEnum = StateEnum.Empty;
 
   getDaosList = async (address?: string) => {
     try {
@@ -112,7 +116,7 @@ class DaoStore {
 
       const { address } = chainStore
 
-      const { meta, bestSellOrder } = await getOrder(dao.buyout_target, false);
+      const { meta } = await getOrder(dao.buyout_target, false);
       const [contract, id] = dao.buyout_target.split(':');
       const price = await getPrice(contract, id);
 
@@ -126,14 +130,15 @@ class DaoStore {
         ceramic_stream: dao.ceramic_stream,
         partyName: meta.name,
         description: meta.description,
-        image: getImageUrl(meta.image.url.ORIGINAL || meta.image.url.PREVIEW),
+        image: getImageUrl(meta.image ? meta.image.url.ORIGINAL || meta.image.url.PREVIEW : meta.animation.meta.ORIGINAL),
         price: priceWithDelta,
         collected,
         users: dao.deposits,
         percentage: Math.ceil((collected / priceWithDelta) * 100),
         myPaid: dao.deposits.find(elem => elem.address === address),
-        imageMeta: meta.image.meta.ORIGINAL || meta.image.meta.PREVIEW,
+        imageMeta: meta.image ? meta.image.meta.ORIGINAL || meta.image.meta.PREVIEW : meta.animation.meta.ORIGINAL,
         tokenTicker,
+        isBuyied: await this.isBuyied(dao.ceramic_stream),
       };
     } catch (error: any) {
       throw error;
@@ -218,6 +223,22 @@ class DaoStore {
     }
   };
 
+  isBuyied = async (daoStream: string) => {
+    try {
+      const response = await axios.get(`${localStorage.getItem('test')}/proposals`, {
+        params: {
+          dao_stream: daoStream,
+          offset: 0,
+          limit: 1,
+        }
+      });
+  
+      return response.data.items[0].fulfilled 
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   getProposals = async (daoStream: string) => {
     try {
       runInAction(() => {
@@ -248,27 +269,31 @@ class DaoStore {
   };
 
   adaptProposal = (proposal: IProposal): IAdaptedProposal => {
-    let voteForPercent = 100;
-    let voteAgainstPercent = 0;
-
-    if (proposal.status !== ProposalStatusEnum.Success) {
-      const item = localStorage.getItem('for');
-      if (item) {
-        voteForPercent = +item;
-        voteAgainstPercent = 100 - voteForPercent;
-      } else {
-        voteForPercent = 50;
-        voteAgainstPercent = 50;
-      }
+    this.getVotesData(proposal.ceramic_stream);
+    let voteForPercent = 0;
+    if (proposal.type === ProposalTypeEnum.Buyout) {
+      voteForPercent = 100;
     }
-
     return {
       ...proposal,
-      voteFor: this.adaptedDao.users.length,
-      voteAgainst: this.adaptedDao.users.length,
+      voteFor: 0,
+      voteAgainst: 0,
       voteForPercent,
-      voteAgainstPercent,
+      voteAgainstPercent: 0,
     };
+  };
+
+  getVotesData = async (proposalStream: string) => {
+    try {
+      const response = await axios.get(`${localStorage.getItem('test')}/votes`, {
+        params: {
+          proposal_stream: proposalStream,
+        },
+      });
+      console.log(response, 'vote data');
+    } catch (error: any) {
+      notify(error.message);
+    }
   };
 
   loadMoreProposals = async (daoStream: string) => {
@@ -281,7 +306,7 @@ class DaoStore {
     }
   };
 
-  createProposal = async (daoStream: string, title: string, description: string) => {
+  createProposal = async (daoStream: string, price: string) => {
     try {
       runInAction(() => {
         this.createProposalState = StateEnum.Loading;
@@ -289,11 +314,9 @@ class DaoStore {
 
       await axios.post(`${localStorage.getItem('test')}/proposal`, {
         dao_stream: daoStream,
-        title,
-        description,
+        asset: this.originalDao.buyout_target,
+        price: window.web3.utils.toWei(price, 'ether'),
       });
-
-      this.getProposals(daoStream);
 
       runInAction(() => {
         this.createProposalState = StateEnum.Success;        
@@ -304,18 +327,29 @@ class DaoStore {
     }
   };
 
-  voteFor = (ceramicStream: string) => {
-    const proposalIndex = this.proposalsList.findIndex(elem => elem.ceramic_stream === ceramicStream);
-    const editedProposals = [...this.proposalsList];
+  makeVote = async (proposalStream: string, option: number, amount: string) => {
+    try {
+      runInAction(() => {
+        this.voteState = StateEnum.Loading;
+      });
 
-    if (proposalIndex !== undefined) {
-      editedProposals[proposalIndex].voteForPercent += 25;
-      editedProposals[proposalIndex].voteAgainstPercent -= 25;
+      const { address } = chainStore;
+      await axios.post(`${localStorage.getItem('test')}/vote`, {
+        address,
+        proposal_stream: proposalStream,
+        option,
+        amount: window.web3.utils.toWei(amount, 'ether')
+      });
 
-      localStorage.setItem('for', `${editedProposals[proposalIndex].voteForPercent}`);
+      runInAction(() => {
+        this.voteState = StateEnum.Success;
+      });
+    } catch (error: any) {
+      runInAction(() => {
+        notify(error.message);
+        this.voteState = StateEnum.Error;
+      });
     }
-
-    this.proposalsList = editedProposals;
   };
 
   getDelta = async () => {
@@ -330,6 +364,14 @@ class DaoStore {
     }
   };
 
+  withdraw = async () => {
+    try {
+      // @ts-ignore
+      const l1Dao = new window.web3.eth.Contract(DAO.abi, this.originalDao.l1_vault);
+    } catch (error: any) {
+      notify(error.message);
+    }
+  }
 }
 
 export default new DaoStore();

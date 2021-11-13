@@ -100,25 +100,26 @@ const percent = css`
 //#endregion
 
 interface Props {
-  forVote: number;
+  voteFor: number;
   againstVote: number;
   voteAgainstPercent: number;
   voteForPercent: number;
-  tokenName?: string;
+  tokenTicker?: string;
   status: ProposalStatusEnum;
   ceramicStream: string;
   onVoteFor: () => void;
+  onVoteAgainst: () => void;
 }
 
 const VoteBlock = ({ 
-  forVote,
+  voteFor,
   againstVote,
   voteForPercent,
   voteAgainstPercent,
   status,
-  tokenName,
-  ceramicStream,
+  tokenTicker,
   onVoteFor,
+  onVoteAgainst,
 }: Props): ReactElement => {
   return (
     <Card className={card}>
@@ -140,7 +141,7 @@ const VoteBlock = ({
           active
           onClick={onVoteFor}
         >Vote For</Button>
-        <Button className={button} containerClassName={buttonContainer}>Vote Against</Button>
+        <Button className={button} containerClassName={buttonContainer} onClick={onVoteAgainst}>Vote Against</Button>
       </ButtonRow>}
     </Card>
   );

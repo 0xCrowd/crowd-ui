@@ -2,8 +2,6 @@ import React, { ReactElement } from 'react';
 
 import Card from '@components/card';
 import Title from '@components/title';
-import Percentage from '@components/percentage';
-import Button from '@components/button';
 
 //#region styles
 import { styled } from '@linaria/react';

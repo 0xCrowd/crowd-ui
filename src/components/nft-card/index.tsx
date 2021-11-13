@@ -196,6 +196,7 @@ interface Props {
   image?: string;
   participants: number;
   className?: string;
+  isByed?: boolean;
 }
 
 const NftCard = ({
@@ -205,6 +206,7 @@ const NftCard = ({
   price,
   percentage = 0,
   participants = 0,
+  isByed,
   className,
 }: Props): ReactElement => {
   const { push } = useHistory();
@@ -247,17 +249,20 @@ const NftCard = ({
       </PreviewContainer>
       <InfoBlockWrapper>
         <InfoBlock backgroundUrl={glass}>
-          <CollectedBlock>
-            <CollectedRow>
-              <CollectedText>Collected</CollectedText>
-              <CollectedText>Participants</CollectedText>
-            </CollectedRow>
-            <CollectedRow>
-              <CollectedValue>{rounded > 100 ? 100 : rounded}%</CollectedValue>
-              <CollectedValue>{participants}</CollectedValue>
-            </CollectedRow>
-          </CollectedBlock>
-          <Percentage number={percentage} className={mb12} />
+          {!isByed && 
+          <>
+            <CollectedBlock>
+              <CollectedRow>
+                <CollectedText>Collected</CollectedText>
+                <CollectedText>Participants</CollectedText>
+              </CollectedRow>
+              <CollectedRow>
+                <CollectedValue>{rounded > 100 ? 100 : rounded}%</CollectedValue>
+                <CollectedValue>{participants}</CollectedValue>
+              </CollectedRow>
+            </CollectedBlock>
+            <Percentage number={percentage} className={mb12} />
+          </>}
           <Footer>
             <PriceBlock>
               <PriceTitle>CURRENT PRICE</PriceTitle>
