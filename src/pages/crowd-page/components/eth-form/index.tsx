@@ -36,8 +36,6 @@ const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
     validate,
   });
 
-  console.log(loading, 'load');
-
   return (
     <form onSubmit={handleSubmit} id="eth">
       <Input
