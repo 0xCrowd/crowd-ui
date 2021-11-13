@@ -66,7 +66,6 @@ interface Props {
 }
 
 const Proposals = ({ proposals, onVoteFor, loading, className }: Props): ReactElement => {
-  console.log(loading);
   if (loading) {
     return (
       <Root className={className}>

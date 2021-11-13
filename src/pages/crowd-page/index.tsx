@@ -15,6 +15,7 @@ import daoStore from "@app/stores/daoStore";
 
 import { IProposalFormData } from './components/proposal-form/constants';
 import { StateEnum } from '@enums/state-enum/index';
+import { IEthFormData } from './components/eth-form/constants';
 
 //#region styles
 import { styled } from '@linaria/react';
@@ -32,9 +33,7 @@ const Root = styled.div`
 `;
 //#endregion
 
-export interface IEthFormData {
-  deposite: string;
-}
+
 
 export enum ModalModeEnum {
   Proposal = 'proposal',
@@ -74,7 +73,6 @@ const CrowdPage: FC = observer(() => {
   const [ethFormData, setEthFormData] = useState<IEthFormData | null>(null);
   const [modalMode, setModalMode] = useState(ModalModeEnum.Proposal);
   const [modalTitle, setModalTitle] = useState('');
-  const [modalContent, setModalContent] = useState<null | JSX.Element>(null);
   const [ceramicStream, setCeramicStream] = useState('');
 
   useEffect(() => {
@@ -103,41 +101,20 @@ const CrowdPage: FC = observer(() => {
 
     let title = ''
     let modalContent = null;
+
     switch (mode) {
       case ModalModeEnum.Eth:
         title = 'Add ETH';
-        modalContent = (
-          <EthForm 
-            onSubmit={onEthSubmit} 
-            loading={donateState === StateEnum.Loading} 
-          />
-        );
         break;
       
       case ModalModeEnum.Proposal:
         title = 'New Proposal';
-        modalContent = (
-          <ProposalForm 
-            onSubmit={onProposalSubmit} 
-            loading={createProposalState === StateEnum.Loading} 
-          />
-        );
         break;
       
       case ModalModeEnum.Withdraw:
         title = 'Withdraw Funds';
-        modalContent = (
-          <WithdrawForm 
-            onSubmit={() => {}}
-            loading={false}
-            onAmountButtonClick={(setValue) => {
-              setValue(adaptedDao?.myPaid?.total_deposit.toString() || '');
-            }}
-          />
-        )
     }
 
-    setModalContent(modalContent);
     setModalTitle(title);
   };
 
@@ -158,8 +135,42 @@ const CrowdPage: FC = observer(() => {
       await donate(address, adaptedDao.ceramic_stream, data.deposite, originalDao.l1_vault);
       onCloseModal();
       setEthFormData(null);
+      getDao(ceramicStream);
     } catch (error) {}
   };
+
+  const renderModalContent = (modalMode: ModalModeEnum) => {
+    switch (modalMode) {
+      case ModalModeEnum.Eth:
+        return (
+          <EthForm 
+            onSubmit={onEthSubmit} 
+            loading={donateState === StateEnum.Loading} 
+          />
+        );
+        break;
+      
+      case ModalModeEnum.Proposal:
+        return (
+          <ProposalForm 
+            onSubmit={onProposalSubmit} 
+            loading={createProposalState === StateEnum.Loading} 
+          />
+        );
+        break;
+      
+      case ModalModeEnum.Withdraw:
+        return (
+          <WithdrawForm 
+            onSubmit={() => {}}
+            loading={false}
+            onAmountButtonClick={(setValue) => {
+              setValue(adaptedDao?.myPaid?.total_deposit.toString() || '');
+            }}
+          />
+        )
+    }
+  }
 
   return (
     <Layout balance={balance} blockChainState={blockChainState}>
@@ -169,7 +180,7 @@ const CrowdPage: FC = observer(() => {
         isLight
         title={modalTitle}
       >
-        {modalContent}
+        {renderModalContent(modalMode)}
       </Modal>
       <Root>
         {/* ортобразится только при ширине экрана меньше 420px */}

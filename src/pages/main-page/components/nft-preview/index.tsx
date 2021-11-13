@@ -76,6 +76,7 @@ const DescriptionTitle = styled.p`
 `;
 
 const Description = styled.p`
+  max-height: 100px;
   margin: 0;
   margin-bottom: 22px;
   font-family: Inter;
@@ -83,6 +84,11 @@ const Description = styled.p`
   line-height: 18px;
   letter-spacing: 0.25px;
   color: #263238;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
 `;
 
 const Footer = styled.div`
@@ -237,8 +243,7 @@ const NftPreview = ({
   }, []);
 
   return (
-    <Scrollbars className={scroll}>
-      <Root>
+    <Root>
         <Header>Start a PARTY</Header>
         <Title className={title}>{partyName}</Title>
         <Preview src={image} alt="preview" ref={imgEl}/>
@@ -290,7 +295,6 @@ const NftPreview = ({
           </Footer>
         </Info>
       </Root>
-    </Scrollbars>
   );
 }
 

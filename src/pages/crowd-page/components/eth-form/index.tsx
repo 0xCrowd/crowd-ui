@@ -1,15 +1,15 @@
 import React, { ReactElement, useState } from 'react';
 import Loader from 'react-loader-spinner';
+import { useFormik } from 'formik';
 
 import Input from '@app/components/input';
 import Button from '@app/components/button';
 
-import { IEthFormData } from '@pages/crowd-page';
+import { IEthFormData, initialValues, validate } from './constants';
 
 //#region styles
 import { css } from '@linaria/core';
 import { mb12 } from '@assets/styles/constants';
-
 
 const buttonContainer = css`
   width: 100% !important;
@@ -27,12 +27,16 @@ interface Props {
 }
 
 const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
-  const [deposite, setDeposite] = useState('');
+  const { handleSubmit, handleChange, values, errors, touched } = useFormik({
+    initialValues,
+    onSubmit: values => {
+      values.deposite = values.deposite.replace(',', '.');
+      onSubmit(values);
+    },
+    validate,
+  });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onSubmit({ deposite });
-  };
+  console.log(loading, 'load');
 
   return (
     <form onSubmit={handleSubmit} id="eth">
@@ -41,8 +45,9 @@ const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
         label="Deposit"
         id="deposite"
         placeholder="ETH 100000"
-        value={deposite}
-        onChange={(e) => setDeposite(e.target.value)}
+        value={values.deposite}
+        onChange={handleChange}
+        error={(touched.deposite && errors.deposite) ? errors.deposite : ''}
       />
       <Button
         containerClassName={buttonContainer}
