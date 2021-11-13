@@ -263,7 +263,7 @@ const CrowdBlock = ({
       {participants?.length ? (
         <Row>
           <Button className={smallButton} containerClassName={smallButtonContainer} active onClick={onAddClick}>+ Add</Button>
-          <Button className={smallButton} containerClassName={smallButtonContainer} active onClick={onWithdrawClick}>- Witdraw</Button>
+          <Button className={smallButton} containerClassName={smallButtonContainer} active onClick={onWithdrawClick}>- Withdraw</Button>
         </Row>
       ) : (
         <Button className={button} containerClassName={buttonContainer} active onClick={onAddClick}>+ Add funds</Button>

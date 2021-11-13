@@ -1,4 +1,5 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 import Navbar from '@components/navbar/index';
 import ErrorComponent from '@components/error-component/index';
@@ -32,6 +33,18 @@ const Layout = ({ balance, blockChainState, children, className }: PropsWithChil
     <Root className={className}>
       <Navbar balance={balance} className={navbar} />
       {blockChainState === StateEnum.Error ? <ErrorComponent /> : children}
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </Root>
   )
 }

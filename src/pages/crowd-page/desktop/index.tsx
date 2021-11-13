@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import SkeletonLoader from "tiny-skeleton-loader-react";
 
-import UserBadge from "@app/components/user-badge";
+import RaribleButton from "@app/components/rarible-button";
 import Button from "@app/components/button";
 import CrowdBlock from "./components/crowd-block";
 import Proposals from "./components/proposals/index";
@@ -12,9 +12,6 @@ import { ModalModeEnum } from "../index";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import { media } from "@app/assets/styles/constants";
-
-import rarible from "@assets/images/rarible.svg";
-import RaribleButton from "@app/components/rarible-button";
 
 const MainBlock = styled.div`
   display: flex;
@@ -51,6 +48,7 @@ const UserName = styled.div`
 const Preview = styled.img`
   height: 440px;
   width: auto;
+  max-width: 800px;
   margin-bottom: 18px;
   border-radius: 10px;
   margin: auto;
@@ -137,7 +135,7 @@ const DesktopPage = ({
             className={button}
             containerClassName={buttonContainer}
             active
-            disabled={!proposalsList[0]?.fulfilled}
+            disabled={(proposalsList.length && !proposalsList[0].fulfilled ? true : false)}
           >
             New proposal
           </Button>
@@ -154,12 +152,12 @@ const DesktopPage = ({
           onWithdrawClick={() => onOpenModal(ModalModeEnum.Withdraw)}
         />
       </MainBlock>
-      <Proposals
+      {proposalsList.length && proposalsList[0].fulfilled && <Proposals
         onVoteFor={onVoteFor}
         proposals={proposalsList}
         className={proposalVisible}
         loading={proposalsLoading}
-      />
+      />}
     </>
   );
 };

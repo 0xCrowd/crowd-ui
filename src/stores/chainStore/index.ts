@@ -58,7 +58,7 @@ class ChainStore {
   
       const weiBalance = await web3.eth.getBalance(accounts[0]);
 
-      const balance = await web3.utils.fromWei(weiBalance, 'ether').split('.')[0];
+      const balance = await web3.utils.fromWei(weiBalance, 'ether').substr(0, 6);
 
       const networkId = await web3.eth.net.getId();
 

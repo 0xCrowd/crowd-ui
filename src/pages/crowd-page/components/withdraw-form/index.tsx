@@ -4,13 +4,12 @@ import Loader from 'react-loader-spinner';
 import Input from '@app/components/input';
 import Button from '@app/components/button';
 
-import { IEthFormData } from '@pages/crowd-page';
+import { IEthFormData } from '../eth-form/constants';
 
 //#region styles
 import { css } from '@linaria/core';
 import { styled } from '@linaria/react';
 import { mb12 } from '@assets/styles/constants';
-
 
 const buttonContainer = css`
   width: 100% !important;

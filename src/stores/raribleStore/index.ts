@@ -2,8 +2,10 @@ import { makeAutoObservable, runInAction } from "mobx";
 import axios from "axios";
 import { minBy } from 'lodash';
 
-import chainStore from '@stores/chainStore';
+import { notify } from '@app/utils/notify';
 import { StateEnum } from '@app/enums/state-enum/index';
+
+import chainStore from '@stores/chainStore';
 
 class RaribleStore {
   constructor() {
@@ -43,6 +45,7 @@ class RaribleStore {
         return response.data;
       }
     } catch (error: any) {
+      notify(error.message);
       this.orderState = StateEnum.Error;
     }
   };
@@ -67,7 +70,9 @@ class RaribleStore {
         this.price = min.makePrice;
       });
       return min.makePrice
-    } catch (error: any) {}
+    } catch (error: any) {
+      notify(error.message);
+    }
   };
 
   clearOrder = () => {

@@ -8,8 +8,10 @@ import { StateEnum } from '@enums/state-enum/index';
 import { ProposalStatusEnum } from '@enums/proposal-status-enum/index';
 import { IPartyFormData } from '@pages/main-page/components/party-form/constants';
 import { getImageUrl } from "@app/utils/getImageUrl";
+import { notify } from '@app/utils/notify';
 
 import DAO from "../../../ABI/Vault.json";
+
 
 // const POTTERY_ENDPOINT = "https://7f76-2a00-1370-8137-a39b-70-9b54-ed0d-accd.ngrok.io"
 
@@ -69,8 +71,8 @@ class DaoStore {
         this.totalDaos = response.data.total;
         this.daoState = StateEnum.Success;
       });
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      notify(error.message);
       this.daoState = StateEnum.Error;
     }
   };
@@ -93,8 +95,8 @@ class DaoStore {
         this.adaptedDao = adaptedDao;
         this.daoState = StateEnum.Success;
       });
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      notify(error.message);
       this.daoState = StateEnum.Error;
     }
   }
@@ -118,15 +120,17 @@ class DaoStore {
 
       if (withToken) tokenTicker = await l1Dao.methods.getTokenTicker().call();
 
+      const priceWithDelta = price + this.delta;
+
       return {
         ceramic_stream: dao.ceramic_stream,
         partyName: meta.name,
         description: meta.description,
         image: getImageUrl(meta.image.url.ORIGINAL || meta.image.url.PREVIEW),
-        price: price + this.delta,
+        price: priceWithDelta,
         collected,
         users: dao.deposits,
-        percentage: Math.ceil((collected / bestSellOrder.take.valueDecimal) * 100),
+        percentage: Math.ceil((collected / priceWithDelta) * 100),
         myPaid: dao.deposits.find(elem => elem.address === address),
         imageMeta: meta.image.meta.ORIGINAL || meta.image.meta.PREVIEW,
         tokenTicker,
@@ -141,7 +145,8 @@ class DaoStore {
       this.daosPage += 1;
 
       this.getDaosList(address);
-    } catch (error) {
+    } catch (error: any) {
+      notify(error.message);
       this.daoState = StateEnum.Error;
     }
   };
@@ -180,8 +185,8 @@ class DaoStore {
       });
 
       this.createDaoState = StateEnum.Success;
-    } catch (error) {
-      console.log(error, "err");
+    } catch (error: any) {
+      notify(error.message);
       this.createDaoState = StateEnum.Error;
     }
   };
@@ -204,12 +209,11 @@ class DaoStore {
         amount,
       });
 
-      this.getDao(daoStream);
-
       runInAction(() => {
         this.donateState = StateEnum.Success;
       });
-    } catch (error) {
+    } catch (error: any) {
+      notify(error.message);
       this.donateState = StateEnum.Error;
     }
   };
@@ -237,7 +241,8 @@ class DaoStore {
         this.proposalState = StateEnum.Success;
       })
       
-    } catch (error) {
+    } catch (error: any) {
+      notify(error.message);
       this.proposalState = StateEnum.Error
     }
   };
@@ -271,7 +276,9 @@ class DaoStore {
       this.proposalPage += 1;
 
       this.getProposals(daoStream);
-    } catch (error) {}
+    } catch (error: any) {
+      notify(error.message);
+    }
   };
 
   createProposal = async (daoStream: string, title: string, description: string) => {
@@ -291,7 +298,8 @@ class DaoStore {
       runInAction(() => {
         this.createProposalState = StateEnum.Success;        
       })
-    } catch (error) {
+    } catch (error: any) {
+      notify(error.message);
       this.createProposalState = StateEnum.Error;
     }
   };
@@ -308,17 +316,18 @@ class DaoStore {
     }
 
     this.proposalsList = editedProposals;
-    console.log(this.proposalsList, 'lsit')
   };
 
   getDelta = async () => {
     try {
       const response = await axios.get(`${localStorage.getItem('test')}/health`);
-      console.log(response.data.gas_tank_state.delta, 'healt');
+
       runInAction(() => {
-        this.delta = response.data.gas_tank_state.delta.toNumber();
-      })
-    } catch (error) {}
+        this.delta = +response.data.gas_tank_state.delta;
+      });
+    } catch (error: any) {
+      notify(error.message);
+    }
   };
 
 }

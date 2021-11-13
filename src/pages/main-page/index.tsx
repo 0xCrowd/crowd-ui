@@ -1,14 +1,13 @@
 import React, { FC, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { useAlert } from 'react-alert';
 
 import Layout from "@app/components/layout";
-import Modal from '@app/components/modal';
+import Modal from "@app/components/modal";
 import PartyForm from "./components/party-form";
 import NftPreview from "./components/nft-preview";
-import Parties from './components/parties';
-import TabButtons from './components/tab-buttons/index';
-import MobileTopline from './components/mobile-topline/index';
+import Parties from "./components/parties";
+import TabButtons from "./components/tab-buttons/index";
+import MobileTopline from "./components/mobile-topline/index";
 
 import raribleStore from "@stores/raribleStore";
 import chainStore from "@stores/chainStore";
@@ -16,26 +15,28 @@ import daoStore from "@app/stores/daoStore";
 
 import { TabsEnum } from "@enums/tabs";
 import { StateEnum } from "@enums/state-enum";
-import { IPartyFormData } from './components/party-form/constants';
+import { IPartyFormData } from "./components/party-form/constants";
 import { getImageUrl } from "@app/utils/getImageUrl";
 
 import plus from "@app/assets/images/plus.svg";
 
 //#region styles
-import { styled } from '@linaria/react';
-import { css } from '@linaria/core';
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 import { media } from "@app/assets/styles/constants";
+import { notify } from '../../utils/notify';
 
 const AddButton = styled.button`
   width: 36px;
   height: 36px;
   margin-left: 18px;
-  background: #6200E8;
+  background: #6200e8;
   border-radius: 50%;
   border: 0;
   cursor: pointer;
-  background: #FFFFFF;
-  box-shadow: 0px 0.8px 1.5px rgba(0, 240, 255, 0.12), 0px 6px 12px rgba(0, 240, 255, 0.18);
+  background: #ffffff;
+  box-shadow: 0px 0.8px 1.5px rgba(0, 240, 255, 0.12),
+    0px 6px 12px rgba(0, 240, 255, 0.18);
 `;
 
 const ButtonText = styled.p`
@@ -44,9 +45,9 @@ const ButtonText = styled.p`
   font-size: 18px;
   line-height: 24px;
   letter-spacing: 0.44px;
-  color: #6C5CE7;
+  color: #6c5ce7;
   letter-spacing: 0.44px;
-  color: #FFFFFF;
+  color: #ffffff;
 `;
 
 const ButtonsRow = styled.div`
@@ -75,7 +76,7 @@ const modalLarge = css`
 `;
 
 const tabs = css`
-  ${media('mobile')} {
+  ${media("mobile")} {
     display: none;
   }
 `;
@@ -83,27 +84,19 @@ const tabs = css`
 
 const MainPage: FC = observer(() => {
   const { order, orderState, price, getOrder, clearOrder, getPrice } = raribleStore;
-  const { 
-    loadWeb3, 
-    loadBlockChain,
-    balance,
-    blockChainState,
-    address,
-  } = chainStore;
+  const { loadWeb3, loadBlockChain, balance, blockChainState, address } = chainStore;
 
-  const { 
-    getDaosList, 
+  const {
+    getDaosList,
     loadMoreDaos,
     createDao,
     getDelta,
     delta,
-    daos, 
+    daos,
     totalDaos,
     daoState,
     createDaoState,
   } = daoStore;
-
-  const { show } = useAlert();
 
   const [activeTab, setActiveTab] = useState(TabsEnum.All);
   const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -116,7 +109,8 @@ const MainPage: FC = observer(() => {
   }, []);
 
   useEffect(() => {
-    if (blockChainState === StateEnum.Success) getDaosList(activeTab === TabsEnum.My ? address : '');
+    if (blockChainState === StateEnum.Success)
+      getDaosList(activeTab === TabsEnum.My ? address : "");
   }, [blockChainState, activeTab]);
 
   const openModal = () => setIsOpen(true);
@@ -129,32 +123,34 @@ const MainPage: FC = observer(() => {
 
   const onSubmit = (data: IPartyFormData) => {
     setParty(data);
-    
-    let id = '';
 
-    const [,, domain, page, address, nftId] = data.url.split("/");
+    let id = "";
+
+    const [, , domain, page, address, nftId] = data.url.split("/");
 
     if (domain === "rarible.com" || domain === "rinkeby.rarible.com") {
       if (page === "token") {
+        console.log(address.split("?")[0], "?");
         id = address.split("?")[0];
       }
     }
-      
+
     if (domain === "opensea.io") {
       if (page === "assets") {
         id = `${address}:${nftId}`;
       }
     }
+    const [nftAddress, newNftId] = id.split(":");
 
     getOrder(id);
-    getPrice(address, nftId);
+    getPrice(nftAddress, newNftId);
   };
 
   const onCreate = async () => {
     try {
       await createDao(party as IPartyFormData);
       closeModal();
-      getDaosList(activeTab === TabsEnum.My ? address : '');
+      getDaosList(activeTab === TabsEnum.My ? address : "");
     } catch (error) {}
   };
 
@@ -188,7 +184,9 @@ const MainPage: FC = observer(() => {
             partyName="Crowd party"
             userName={order.owners[0]}
             description={order.meta.description}
-            image={getImageUrl(order.meta.image.url.ORIGINAL || order.meta.image.url.PREVIEW)}
+            image={getImageUrl(
+              order.meta.image.url.ORIGINAL || order.meta.image.url.PREVIEW
+            )}
             nftId={order.id}
             onSubmit={onCreate}
           />
@@ -200,10 +198,7 @@ const MainPage: FC = observer(() => {
         onAdd={openModal}
       />
       <ButtonsRow className={tabs}>
-        <TabButtons 
-          activeTab={activeTab}
-          onChange={onTabChange}
-        />
+        <TabButtons activeTab={activeTab} onChange={onTabChange} />
         <AddButtonContainer>
           <ButtonText>START A PARTY</ButtonText>
           <AddButton onClick={openModal}>
@@ -211,11 +206,11 @@ const MainPage: FC = observer(() => {
           </AddButton>
         </AddButtonContainer>
       </ButtonsRow>
-      <Parties 
-        loading={daoState === StateEnum.Loading} 
-        daos={daos} 
-        onCreateClick={openModal} 
-        loadMore={loadMoreDaos} 
+      <Parties
+        loading={daoState === StateEnum.Loading}
+        daos={daos}
+        onCreateClick={openModal}
+        loadMore={loadMoreDaos}
         hasMore={daos.length < totalDaos}
       />
     </Layout>
