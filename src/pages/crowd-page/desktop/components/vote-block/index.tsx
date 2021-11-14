@@ -101,7 +101,7 @@ const percent = css`
 
 interface Props {
   voteFor: number;
-  againstVote: number;
+  voteAgainst: number;
   voteAgainstPercent: number;
   voteForPercent: number;
   tokenTicker?: string;
@@ -113,7 +113,7 @@ interface Props {
 
 const VoteBlock = ({ 
   voteFor,
-  againstVote,
+  voteAgainst,
   voteForPercent,
   voteAgainstPercent,
   status,
@@ -130,8 +130,8 @@ const VoteBlock = ({
       </TextRow>
       <Percentage number={voteForPercent} className={percentage} mainClassName={main} precentClassName={percent} />
       <ValueRow>
-        <BoldText>{`${voteForPercent}%`}</BoldText>
-        <BoldText>{`${voteAgainstPercent}%`}</BoldText>
+        <BoldText>{`${voteForPercent}% / ${voteFor} ${tokenTicker}`}</BoldText>
+        <BoldText>{`${voteAgainstPercent}% / ${voteAgainst} ${tokenTicker}`}</BoldText>
       </ValueRow>
       {status !== ProposalStatusEnum.Success && <ButtonRow>
         <Button 

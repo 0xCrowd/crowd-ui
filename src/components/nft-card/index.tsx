@@ -249,20 +249,26 @@ const NftCard = ({
       </PreviewContainer>
       <InfoBlockWrapper>
         <InfoBlock backgroundUrl={glass}>
-          {!isByed && 
-          <>
-            <CollectedBlock>
-              <CollectedRow>
-                <CollectedText>Collected</CollectedText>
-                <CollectedText>Participants</CollectedText>
-              </CollectedRow>
-              <CollectedRow>
-                <CollectedValue>{rounded > 100 ? 100 : rounded}%</CollectedValue>
-                <CollectedValue>{participants}</CollectedValue>
-              </CollectedRow>
-            </CollectedBlock>
-            <Percentage number={percentage} className={mb12} />
-          </>}
+          {!isByed && (
+            <>
+              <CollectedBlock>
+                <CollectedRow>
+                  <CollectedText>Collected</CollectedText>
+                  <CollectedText>Participants</CollectedText>
+                </CollectedRow>
+                <CollectedRow>
+                  <CollectedValue>
+                    {rounded > 100 ? 100 : rounded}%
+                  </CollectedValue>
+                  <CollectedValue>{participants}</CollectedValue>
+                </CollectedRow>
+              </CollectedBlock>
+              <Percentage number={percentage} className={mb12} />
+            </>
+          )}
+          {percentage === 100 && !isByed && (
+            <Loader type="Puff" color="#6200E8" height={100} width={100} />
+          )}
           <Footer>
             <PriceBlock>
               <PriceTitle>CURRENT PRICE</PriceTitle>

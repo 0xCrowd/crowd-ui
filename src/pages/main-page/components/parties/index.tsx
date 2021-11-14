@@ -95,7 +95,6 @@ const Parties = ({ daos, loading, onCreateClick, loadMore, hasMore }: Props): Re
           color="#6200E8"
           height={100}
           width={100}
-          timeout={3000}
         />
       </LoaderContainer>
     );

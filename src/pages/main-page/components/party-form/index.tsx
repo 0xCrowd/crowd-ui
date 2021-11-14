@@ -62,7 +62,6 @@ const PartyForm = ({ loading, onSubmit }: PropsType): ReactElement => {
             color="#6200E8"
             height={20}
             width={20}
-            timeout={3000}
           />
           )  : 'Preview'}
       </Button>

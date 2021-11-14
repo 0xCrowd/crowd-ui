@@ -214,6 +214,7 @@ const LoaderContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  padding: 20px 0;
 `;
 //#endregion
 
@@ -258,7 +259,17 @@ const CrowdBlock = ({
           <Price>ETH {price}</Price>
         </PriceInfo>
       </PriceBlock>
-      {isBuyout && collected >= 100 ? (
+      {!isBuyout && collected >= price ? (
+        <LoaderContainer>
+          <Loader
+            type="Puff"
+            color="#6200E8"
+            height={20}
+            width={20}
+            timeout={3000}
+          />
+        </LoaderContainer>
+      ) : (
         <>
           <Row>
             <CollectedText>Collected</CollectedText>
@@ -275,16 +286,6 @@ const CrowdBlock = ({
             precentClassName={percent}
           />
         </>
-      ) : (
-        <LoaderContainer>
-          <Loader
-            type="Puff"
-            color="#6200E8"
-            height={20}
-            width={20}
-            timeout={3000}
-          />
-        </LoaderContainer>
       )}
       {isSelled && myPaid && (
         <Button
