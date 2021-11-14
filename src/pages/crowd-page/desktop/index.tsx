@@ -163,6 +163,7 @@ const DesktopPage = ({
         proposals={proposalsList}
         className={proposalVisible}
         loading={proposalsLoading}
+        tokenName={adaptedDao?.tokenTicker}
       />}
     </>
   );

@@ -62,10 +62,11 @@ interface Props {
   proposals: IAdaptedProposal[];
   makeVote: (proposalStream: string, option: number, amount: string) => void;
   loading: boolean;
+  tokenName?: string;
   className?: string;
 }
 
-const Proposals = ({ proposals, makeVote, loading, className }: Props): ReactElement => {
+const Proposals = ({ proposals, tokenName, makeVote, loading, className }: Props): ReactElement => {
   if (loading) {
     return (
       <Root className={className}>
@@ -88,7 +89,6 @@ const Proposals = ({ proposals, makeVote, loading, className }: Props): ReactEle
         voteAgainstPercent,
         voteForPercent,
         status,
-        tokenName,
         ceramic_stream,
         type,
       }) => (
@@ -97,7 +97,7 @@ const Proposals = ({ proposals, makeVote, loading, className }: Props): ReactEle
           <VoteBlock
             ceramicStream={ceramic_stream}
             voteFor={voteFor} 
-            againstVote={voteAgainst} 
+            voteAgainst={voteAgainst} 
             status={status}
             voteAgainstPercent={voteAgainstPercent}
             voteForPercent={voteForPercent}

@@ -57,4 +57,11 @@ declare global {
     voteAgainstPercent: number;
     tokenName?: string;
   }
+
+  interface IProposalVoteData {
+    address: string;
+    proposal_stream: string;
+    option: number;
+    amount: string;
+  }
 }

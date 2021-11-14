@@ -21,6 +21,7 @@ import { IEthFormData } from './components/eth-form/constants';
 import { styled } from '@linaria/react';
 import { media } from "@app/assets/styles/constants";
 import { ProposalTypeEnum } from '../../enums/proposalTypeEnum/index';
+import { notifySuccess } from '../../utils/notify';
 
 const Root = styled.div`
   display: flex;
@@ -60,6 +61,7 @@ const CrowdPage: FC = observer(() => {
     createProposal,
     makeVote,
     getDelta,
+    withdraw,
     adaptedDao,
     daoState,
     donateState,
@@ -70,8 +72,6 @@ const CrowdPage: FC = observer(() => {
   } = daoStore;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [proposalFormData, setProposalFormData] = useState<IProposalFormData | null>(null);
-  const [ethFormData, setEthFormData] = useState<IEthFormData | null>(null);
   const [modalMode, setModalMode] = useState(ModalModeEnum.Proposal);
   const [modalTitle, setModalTitle] = useState('');
   const [ceramicStream, setCeramicStream] = useState('');
@@ -94,6 +94,18 @@ const CrowdPage: FC = observer(() => {
     }
   }, [adaptedDao]);
 
+  useEffect(() => {
+    let id: NodeJS.Timer | null = null
+    if (adaptedDao && proposalsList.length && !proposalsList[0].fulfilled && adaptedDao.collected >= adaptedDao.price) {
+      notifySuccess("Buyout in process. It's take about 30 seconds");
+      id = setInterval(() => getDao(ceramicStream), 30000);
+    }
+
+    if (adaptedDao && proposalsList.length && proposalsList[0].fulfilled && id) {
+      clearInterval(id);
+    }
+  }, [proposalsList, adaptedDao]);
+
   const onCloseModal = () => setIsOpen(false);
 
   const onOpenModal = (mode: ModalModeEnum) => {
@@ -101,7 +113,6 @@ const CrowdPage: FC = observer(() => {
     setModalMode(mode);
 
     let title = ''
-    let modalContent = null;
 
     switch (mode) {
       case ModalModeEnum.Eth:
@@ -119,27 +130,29 @@ const CrowdPage: FC = observer(() => {
     setModalTitle(title);
   };
 
-  const onProposalSubmit = async (data: IProposalFormData) => {
+  const onProposalSubmit = async ({ price }: IProposalFormData) => {
     try {
-      const { price } = data;
-
-      setProposalFormData(data);
       await createProposal(adaptedDao.ceramic_stream, price);
       onCloseModal();
-      setProposalFormData(null);
       getProposals(ceramicStream);
     } catch (error) {}
   };
 
   const onEthSubmit = async (data: IEthFormData) => {
     try {
-      setEthFormData(data);
       await donate(address, adaptedDao.ceramic_stream, data.deposite, originalDao.l1_vault);
       onCloseModal();
-      setEthFormData(null);
       getDao(ceramicStream);
     } catch (error) {}
   };
+
+  const onWithdrawSubmit = async ({ deposite }: IEthFormData) => {
+    try {
+      await withdraw(deposite);
+      onCloseModal();
+      getDao(ceramicStream);
+    } catch (error) {}
+  }
 
   const renderModalContent = (modalMode: ModalModeEnum) => {
     switch (modalMode) {
@@ -162,8 +175,8 @@ const CrowdPage: FC = observer(() => {
       case ModalModeEnum.Withdraw:
         return (
           <WithdrawForm 
-            onSubmit={() => {}}
-            loading={false}
+            onSubmit={onWithdrawSubmit}
+            loading={donateState === StateEnum.Loading}
             onAmountButtonClick={(setValue) => {
               setValue(adaptedDao?.myPaid?.total_deposit.toString() || '');
             }}
@@ -187,7 +200,7 @@ const CrowdPage: FC = observer(() => {
     if (proposalsList.length && proposalsList[0].fulfilled) return true;
     return false;
   }
-  console.log(proposalsList, 'list')
+
   return (
     <Layout balance={balance} blockChainState={blockChainState}>
       <Modal
