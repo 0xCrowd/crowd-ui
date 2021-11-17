@@ -226,7 +226,7 @@ interface Props {
   collected: number;
   participants: IDeposits[];
   myPaid?: IDeposits;
-  isSelled: boolean;
+  isSold: boolean;
   isBuyout: boolean;
   onAddClick: () => void;
   onWithdrawClick: () => void;
@@ -240,7 +240,7 @@ const CrowdBlock = ({
   collected,
   participants,
   myPaid,
-  isSelled,
+  isSold,
   isBuyout,
   onAddClick,
   onWithdrawClick,
@@ -259,14 +259,13 @@ const CrowdBlock = ({
           <Price>ETH {price}</Price>
         </PriceInfo>
       </PriceBlock>
-      {!isBuyout && collected >= price ? (
+      {!isBuyout && collected >= 100 ? (
         <LoaderContainer>
           <Loader
             type="Puff"
             color="#6200E8"
             height={20}
             width={20}
-            timeout={3000}
           />
         </LoaderContainer>
       ) : (
@@ -287,7 +286,7 @@ const CrowdBlock = ({
           />
         </>
       )}
-      {isSelled && myPaid && (
+      {isSold && myPaid && (
         <Button
           className={button}
           containerClassName={buttonContainer}
@@ -297,7 +296,7 @@ const CrowdBlock = ({
           - Withdraw
         </Button>
       )}
-      {!isSelled &&
+      {!isSold &&
         !isBuyout &&
         collected < 100 &&
         (myPaid ? (

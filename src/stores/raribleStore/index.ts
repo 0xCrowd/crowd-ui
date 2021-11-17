@@ -65,7 +65,6 @@ class RaribleStore {
         }
       );
       const min = minBy(response.data.orders, (item: any) => item.makePrice);
-      console.log(min, 'min')
       runInAction(() => {
         this.price = min.makePrice;
       });

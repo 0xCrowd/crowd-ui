@@ -62,6 +62,7 @@ const CrowdPage: FC = observer(() => {
     makeVote,
     getDelta,
     withdraw,
+    updateProposal,
     adaptedDao,
     daoState,
     donateState,
@@ -185,7 +186,7 @@ const CrowdPage: FC = observer(() => {
     }
   };
 
-  const checkIsSell = (): boolean => {
+  const checkIsSold = (): boolean => {
     if (proposalsList.length) {
       const sellProposal = proposalsList.find(elem => elem.type === ProposalTypeEnum.Sell);
       if (sellProposal && sellProposal.fulfilled) {
@@ -200,6 +201,11 @@ const CrowdPage: FC = observer(() => {
     if (proposalsList.length && proposalsList[0].fulfilled) return true;
     return false;
   }
+
+  const onMakeVote = (proposalStream: string, option: number, amount: string) => {
+    makeVote(proposalStream, option, amount);
+    updateProposal(proposalStream);
+  };
 
   return (
     <Layout balance={balance} blockChainState={blockChainState}>
@@ -219,12 +225,12 @@ const CrowdPage: FC = observer(() => {
           adaptedDao={adaptedDao}
           proposalsList={proposalsList}
           onOpenModal={onOpenModal}
-          makeVote={makeVote}
+          makeVote={onMakeVote}
           proposalsLoading={proposalState === StateEnum.Loading}
           daoLoading={daoState === StateEnum.Loading}
           nftId={originalDao?.buyout_target}
           isBuyout={checkIsBuyout()}
-          isSelled={checkIsSell()}
+          isSold={checkIsSold()}
         />
       </Root>
     </Layout>

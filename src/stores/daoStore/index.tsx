@@ -14,7 +14,7 @@ import DAO from "../../../ABI/Vault.json";
 import DAOToken from "../../../ABI/Token.json";
 import { fixedRound } from "@app/utils/round";
 
-// const POTTERY_ENDPOINT = "https://7f76-2a00-1370-8137-a39b-70-9b54-ed0d-accd.ngrok.io"
+const API_ENDPOINT = "https://crowd-protocol-master-9iojf.ondigitalocean.app"
 
 const { getOrder, getPrice } = raribleStore;
 
@@ -49,11 +49,12 @@ class DaoStore {
 
   getDaosList = async (address?: string) => {
     try {
+      console.log(this.daosPage, 'pageeee');
       if (this.daosPage === 0) {
         this.daoState = StateEnum.Loading;
       }
 
-      const response = await axios.get(`${localStorage.getItem('test')}/daos`, {
+      const response = await axios.get(`${API_ENDPOINT}/daos`, {
         params: {
           offset: this.daosPage * this.daosLimit,
           limit: this.daosLimit,
@@ -73,8 +74,17 @@ class DaoStore {
         if (adaptedDao) daos.push(adaptedDao);
       }));
 
+      if (this.daosPage === 0) {
+        runInAction(() => {
+          this.daos = daos;
+        });
+      } else {
+        runInAction(() => {
+          this.daos = [...this.daos, ...daos];
+        });
+      }
+
       runInAction(() => {
-        this.daos = [...this.daos, ...daos];
         this.totalDaos = response.data.total;
         this.daoState = StateEnum.Success;
       });
@@ -88,7 +98,7 @@ class DaoStore {
     try {
       this.daoState = StateEnum.Loading;
 
-      const response = await axios.get(`${localStorage.getItem('test')}/daos`, {
+      const response = await axios.get(`${API_ENDPOINT}/daos`, {
         params: {
           stream,
         },
@@ -135,7 +145,7 @@ class DaoStore {
         ceramic_stream: dao.ceramic_stream,
         partyName: meta.name,
         description: meta.description,
-        image: getImageUrl(meta.image ? meta.image.url.ORIGINAL || meta.image.url.PREVIEW : meta.animation.meta.ORIGINAL),
+        image: getImageUrl(meta.image ? meta.image.url.ORIGINAL || meta.image.url.PREVIEW : meta.animation.url.ORIGINAL),
         price: priceWithDelta,
         collected,
         users: dao.deposits,
@@ -145,7 +155,9 @@ class DaoStore {
         tokenTicker,
         isBuyied: await this.isBuyied(dao.ceramic_stream),
       };
-    } catch (error: any) {}
+    } catch (error: any) {
+      console.log(error, 'error')
+    }
   };
 
   loadMoreDaos = async (address?: string) => {
@@ -159,6 +171,10 @@ class DaoStore {
     }
   };
 
+  clearPage = () => {
+    this.daosPage = 0;
+  };
+
   createDao = async ({ tokenName }: IPartyFormData) => {
     try {
       const { address, factoryContract } = chainStore;
@@ -170,18 +186,18 @@ class DaoStore {
       let vaultAddress = '';
       let tokenAddress = '';
 
-      const listner = (err: any, e: any) => {
+      const listener = (err: any, e: any) => {
         vaultAddress = e.returnValues.vault;
         tokenAddress = e.returnValues.tokenAddress;
       };
 
-      await factoryContract.events.NewVault({}, listner);
+      await factoryContract.events.NewVault({}, listener);
 
       await factoryContract.methods
         .newVault(tokenName, tokenName.slice(0, 5), 100)
         .send({ from: address, value: 0 });
 
-      await axios.post(`${localStorage.getItem('test')}/dao`, {
+      await axios.post(`${API_ENDPOINT}/dao`, {
         name: tokenName,
         l1_type: "ethereum",
         l1_vault: vaultAddress,
@@ -211,7 +227,7 @@ class DaoStore {
       
       await l1Dao.methods.recieveDeposit(address).send({ from: address, value });
 
-      await axios.post(`${localStorage.getItem('test')}/deposit`, {
+      await axios.post(`${API_ENDPOINT}/deposit`, {
         address,
         dao_stream: daoStream,
         amount,
@@ -228,7 +244,7 @@ class DaoStore {
 
   isBuyied = async (daoStream: string) => {
     try {
-      const response = await axios.get(`${localStorage.getItem('test')}/proposals`, {
+      const response = await axios.get(`${API_ENDPOINT}/proposals`, {
         params: {
           dao_stream: daoStream,
           offset: 0,
@@ -248,7 +264,7 @@ class DaoStore {
         this.proposalState = StateEnum.Loading;
       });
 
-      const response = await axios.get(`${localStorage.getItem('test')}/proposals`, {
+      const response = await axios.get(`${API_ENDPOINT}/proposals`, {
         params: {
           dao_stream: daoStream,
           offset: this.proposalPage * this.proposalLimit,
@@ -269,6 +285,7 @@ class DaoStore {
       })
       
     } catch (error: any) {
+      console.log(error)
       notify(error.message);
       this.proposalState = StateEnum.Error
     }
@@ -300,14 +317,17 @@ class DaoStore {
 
       const commonAmount = voteFor + voteAgainst;
 
-      voteForPercent = fixedRound((voteFor / commonAmount) * 100);
-      voteAgainstPercent = 100 - voteForPercent;
+      if (proposal.type !== ProposalTypeEnum.Buyout) {
+        voteForPercent = fixedRound((voteFor / commonAmount) * 100);
+        voteAgainstPercent = 100 - voteForPercent;
+      } 
     }
 
     let title = proposal.title;
 
     if (proposal.type === ProposalTypeEnum.Sell) {
-      title = `Sell for ${10}`
+      const price = proposal.price ? window.web3.utils.fromWei(proposal.price, 'ether') : 0;
+      title = `Sell for ${price}`;
     }
 
     return {
@@ -322,17 +342,28 @@ class DaoStore {
 
   getVotesData = async (proposalStream: string): Promise<IProposalVoteData[] | undefined> => {
     try {
-      const response = await axios.get(`${localStorage.getItem('test')}/votes`, {
+      const response = await axios.get(`${API_ENDPOINT}/votes`, {
         params: {
           proposal_stream: proposalStream,
         },
       });
       return response.data.items;
-      console.log(response, 'vote data');
     } catch (error: any) {
       notify(error.message);
     }
   };
+
+  updateProposal = async (proposalStream: string) => {
+    try {
+      const newProposaslList = [...this.proposalsList];
+      const index = newProposaslList.findIndex(elem => elem.ceramic_stream === proposalStream);
+      const newProposal = await this.adaptProposal(newProposaslList[index]);
+
+      newProposaslList[index] = newProposal;
+    } catch (error: any) {
+      notify(error.message);
+    }
+  }
 
   loadMoreProposals = async (daoStream: string) => {
     try {
@@ -350,7 +381,7 @@ class DaoStore {
         this.createProposalState = StateEnum.Loading;
       });
 
-      await axios.post(`${localStorage.getItem('test')}/proposal`, {
+      await axios.post(`${API_ENDPOINT}/proposal`, {
         dao_stream: daoStream,
         asset: this.originalDao.buyout_target,
         price: window.web3.utils.toWei(price, 'ether'),
@@ -372,7 +403,7 @@ class DaoStore {
       });
 
       const { address } = chainStore;
-      await axios.post(`${localStorage.getItem('test')}/vote`, {
+      await axios.post(`${API_ENDPOINT}/vote`, {
         address,
         proposal_stream: proposalStream,
         option,
@@ -392,7 +423,7 @@ class DaoStore {
 
   getDelta = async () => {
     try {
-      const response = await axios.get(`${localStorage.getItem('test')}/health`);
+      const response = await axios.get(`${API_ENDPOINT}/health`);
 
       runInAction(() => {
         this.delta = +response.data.gas_tank_state.delta;
@@ -404,13 +435,25 @@ class DaoStore {
 
   withdraw = async (ammount: string) => {
     try {
+      runInAction(() => {
+        this.donateState === StateEnum.Loading
+      });
+
       const { address } = chainStore;
       // @ts-ignore
       const l1Dao = new window.web3.eth.Contract(DAO.abi, this.originalDao.l1_vault);
       const weiAmmount = window.web3.utils.toWei(ammount);
       await l1Dao.methods.withdrawDeposit(weiAmmount).send({ from: address });
+
+      runInAction(() => {
+        this.donateState === StateEnum.Success
+      });
     } catch (error: any) {
+      runInAction(() => {
+        this.donateState === StateEnum.Error
+      });
       notify(error.message);
+      console.log(error)
     }
   }
 }

@@ -244,8 +244,8 @@ const NftPreview = ({
 
   return (
     <Root>
-        <Header>Start a PARTY</Header>
-        <Title className={title}>{partyName}</Title>
+        <Header>New Crowd</Header>
+        {/* <Title className={title}>{partyName}</Title> */}
         <Preview src={image} alt="preview" ref={imgEl}/>
         {!loaded && (
           <PreviewLoader>
