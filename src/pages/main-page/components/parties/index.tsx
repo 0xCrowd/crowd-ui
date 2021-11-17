@@ -104,15 +104,14 @@ const Parties = ({ daos, loading, onCreateClick, loadMore, hasMore }: Props): Re
     <>
       {daos && daos.length ? (
         <InfiniteScroll
-          dataLength={daos.length}
+          dataLength={8}
           next={loadMore}
           hasMore={hasMore}
           loader={<Loader
             type="Puff"
             color="#6200E8"
-            height={10}
-            width={10}
-            timeout={3000}
+            height={50}
+            width={50}
           />}
           scrollableTarget="scrollableDiv"
         >

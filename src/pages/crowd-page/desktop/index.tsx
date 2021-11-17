@@ -86,7 +86,7 @@ interface Props {
   proposalsList: IAdaptedProposal[];
   proposalsLoading: boolean;
   nftId: string;
-  isSelled: boolean;
+  isSold: boolean;
   isBuyout: boolean;
   makeVote: (proposalStream: string, option: number, amount: string) => void;
   onOpenModal: (mode: ModalModeEnum) => void;
@@ -98,7 +98,7 @@ const DesktopPage = ({
   proposalsList,
   proposalsLoading,
   nftId,
-  isSelled,
+  isSold,
   isBuyout,
   makeVote,
   onOpenModal,
@@ -155,7 +155,7 @@ const DesktopPage = ({
           onAddClick={() => onOpenModal(ModalModeEnum.Eth)}
           onWithdrawClick={() => onOpenModal(ModalModeEnum.Withdraw)}
           isBuyout={isBuyout}
-          isSelled={isSelled}
+          isSold={isSold}
         />
       </MainBlock>
       {proposalsList.length && proposalsList[0].fulfilled && <Proposals

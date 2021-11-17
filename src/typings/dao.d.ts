@@ -48,6 +48,7 @@ declare global {
     status: ProposalStatusEnum;
     title: string;
     type: ProposalTypeEnum;
+    price: string;
   }
   
   interface IAdaptedProposal extends IProposal{

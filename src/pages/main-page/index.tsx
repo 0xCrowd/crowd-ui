@@ -91,6 +91,7 @@ const MainPage: FC = observer(() => {
     loadMoreDaos,
     createDao,
     getDelta,
+    clearPage,
     delta,
     daos,
     totalDaos,
@@ -150,6 +151,7 @@ const MainPage: FC = observer(() => {
     try {
       await createDao(party as IPartyFormData);
       closeModal();
+      clearPage();
       getDaosList(activeTab === TabsEnum.My ? address : "");
     } catch (error) {}
   };
