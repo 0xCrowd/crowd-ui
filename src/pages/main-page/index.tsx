@@ -193,6 +193,7 @@ const MainPage: FC = observer(() => {
             )}
             nftId={order.id}
             onSubmit={onCreate}
+            disabledSubmit={nftDataLoadingState === StateEnum.Error}
           />
         )}
       </Modal>

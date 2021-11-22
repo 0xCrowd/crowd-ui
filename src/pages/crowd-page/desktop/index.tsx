@@ -137,7 +137,7 @@ const DesktopPage = ({
             className={button}
             containerClassName={buttonContainer}
             active
-            disabled={!adaptedDao.isBought}
+            disabled={!adaptedDao?.isBought}
           >
             New proposal
           </Button>
