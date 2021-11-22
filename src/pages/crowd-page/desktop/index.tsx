@@ -87,7 +87,6 @@ interface Props {
   proposalsLoading: boolean;
   nftId: string;
   isSold: boolean;
-  isBuyout: boolean;
   makeVote: (proposalStream: string, option: number, amount: string) => void;
   onOpenModal: (mode: ModalModeEnum) => void;
 }
@@ -99,7 +98,6 @@ const DesktopPage = ({
   proposalsLoading,
   nftId,
   isSold,
-  isBuyout,
   makeVote,
   onOpenModal,
 }: Props): ReactElement => {
@@ -139,7 +137,7 @@ const DesktopPage = ({
             className={button}
             containerClassName={buttonContainer}
             active
-            disabled={(proposalsList.length && !proposalsList[0].fulfilled ? true : false)}
+            disabled={!adaptedDao.isBought}
           >
             New proposal
           </Button>
@@ -154,11 +152,11 @@ const DesktopPage = ({
           myPaid={adaptedDao?.myPaid}
           onAddClick={() => onOpenModal(ModalModeEnum.Eth)}
           onWithdrawClick={() => onOpenModal(ModalModeEnum.Withdraw)}
-          isBuyout={isBuyout}
+          isBuyout={adaptedDao.isBought || false}
           isSold={isSold}
         />
       </MainBlock>
-      {proposalsList.length && proposalsList[0].fulfilled && <Proposals
+      {proposalsList.length && adaptedDao.isBought && <Proposals
         makeVote={makeVote}
         proposals={proposalsList}
         className={proposalVisible}

@@ -83,7 +83,7 @@ const tabs = css`
 //#endregion
 
 const MainPage: FC = observer(() => {
-  const { order, orderState, price, getOrder, clearOrder, getPrice } = raribleStore;
+  const { order, nftDataLoadingState, price, getOrder, clearOrder, getPrice } = raribleStore;
   const { loadWeb3, loadBlockChain, balance, blockChainState, address } = chainStore;
 
   const {
@@ -97,6 +97,7 @@ const MainPage: FC = observer(() => {
     totalDaos,
     daoState,
     createDaoState,
+    loadedDaos,
   } = daoStore;
 
   const [activeTab, setActiveTab] = useState(TabsEnum.All);
@@ -131,7 +132,6 @@ const MainPage: FC = observer(() => {
 
     if (domain === "rarible.com" || domain === "rinkeby.rarible.com") {
       if (page === "token") {
-        console.log(address.split("?")[0], "?");
         id = address.split("?")[0];
       }
     }
@@ -143,8 +143,8 @@ const MainPage: FC = observer(() => {
     }
     const [nftAddress, newNftId] = id.split(":");
 
-    getOrder(id);
-    getPrice(nftAddress, newNftId);
+    getOrder(id, true);
+    getPrice(nftAddress, newNftId, true);
   };
 
   const onCreate = async () => {
@@ -175,7 +175,8 @@ const MainPage: FC = observer(() => {
       >
         {!order ? (
           <PartyForm
-            loading={orderState === StateEnum.Loading}
+            loading={nftDataLoadingState === StateEnum.Loading}
+            disabledSubmit={nftDataLoadingState === StateEnum.Error}
             onSubmit={onSubmit}
           />
         ) : (
@@ -215,7 +216,7 @@ const MainPage: FC = observer(() => {
         daos={daos}
         onCreateClick={openModal}
         loadMore={loadMoreDaos}
-        hasMore={daos.length < totalDaos}
+        hasMore={loadedDaos < totalDaos}
       />
     </Layout>
   );

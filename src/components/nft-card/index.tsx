@@ -1,4 +1,4 @@
-import React, { ReactElement, useRef, useEffect } from "react";
+import React, { ReactElement, useRef, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Loader from "react-loader-spinner";
 
@@ -7,21 +7,23 @@ import Button from "@app/components/button";
 
 import { round } from "@app/utils/round";
 
-import eth from "@app/assets/images/eth_gr_wh.png";
-
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import { mb12 } from "@app/assets/styles/constants";
 
-import glass from "@assets/images/glass.png";
+import greenGlass from "@assets/images/green_glass.png";
+import pinkGlass from "@assets/images/pink_glass.png";
+import emeraldGlass from "@assets/images/emerald_glass.png";
+
+import eth from "@app/assets/images/eth_gr_wh.png";
 
 const Root = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   width: 264px;
-  height: 340px;
+  height: 364px;
   box-shadow: 0px -4px 12px rgba(63, 155, 215, 0.12);
   border-radius: 20px;
 `;
@@ -32,12 +34,12 @@ interface PreviewProps {
 
 const PreviewContainer = styled.div`
   position: relative;
-  height: 264px;
+  height: 210px;
   border-radius: 20px 20px 0 0;
 `;
 
 const PreviewImg = styled.img`
-  height: 207px;
+  height: 210px;
   width: 100%;
   position: absolute;
   top: 0;
@@ -73,12 +75,28 @@ const Preview = styled.div`
 `;
 
 const InfoBlockWrapper = styled.div`
+  height: 156px;
   position: relative;
   background-size: cover;
   border-radius: 0px 0px 20px 20px;
 `;
 
+const StatusBar = styled.div`
+  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #263238;
+  text-transform: uppercase;
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.03) -13.74%,
+    rgba(0, 0, 0, 0.03) 110.26%
+  );
+`;
+
 const InfoBlock = styled.div<PreviewProps>`
+  height: 156px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -88,6 +106,7 @@ const InfoBlock = styled.div<PreviewProps>`
   border-radius: 0px 0px 20px 20px;
   background-image: ${({ backgroundUrl }) => `url(${backgroundUrl})`};
   z-index: 1000;
+  background-size: cover;
 `;
 
 const PriceBlock = styled.div`
@@ -196,7 +215,7 @@ interface Props {
   image?: string;
   participants: number;
   className?: string;
-  isByed?: boolean;
+  isBought?: boolean;
 }
 
 const NftCard = ({
@@ -206,18 +225,18 @@ const NftCard = ({
   price,
   percentage = 0,
   participants = 0,
-  isByed,
+  isBought,
   className,
 }: Props): ReactElement => {
   const { push } = useHistory();
 
   const imgEl = useRef<HTMLImageElement>(null);
 
-  const [loaded, setLoaded] = React.useState(false);
-
-  const onImageLoaded = () => setLoaded(true);
-
-  const rounded = round(percentage, 1);
+  const [loaded, setLoaded] = useState(false);
+  const [adaptedPercentage, setAdaptedPercentage] = useState<number | null>(null);
+  const [background, setBackground] = useState(greenGlass);
+  const [adaptedPrice, setAdaptedPrice] = useState<number | string>("");
+  const [statusText, setStatusText] = useState("");
 
   useEffect(() => {
     const imgElCurrent = imgEl.current;
@@ -227,6 +246,27 @@ const NftCard = ({
       return () => imgElCurrent.removeEventListener("load", onImageLoaded);
     }
   }, []);
+
+  useEffect(() => {
+    if (isBought) {
+      setAdaptedPercentage(null);
+      setBackground(emeraldGlass);
+      setAdaptedPrice('???');
+      setStatusText("successful buyout");
+    } else if (price === undefined && !isBought) {
+      setAdaptedPercentage(null);
+      setBackground(pinkGlass);
+      setAdaptedPrice("???");
+      setStatusText("lost");
+    } else {
+      setAdaptedPercentage(round(percentage, 1));
+      setBackground(greenGlass);
+      setAdaptedPrice(price);
+      setStatusText("in progress");
+    }
+  }, [price, isBought]);
+
+  const onImageLoaded = () => setLoaded(true);
 
   return (
     <Root className={className}>
@@ -248,25 +288,22 @@ const NftCard = ({
         <PreviewImg src={image} alt="img" ref={imgEl} />
       </PreviewContainer>
       <InfoBlockWrapper>
-        <InfoBlock backgroundUrl={glass}>
-          {!isByed && (
-            <>
-              <CollectedBlock>
-                <CollectedRow>
-                  <CollectedText>Collected</CollectedText>
-                  <CollectedText>Participants</CollectedText>
-                </CollectedRow>
-                <CollectedRow>
-                  <CollectedValue>
-                    {rounded > 100 ? 100 : rounded}%
-                  </CollectedValue>
-                  <CollectedValue>{participants}</CollectedValue>
-                </CollectedRow>
-              </CollectedBlock>
-              <Percentage number={percentage} className={mb12} />
-            </>
-          )}
-          {percentage === 100 && !isByed && (
+        <InfoBlock backgroundUrl={background}>
+          <StatusBar>{statusText}</StatusBar>
+          <>
+            <CollectedBlock>
+              <CollectedRow>
+                <CollectedText>Collected</CollectedText>
+                <CollectedText>Participants</CollectedText>
+              </CollectedRow>
+              <CollectedRow>
+                <CollectedValue>{adaptedPercentage !== null ? `${adaptedPercentage}%` : '???'}</CollectedValue>
+                <CollectedValue>{participants}</CollectedValue>
+              </CollectedRow>
+            </CollectedBlock>
+            <Percentage number={adaptedPercentage || 0} className={mb12} />
+          </>
+          {percentage === 100 && !isBought && (
             <Loader type="Puff" color="#6200E8" height={100} width={100} />
           )}
           <Footer>
@@ -274,7 +311,7 @@ const NftCard = ({
               <PriceTitle>CURRENT PRICE</PriceTitle>
               <PriceRow>
                 <IconContainer src={eth} alt="eth" />
-                <Price>{price}</Price>
+                <Price>{adaptedPrice}</Price>
               </PriceRow>
             </PriceBlock>
             <Button

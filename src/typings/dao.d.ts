@@ -35,7 +35,7 @@ declare global {
     myPaid?: IDeposits;
     imageMeta: IImageMeta;
     tokenTicker?: string;
-    isBuyied?: boolean;
+    isBought?: boolean;
   }
   
   interface IProposal {
