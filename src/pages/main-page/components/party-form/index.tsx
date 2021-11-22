@@ -23,7 +23,7 @@ const button = css`
 
 interface PropsType {
   loading: boolean;
-  disabledSubmit: boolean;
+  disabledSubmit?: boolean;
   onSubmit: (data: IPartyFormData) => void;
 };
 

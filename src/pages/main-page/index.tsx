@@ -176,7 +176,6 @@ const MainPage: FC = observer(() => {
         {!order ? (
           <PartyForm
             loading={nftDataLoadingState === StateEnum.Loading}
-            disabledSubmit={nftDataLoadingState === StateEnum.Error}
             onSubmit={onSubmit}
           />
         ) : (
