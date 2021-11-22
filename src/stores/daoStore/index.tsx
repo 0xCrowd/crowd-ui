@@ -141,7 +141,7 @@ class DaoStore {
       const { address } = chainStore;
     
       const isBought = await this.isBought(dao.ceramic_stream);
-
+      console.log(isBought, 'is')
       const imagePath = meta.image ?? meta.animation;
 
       return {

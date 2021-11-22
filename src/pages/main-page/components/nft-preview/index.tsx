@@ -213,6 +213,7 @@ interface Props {
   userName: string;
   nftId: string;
   loading: boolean;
+  disabledSubmit: boolean;
   onSubmit: () => void;
 }
 
@@ -226,6 +227,7 @@ const NftPreview = ({
   nftId,
   loading,
   onSubmit,
+  disabledSubmit,
 }: Props): ReactElement => {
   const imgEl = useRef<HTMLImageElement>(null);
 
@@ -244,7 +246,7 @@ const NftPreview = ({
 
   return (
     <Root>
-        <Header>New Crowd</Header>
+        {/* <Header>New Crowd</Header> */}
         {/* <Title className={title}>{partyName}</Title> */}
         <Preview src={image} alt="preview" ref={imgEl}/>
         {!loaded && (
@@ -280,7 +282,7 @@ const NftPreview = ({
                 <Price>{price}</Price>
               </PriceRow>
             </PriceBlock>
-            <Button onClick={onSubmit}>
+            <Button onClick={onSubmit} disabled={disabledSubmit}>
               {loading ? (
                 <Loader
                   type="Puff"
