@@ -249,7 +249,7 @@ class DaoStore {
         params: {
           dao_stream: daoStream,
           offset: 0,
-          limit: 3,
+          limit: 1,
         }
       });
       const data: IProposal[] = response.data.items;
