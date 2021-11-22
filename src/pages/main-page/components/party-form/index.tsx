@@ -23,10 +23,11 @@ const button = css`
 
 interface PropsType {
   loading: boolean;
+  disabledSubmit: boolean;
   onSubmit: (data: IPartyFormData) => void;
 };
 
-const PartyForm = ({ loading, onSubmit }: PropsType): ReactElement => {
+const PartyForm = ({ loading, disabledSubmit, onSubmit }: PropsType): ReactElement => {
   const { handleSubmit, handleChange, values, errors, touched } = useFormik({
     initialValues,
     onSubmit: values => {
@@ -54,7 +55,7 @@ const PartyForm = ({ loading, onSubmit }: PropsType): ReactElement => {
         className={button}
         form="party-form-data"
         type="submit"
-        disabled={loading}
+        disabled={loading || disabledSubmit}
       >
         {loading ? (
           <Loader 

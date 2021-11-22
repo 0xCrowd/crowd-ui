@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import Loader from "react-loader-spinner";
-import cn from 'classnames';
+import cn from "classnames";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import NftCard from "@app/components/nft-card";
@@ -9,15 +9,15 @@ import Button from "@app/components/button";
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { media, mr32 } from '@assets/styles/constants';
+import { media, mr32 } from "@assets/styles/constants";
 
 const Root = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 1152px;
   margin: auto;
-  
-  ${media('mobile')} {
+
+  ${media("mobile")} {
     flex-direction: column;
     align-items: center;
     width: 100%;
@@ -41,7 +41,7 @@ const EmptyTitle = styled.p`
   letter-spacing: 0.44px;
   color: #fff;
 
-  ${media('mobile')} {
+  ${media("mobile")} {
     font-size: 24px;
     height: 37px;
   }
@@ -49,12 +49,12 @@ const EmptyTitle = styled.p`
 
 const card = css`
   margin-bottom: 36px;
-  
-  ${media('mobile')} {
+
+  ${media("mobile")} {
     margin-right: 0 !important;
   }
 
-  ${media('large')} {
+  ${media("large")} {
     margin-bottom: 60px;
   }
 `;
@@ -63,7 +63,7 @@ const button = css`
   width: 302px;
   height: 50px;
 
-  ${media('large')} {
+  ${media("large")} {
     height: 42px;
   }
 `;
@@ -72,7 +72,7 @@ const buttonContainer = css`
   width: 304px;
   height: 52px;
 
-  ${media('large')} {
+  ${media("large")} {
     height: 44px;
   }
 `;
@@ -83,72 +83,84 @@ interface Props {
   daos: IAdaptedDao[];
   onCreateClick: () => void;
   loadMore: () => void;
-  hasMore: boolean
+  hasMore: boolean;
 }
 
-const Parties = ({ daos, loading, onCreateClick, loadMore, hasMore }: Props): ReactElement => {
+const Parties = ({
+  daos,
+  loading,
+  onCreateClick,
+  loadMore,
+  hasMore,
+}: Props): ReactElement => {
   if (loading) {
     return (
       <LoaderContainer>
-        <Loader
-          type="Puff"
-          color="#6200E8"
-          height={100}
-          width={100}
-        />
+        <Loader type="Puff" color="#6200E8" height={100} width={100} />
+      </LoaderContainer>
+    );
+  }
+
+  if (!loading && !daos.length) {
+    return (
+      <LoaderContainer>
+        <EmptyTitle>There is no parties yet!</EmptyTitle>
+        <Button
+          className={button}
+          containerClassName={buttonContainer}
+          onClick={onCreateClick}
+        >
+          Try to start a new one
+        </Button>
       </LoaderContainer>
     );
   }
 
   return (
     <>
-      {daos && daos.length ? (
+      {daos && daos.length > 0 && (
         <InfiniteScroll
           dataLength={8}
           next={loadMore}
           hasMore={hasMore}
-          loader={<Loader
-            type="Puff"
-            color="#6200E8"
-            height={50}
-            width={50}
-          />}
+          loader={
+            <LoaderContainer>
+              <Loader type="Puff" color="#6200E8" height={50} width={50} />
+            </LoaderContainer>
+          }
           scrollableTarget="scrollableDiv"
         >
           <Root>
             {daos.map(
-              ({
-                partyName,
-                ceramic_stream,
-                percentage,
-                users,
-                image,
-                price,
-              }, index) => {
+              (
+                {
+                  partyName,
+                  ceramic_stream,
+                  percentage,
+                  users,
+                  image,
+                  price,
+                  isBought,
+                },
+                index
+              ) => {
                 return (
                   <NftCard
+                    key={ceramic_stream}
                     id={ceramic_stream}
                     price={price}
                     percentage={percentage}
                     title={partyName}
                     image={image}
                     participants={users?.length}
-                    className={cn(card, (index + 1) % 4 !== 0 ? mr32 : '')}
+                    className={cn(card, (index + 1) % 4 !== 0 ? mr32 : "")}
+                    isBought={isBought}
                   />
                 );
               }
             )}
           </Root>
         </InfiniteScroll>
-      ) : (
-        <LoaderContainer>
-          <EmptyTitle>There is no parties yet!</EmptyTitle>
-          <Button 
-            className={button}
-            containerClassName={buttonContainer}
-            onClick={onCreateClick}
-          >Try to start a new one</Button>
-        </LoaderContainer>
       )}
     </>
   );

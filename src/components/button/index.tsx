@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import cn from 'classnames';
 
 //#region styles
 import { styled } from '@linaria/react';
+import { css, cx } from '@linaria/core';
 
 interface ButtonProps {
   isLight?: boolean;
@@ -40,6 +40,15 @@ const StyledButton = styled.button<ButtonProps>`
     border: none;
   }
 `;
+
+const disabledButton = css`
+  color: #5C5C5C;
+  background: linear-gradient(0deg, #171E22, #171E22), linear-gradient(0deg, #263238, #263238), linear-gradient(0deg, #141414, #141414), #FFFFFF;
+`;
+
+const disabledContainer = css`
+  background: #5C5C5C;
+`;
 //#endregion
 
 type PropsType = {
@@ -65,9 +74,9 @@ const Button: FC<PropsType> = ({
   onClick
 }) => {
   return (
-    <Root active={active} className={containerClassName}>
+    <Root active={active} className={cx(containerClassName, disabled && disabledContainer)}>
       <StyledButton
-        className={className}
+        className={cx(className, disabled && disabledButton)}
         onClick={onClick}
         form={form}
         type={type}

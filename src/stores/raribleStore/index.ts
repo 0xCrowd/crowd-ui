@@ -13,15 +13,16 @@ class RaribleStore {
   }
 
   order: any = null;
-  orderState: StateEnum = StateEnum.Empty;
   price: number | null = null;
+  nftDataLoadingState = StateEnum.Empty
 
-  getOrder = async (id: string, isSetOrder = true) => {
+  getOrder = async (id: string, isSetOrder = true, withNotify = false) => {
     try {
       const { networkId } = chainStore;
+
       if (isSetOrder) {
         runInAction(() => {
-          this.orderState = StateEnum.Loading;
+          this.nftDataLoadingState = StateEnum.Loading;
         });
       }
 
@@ -37,22 +38,28 @@ class RaribleStore {
         if (!response.data.bestSellOrder) {
           throw new Error("this nft without fixed price");
         }
+
         runInAction(() => {
           this.order = response.data;
-          this.orderState = StateEnum.Success;
         });
       } else {
         return response.data;
       }
     } catch (error: any) {
-      notify(error.message);
-      this.orderState = StateEnum.Error;
+      if (withNotify) {
+        notify(error.message);
+      }
+      
+      runInAction(() => {
+        this.nftDataLoadingState = StateEnum.Error;
+      });
     }
   };
 
-  getPrice = async (contract: string, tokenId: string) => {
+  getPrice = async (contract: string, tokenId: string, withNotify = false) => {
     try {
       const { networkId } = chainStore;
+
       const response = await axios.get(
         `https://api${
           networkId === 4 ? "-staging" : ""
@@ -64,13 +71,23 @@ class RaribleStore {
           },
         }
       );
+
       const min = minBy(response.data.orders, (item: any) => item.makePrice);
+
       runInAction(() => {
         this.price = min.makePrice;
+        this.nftDataLoadingState = StateEnum.Success;
       });
+
       return min.makePrice
     } catch (error: any) {
-      notify(error.message);
+      if (withNotify) {
+        notify(error.message);
+      }
+
+      runInAction(() => {
+        this.nftDataLoadingState = StateEnum.Error;
+      });
     }
   };
 
