@@ -152,7 +152,7 @@ const DesktopPage = ({
           myPaid={adaptedDao?.myPaid}
           onAddClick={() => onOpenModal(ModalModeEnum.Eth)}
           onWithdrawClick={() => onOpenModal(ModalModeEnum.Withdraw)}
-          isBuyout={adaptedDao.isBought || false}
+          isBuyout={adaptedDao?.isBought || false}
           isSold={isSold}
         />
       </MainBlock>
