@@ -21,7 +21,7 @@ const button = css`
 const ProposalTab = () => {
   return (
     <div>
-      <Button className={buttonContainer} containerClassName={buttonContainer} active>Start new proposal</Button>
+      <Button className={buttonContainer}>Start new proposal</Button>
       <MobileProposal />
       <MobileProposal />
       <MobileProposal />

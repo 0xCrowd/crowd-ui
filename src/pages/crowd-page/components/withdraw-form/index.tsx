@@ -10,7 +10,7 @@ import { initialValues, validate, IEthFormData } from "../eth-form/constants";
 //#region styles
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
-import { mb12 } from "@assets/styles/constants";
+import { mb12 } from "@assets/styles/atomic";
 
 const buttonContainer = css`
   width: 100% !important;
@@ -76,7 +76,6 @@ const WithdrawForm = ({
         }
       />
       <Button
-        containerClassName={buttonContainer}
         className={button}
         form="withdraw"
         type="submit"

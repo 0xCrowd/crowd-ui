@@ -15,7 +15,7 @@ import { fixedRound } from "@app/utils/round";
 
 const API_ENDPOINT = "https://crowd-protocol-master-9iojf.ondigitalocean.app"
 
-const { getOrder, getPrice } = raribleStore;
+const { getOrder, getPrice, getLastPurchase } = raribleStore;
 
 class DaoStore {
   constructor() {
@@ -25,11 +25,11 @@ class DaoStore {
   originalDao!: IDao;
   adaptedDao!: IAdaptedDao;
   daosOriginal: IDao[] = [];
-  loadedDaos: number = 0;
-  totalDaos = 0;
-  daosPage = 0;
-  daosLimit = 12;
-  daos: IAdaptedDao[] = [];
+  loadedCrowds: number = 0;
+  totalCrowds = 0;
+  crowdPage = 0;
+  crowdLimit = 12;
+  crowds: AdaptedCrowd[] = [];
   daoState = StateEnum.Loading;
   createDaoState = StateEnum.Empty;
 
@@ -48,45 +48,54 @@ class DaoStore {
   voteState = StateEnum.Empty;
 
   //#region daos
-  getDaosList = async (address?: string) => {
+  getCrowdList = async (address?: string) => {
     try {
-      if (this.daosPage === 0) {
-        this.loadedDaos = 0;
+      if (this.crowdPage === 0) {
+        this.loadedCrowds = 0;
         this.daoState = StateEnum.Loading;
       }
 
-      const response = await axios.get(`${API_ENDPOINT}/daos`, {
+      const response = await axios.get<ApiResponse<CrowdApiType>>(`${API_ENDPOINT}/crowd`, {
         params: {
-          offset: this.daosPage * this.daosLimit,
-          limit: this.daosLimit,
+          offset: this.crowdPage * this.crowdLimit,
+          limit: this.crowdLimit,
           address,
         },
         withCredentials: false,
       });
 
-      const daos: IAdaptedDao[] = [];
-
       runInAction(() => {
-        this.loadedDaos += response.data.items.length;
+        this.loadedCrowds += response.data.items.length;
       });
 
-      await Promise.all(response.data.items.map(async (dao: IDao) => {
-        const adaptedDao = await this.getDaoInfo(dao);
-        if (adaptedDao) daos.push(adaptedDao);
+      const crowds: AdaptedCrowd[] = [];
+
+      await Promise.all(response.data.items.map(async (crowd: CrowdApiType) => {
+        if (!crowd.name || !crowd.price || !crowd.media) {
+          return false;
+        }
+
+        const adaptedCrowd = await this.adaptCrowd(crowd);
+
+        if (adaptedCrowd) {
+          crowds.push(adaptedCrowd);
+        }
       }));
 
-      if (this.daosPage === 0) {
+      console.log(response, 'response');
+
+      if (this.crowdPage === 0) {
         runInAction(() => {
-          this.daos = daos;
+          this.crowds = crowds;
         });
       } else {
         runInAction(() => {
-          this.daos = [...this.daos, ...daos];
+          this.crowds = [...this.crowds, ...crowds];
         });
       }
 
       runInAction(() => {
-        this.totalDaos = response.data.total;
+        this.totalCrowds = response.data.total;
         this.daoState = StateEnum.Success;
       });
     } catch (error: any) {
@@ -94,6 +103,25 @@ class DaoStore {
       this.daoState = StateEnum.Error;
     }
   };
+
+  adaptCrowd = async (crowd: CrowdApiType, withToken?: boolean): Promise<AdaptedCrowd> => {
+    // @ts-ignore
+    const l1Dao = new window.web3.eth.Contract(DAO.abi, crowd.l1_vault);
+
+    const total = await l1Dao.methods.getBalance().call();
+    const collected = +await window.web3.utils.fromWei(total, 'ether') + this.delta;
+
+    let tokenTicker = '';
+    if (withToken) {
+      tokenTicker = await l1Dao.methods.getTokenTicker().call();
+    }
+
+    return {
+      ...crowd,
+      collected,
+      percentage: Math.ceil((collected / +crowd.price) * 100),
+    }
+  }
 
   getDao = async (stream: string) => {
     try {
@@ -126,8 +154,12 @@ class DaoStore {
       const { meta } = await getOrder(dao.buyout_target, false);
       const [contract, id] = dao.buyout_target.split(':');
 
-      const price = await getPrice(contract, id);
+      let price = await getPrice(contract, id);
       const priceWithDelta = price + this.delta;
+
+      if (!price) {
+        price = await getLastPurchase(contract, id);
+      }
 
       // @ts-ignore
       const l1Dao = new window.web3.eth.Contract(DAO.abi, dao.l1_vault);
@@ -141,7 +173,7 @@ class DaoStore {
       const { address } = chainStore;
     
       const isBought = await this.isBought(dao.ceramic_stream);
-      console.log(isBought, 'is')
+
       const imagePath = meta.image ?? meta.animation;
 
       return {
@@ -161,11 +193,11 @@ class DaoStore {
     } catch (error: any) {}
   };
 
-  loadMoreDaos = async (address?: string) => {
+  loadMoreCrowds = async (address?: string) => {
     try {
-      this.daosPage += 1;
+      this.crowdPage += 1;
 
-      this.getDaosList(address);
+      this.getCrowdList(address);
     } catch (error: any) {
       notify(error.message);
       this.daoState = StateEnum.Error;
@@ -173,7 +205,7 @@ class DaoStore {
   };
 
   clearPage = () => {
-    this.daosPage = 0;
+    this.crowdPage = 0;
   };
 
   createDao = async ({ tokenName }: IPartyFormData) => {
@@ -261,7 +293,7 @@ class DaoStore {
     } catch (error) {
       console.log(error)
     }
-  }
+  };
   //#endregion
 
   //#region proposals
@@ -429,7 +461,7 @@ class DaoStore {
 
   getDelta = async () => {
     try {
-      const response = await axios.get(`${API_ENDPOINT}/health`);
+      const response = await axios.get<HealthResponse>(`${API_ENDPOINT}/health`);
 
       runInAction(() => {
         this.delta = +response.data.gas_tank_state.delta;

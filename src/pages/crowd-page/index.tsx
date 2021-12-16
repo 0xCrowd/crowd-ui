@@ -19,7 +19,7 @@ import { IEthFormData } from "./components/eth-form/constants";
 
 //#region styles
 import { styled } from "@linaria/react";
-import { media } from "@app/assets/styles/constants";
+import { media } from "@app/assets/styles/atomic";
 import { ProposalTypeEnum } from "../../enums/proposalTypeEnum/index";
 import { notifySuccess } from "../../utils/notify";
 import { ProposalStatusEnum } from "@app/enums/proposal-status-enum";

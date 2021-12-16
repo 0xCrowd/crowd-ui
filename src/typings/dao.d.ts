@@ -1,5 +1,6 @@
 import { ProposalTypeEnum } from './../enums/proposalTypeEnum/index';
 import { ProposalStatusEnum } from '../enums/proposal-status-enum/index';
+import { PartyStatus } from '../enums/crowd-status/crowd-status';
 
 declare global {
   interface IDeposits {
@@ -36,6 +37,7 @@ declare global {
     imageMeta: IImageMeta;
     tokenTicker?: string;
     isBought?: boolean;
+    status?: PartyStatus
   }
   
   interface IProposal {

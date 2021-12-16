@@ -4,7 +4,7 @@ import { TabsEnum } from '@enums/tabs/index';
 
 //#region styles
 import { styled } from "@linaria/react";
-import { media } from "@app/assets/styles/constants";
+import { media } from "@app/assets/styles/atomic";
 
 import plusWhite from '@assets/images/plus_wh.svg';
 import logo from '@assets/images/logo.png';

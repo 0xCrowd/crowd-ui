@@ -11,7 +11,7 @@ import { ModalModeEnum } from "../index";
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { media } from "@app/assets/styles/constants";
+import { media } from "@app/assets/styles/atomic";
 
 const MainBlock = styled.div`
   display: flex;
@@ -135,8 +135,6 @@ const DesktopPage = ({
           <Button
             onClick={() => onOpenModal(ModalModeEnum.Proposal)}
             className={button}
-            containerClassName={buttonContainer}
-            active
             disabled={!adaptedDao?.isBought}
           >
             New proposal

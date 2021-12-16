@@ -24,14 +24,15 @@ const navbar = css`
 
 interface Props {
   balance: string;
-  blockChainState: StateEnum
+  blockChainState: StateEnum;
+  onAddNew?: () => void;
   className?: string;
 }
 
-const Layout = ({ balance, blockChainState, children, className }: PropsWithChildren<Props>): ReactElement => {
+const Layout = ({ balance, blockChainState, children, onAddNew, className }: PropsWithChildren<Props>): ReactElement => {
   return (
     <Root className={className}>
-      <Navbar balance={balance} className={navbar} />
+      <Navbar balance={balance} className={navbar} onAddNew={onAddNew} />
       {blockChainState === StateEnum.Error ? <ErrorComponent /> : children}
       <ToastContainer
         position="top-center"

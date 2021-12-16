@@ -196,7 +196,7 @@ const CrowdTab = () => {
         <Value>1000</Value>
       </Row>
       <Percentage number={10} className={percentage} mainClassName={mainPercentage} precentClassName={percent} />
-      <Button active className={button} containerClassName={buttonContainer}>+ Add funds</Button>
+      <Button className={button}>+ Add funds</Button>
       <FundsLabel>Your funds: 3% / 0.5 eth</FundsLabel>
       <Hr className={hr}/>
       <UsersTitle>user party name</UsersTitle>

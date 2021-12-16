@@ -122,8 +122,8 @@ const MobileProposal = () => {
         <Value>3%</Value>
       </Row>
       <ButtonRow>
-        <Button className={button} containerClassName={buttonContainer}>Vote FOR</Button>
-        <Button className={button} containerClassName={buttonContainer}>Vote AGAINST</Button>
+        <Button className={button}>Vote FOR</Button>
+        <Button className={button}>Vote AGAINST</Button>
       </ButtonRow>
       <Hr />
     </>

@@ -9,7 +9,7 @@ import { IEthFormData, initialValues, validate } from './constants';
 
 //#region styles
 import { css } from '@linaria/core';
-import { mb12 } from '@assets/styles/constants';
+import { mb12 } from '@assets/styles/atomic';
 
 const buttonContainer = css`
   width: 100% !important;
@@ -48,7 +48,6 @@ const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
         error={(touched.deposite && errors.deposite) ? errors.deposite : ''}
       />
       <Button
-        containerClassName={buttonContainer}
         className={button}
         form="eth"
         type="submit"
