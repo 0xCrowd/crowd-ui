@@ -9,7 +9,7 @@ export const initialValues: IEthFormData = {
 export const validate = (values: IEthFormData): ErrorType => {
   const errors: ErrorType = {};
 
-  const rx = /^\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?$/;
+  const rx = /^[0-9]*[.,]?[0-9]+$/;
   if (!rx.test(values.deposite)) {
     errors.deposite = 'Input correct number';
   }

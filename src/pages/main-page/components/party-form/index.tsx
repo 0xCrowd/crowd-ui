@@ -2,15 +2,14 @@ import React, { ReactElement } from "react";
 import Loader from "react-loader-spinner";
 import { useFormik } from "formik";
 
-
 import Input from "@app/components/input";
-import Button from "@app/components/button";
+import Button, { ButtonSize } from "@app/components/button";
 
-import { initialValues, validate, inputs, IPartyFormData } from './constants';
+import { initialValues, validate, IPartyFormData } from "./constants";
 
 //#region styles
 import { css } from "@linaria/core";
-import { mb12 } from "@assets/styles/constants";
+import { mb12 } from "@assets/styles/atomic";
 
 const buttonContainer = css`
   width: 100% !important;
@@ -25,12 +24,17 @@ interface PropsType {
   loading: boolean;
   disabledSubmit?: boolean;
   onSubmit: (data: IPartyFormData) => void;
-};
+}
 
-const PartyForm = ({ loading, disabledSubmit, onSubmit }: PropsType): ReactElement => {
+const PartyForm = ({
+  loading,
+  disabledSubmit,
+  onSubmit,
+}: PropsType): ReactElement => {
   const { handleSubmit, handleChange, values, errors, touched } = useFormik({
     initialValues,
-    onSubmit: values => {
+    onSubmit: (values) => {
+      console.log(values, 'val')
       onSubmit(values);
     },
     validate: validate,
@@ -38,33 +42,23 @@ const PartyForm = ({ loading, disabledSubmit, onSubmit }: PropsType): ReactEleme
 
   return (
     <form onSubmit={handleSubmit} id="party-form-data">
-      {inputs.map(({ label, id, placeholder }) => (
-        <Input
-          key={id}
-          className={mb12}
-          label={label}
-          id={id}
-          placeholder={placeholder}
-          value={values[id]}
-          onChange={handleChange}
-          error={touched[id] && errors[id]}
-        />
-      ))}
+      <Input
+        className={mb12}
+        id="url"
+        label="URL of the fixed price NFT on Rarible.com"
+        placeholder="https://rarible.com/token/id"
+        value={values.url}
+        onChange={handleChange}
+        error={touched.url && errors.url ? errors.url : ""}
+      />
       <Button
-        containerClassName={buttonContainer}
+        size={ButtonSize.large}
         className={button}
         form="party-form-data"
         type="submit"
         disabled={loading || disabledSubmit}
       >
-        {loading ? (
-          <Loader 
-            type="Puff"
-            color="#6200E8"
-            height={20}
-            width={20}
-          />
-          )  : 'Preview'}
+        Preview
       </Button>
     </form>
   );

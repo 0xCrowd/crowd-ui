@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 import Card from '@components/card';
 import Title from '@components/title';
 import Percentage from '@components/percentage';
-import Button from '@components/button';
+import Button, { ButtonMode } from '@components/button';
 
 import { ProposalStatusEnum } from '@enums/proposal-status-enum/index';
 
@@ -136,12 +136,10 @@ const VoteBlock = ({
       {status !== ProposalStatusEnum.Success && <ButtonRow>
         <Button 
           className={lightButton} 
-          containerClassName={lightContainer} 
-          mode="light"
-          active
+          mode={ButtonMode.dark}
           onClick={onVoteFor}
         >Vote For</Button>
-        <Button className={button} containerClassName={buttonContainer} onClick={onVoteAgainst}>Vote Against</Button>
+        <Button className={button} onClick={onVoteAgainst}>Vote Against</Button>
       </ButtonRow>}
     </Card>
   );

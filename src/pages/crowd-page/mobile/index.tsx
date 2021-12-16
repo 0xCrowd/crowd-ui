@@ -9,7 +9,7 @@ import ProposalTab from './components/proposal-tab/index';
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { media } from "@app/assets/styles/constants";
+import { media } from "@app/assets/styles/atomic";
 
 import logo from "@assets/images/logo.png";
 import close from "@assets/images/closeDark.svg";

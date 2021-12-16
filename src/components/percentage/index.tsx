@@ -9,7 +9,7 @@ import { styled } from '@linaria/react';
 const Root = styled.div`
   background: #00F0FF;
   box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.4);
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 7px 16px;
 `;
 

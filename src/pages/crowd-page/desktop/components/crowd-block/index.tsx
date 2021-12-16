@@ -11,7 +11,7 @@ import Button from "@app/components/button";
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { mb4 } from "@assets/styles/constants";
+import { mb4 } from "@assets/styles/atomic";
 
 import eth from "@assets/images/eth_gr.png";
 
@@ -289,8 +289,6 @@ const CrowdBlock = ({
       {isSold && myPaid && (
         <Button
           className={button}
-          containerClassName={buttonContainer}
-          active
           onClick={() => {}}
         >
           - Withdraw
@@ -303,16 +301,12 @@ const CrowdBlock = ({
           <Row>
             <Button
               className={smallButton}
-              containerClassName={smallButtonContainer}
-              active
               onClick={onAddClick}
             >
               + Add
             </Button>
             <Button
               className={smallButton}
-              containerClassName={smallButtonContainer}
-              active
               onClick={onWithdrawClick}
             >
               - Withdraw
@@ -321,8 +315,6 @@ const CrowdBlock = ({
         ) : (
           <Button
             className={button}
-            containerClassName={buttonContainer}
-            active
             onClick={onAddClick}
           >
             + Add funds

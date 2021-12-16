@@ -5,7 +5,7 @@ import Modal from "react-modal";
 //#region styles
 import { css } from '@linaria/core';
 import { styled } from '@linaria/react';
-import { media } from '@app/assets/styles/constants';
+import { media } from '@app/assets/styles/atomic';
 
 import close from '@assets/images/close.svg';
 import closeDark from '@assets/images/closeDark.svg';

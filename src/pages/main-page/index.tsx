@@ -18,13 +18,13 @@ import { StateEnum } from "@enums/state-enum";
 import { IPartyFormData } from "./components/party-form/constants";
 import { getImageUrl } from "@app/utils/getImageUrl";
 
-import plus from "@app/assets/images/plus.svg";
-
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { media } from "@app/assets/styles/constants";
+import { media } from '../../assets/styles/atomic';
 import { notify } from '../../utils/notify';
+
+import plus from "@app/assets/images/plus.svg";
 
 const AddButton = styled.button`
   width: 36px;
@@ -87,17 +87,17 @@ const MainPage: FC = observer(() => {
   const { loadWeb3, loadBlockChain, balance, blockChainState, address } = chainStore;
 
   const {
-    getDaosList,
-    loadMoreDaos,
+    getCrowdList,
+    loadMoreCrowds,
     createDao,
     getDelta,
     clearPage,
     delta,
-    daos,
-    totalDaos,
+    crowds,
+    totalCrowds,
     daoState,
     createDaoState,
-    loadedDaos,
+    loadedCrowds,
   } = daoStore;
 
   const [activeTab, setActiveTab] = useState(TabsEnum.All);
@@ -112,7 +112,7 @@ const MainPage: FC = observer(() => {
 
   useEffect(() => {
     if (blockChainState === StateEnum.Success)
-      getDaosList(activeTab === TabsEnum.My ? address : "");
+      getCrowdList(activeTab === TabsEnum.My ? address : "");
   }, [blockChainState, activeTab]);
 
   const openModal = () => setIsOpen(true);
@@ -124,7 +124,8 @@ const MainPage: FC = observer(() => {
   };
 
   const onSubmit = (data: IPartyFormData) => {
-    setParty(data);
+    try {
+      setParty(data);
 
     let id = "";
 
@@ -143,16 +144,20 @@ const MainPage: FC = observer(() => {
     }
     const [nftAddress, newNftId] = id.split(":");
 
-    getOrder(id, true);
-    getPrice(nftAddress, newNftId, true);
+    getOrder(id);
+    getPrice(nftAddress, newNftId);
+    } catch (error: any) {
+      notify(error.message);
+    }
   };
+  
 
   const onCreate = async () => {
     try {
       await createDao(party as IPartyFormData);
       closeModal();
       clearPage();
-      getDaosList(activeTab === TabsEnum.My ? address : "");
+      getCrowdList(activeTab === TabsEnum.My ? address : "");
     } catch (error) {}
   };
 
@@ -163,13 +168,13 @@ const MainPage: FC = observer(() => {
   };
 
   return (
-    <Layout balance={balance} blockChainState={blockChainState}>
+    <Layout balance={balance} blockChainState={blockChainState} onAddNew={() => setIsOpen(true)}>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         preventScroll={false}
         className={order ? modalLarge : ""}
-        title={order ? "" : "Start a PARTY"}
+        title={order ? "Create a CROWD" : "Start a CROWD"}
         isLight={!order ? true : false}
         onBack={order ? clearOrder : undefined}
       >
@@ -202,21 +207,12 @@ const MainPage: FC = observer(() => {
         onChange={onTabChange}
         onAdd={openModal}
       />
-      <ButtonsRow className={tabs}>
-        <TabButtons activeTab={activeTab} onChange={onTabChange} />
-        <AddButtonContainer>
-          <ButtonText>START A PARTY</ButtonText>
-          <AddButton onClick={openModal}>
-            <img src={plus} alt="plus" />
-          </AddButton>
-        </AddButtonContainer>
-      </ButtonsRow>
       <Parties
         loading={daoState === StateEnum.Loading}
-        daos={daos}
+        crowds={crowds}
         onCreateClick={openModal}
-        loadMore={loadMoreDaos}
-        hasMore={loadedDaos < totalDaos}
+        loadMore={loadMoreCrowds}
+        hasMore={loadedCrowds < totalCrowds}
       />
     </Layout>
   );

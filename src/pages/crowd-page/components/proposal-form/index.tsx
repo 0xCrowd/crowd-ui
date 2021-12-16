@@ -8,7 +8,7 @@ import { IProposalFormData, validate, initialValues } from './constants';
 
 //#region styles
 import { css } from '@linaria/core';
-import { mb12 } from '@assets/styles/constants';
+import { mb12 } from '@assets/styles/atomic';
 import { useFormik } from 'formik';
 
 
@@ -48,7 +48,6 @@ const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
         error={touched.price && errors.price || ''}
       />
       <Button
-        containerClassName={buttonContainer}
         className={button}
         form="proposal"
         type="submit"

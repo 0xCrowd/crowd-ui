@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 
-import Button from "@app/components/button";
+import Button, { ButtonMode } from "@app/components/button";
 
 import { TabsEnum } from "@enums/tabs/index";
 
@@ -59,20 +59,16 @@ const TabButtons = ({ activeTab, onChange, className }: Props): ReactElement => 
     <Root className={className}>
       <ButtonContainer>
         <Button
-          active={activeTab === TabsEnum.All}
           onClick={() => onChange(TabsEnum.All)}
-          mode={activeTab === TabsEnum.All ? "light" : "dark"}
+          mode={activeTab === TabsEnum.All ? ButtonMode.light : ButtonMode.dark}
           className={activeTab === TabsEnum.All ? acitveButton : button}
-          containerClassName={container}
         >
           ALL CROWDS
         </Button>
         <Button
-          active={activeTab === TabsEnum.My}
           onClick={() => onChange(TabsEnum.My)}
-          mode={activeTab === TabsEnum.My ? "light" : "dark"}
+          mode={activeTab === TabsEnum.My ? ButtonMode.light : ButtonMode.dark}
           className={activeTab === TabsEnum.My ? acitveButton : button}
-          containerClassName={container}
         >
           MY CROWDS
         </Button>

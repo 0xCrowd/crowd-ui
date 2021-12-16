@@ -4,18 +4,18 @@ import cn from "classnames";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import NftCard from "@app/components/nft-card";
-import Button from "@app/components/button";
 
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { media, mr32 } from "@assets/styles/constants";
+import { media, mr32 } from "@assets/styles/atomic";
 
 const Root = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 1152px;
   margin: auto;
+  padding-top: 48px;
 
   ${media("mobile")} {
     flex-direction: column;
@@ -26,7 +26,7 @@ const Root = styled.div`
 
 const LoaderContainer = styled.div`
   width: 100%;
-  height: 50%;
+  height: 80vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -80,14 +80,14 @@ const buttonContainer = css`
 
 interface Props {
   loading: boolean;
-  daos: IAdaptedDao[];
+  crowds: AdaptedCrowd[];
   onCreateClick: () => void;
   loadMore: () => void;
   hasMore: boolean;
 }
 
 const Parties = ({
-  daos,
+  crowds,
   loading,
   onCreateClick,
   loadMore,
@@ -101,24 +101,17 @@ const Parties = ({
     );
   }
 
-  if (!loading && !daos.length) {
+  if (!loading && !crowds.length) {
     return (
       <LoaderContainer>
         <EmptyTitle>There is no parties yet!</EmptyTitle>
-        <Button
-          className={button}
-          containerClassName={buttonContainer}
-          onClick={onCreateClick}
-        >
-          Try to start a new one
-        </Button>
       </LoaderContainer>
     );
   }
 
   return (
     <>
-      {daos && daos.length > 0 && (
+      {(
         <InfiniteScroll
           dataLength={8}
           next={loadMore}
@@ -131,30 +124,29 @@ const Parties = ({
           scrollableTarget="scrollableDiv"
         >
           <Root>
-            {daos.map(
+            {crowds.map(
               (
                 {
-                  partyName,
+                  name,
+                  media,
+                  price,
                   ceramic_stream,
                   percentage,
-                  users,
-                  image,
-                  price,
-                  isBought,
+                  deposits,
+                  status,
                 },
                 index
               ) => {
                 return (
                   <NftCard
-                    key={ceramic_stream}
                     id={ceramic_stream}
-                    price={price}
+                    price={+price}
                     percentage={percentage}
-                    title={partyName}
-                    image={image}
-                    participants={users?.length}
-                    className={cn(card, (index + 1) % 4 !== 0 ? mr32 : "")}
-                    isBought={isBought}
+                    title={name}
+                    participants={deposits.length}
+                    className={cn(card, (index + 1) % 4 === 0 ? '' : mr32)}
+                    status={status}
+                    image={media}
                   />
                 );
               }

@@ -35,10 +35,6 @@ class RaribleStore {
       });
 
       if (isSetOrder) {
-        if (!response.data.bestSellOrder) {
-          throw new Error("this nft without fixed price");
-        }
-
         runInAction(() => {
           this.order = response.data;
         });
@@ -90,6 +86,28 @@ class RaribleStore {
       });
     }
   };
+
+  getLastPurchase = async (contract: string, tokenId: string) => {
+    try {
+      const { networkId } = chainStore;
+      const response = await axios({
+        url: `https://ethereum-api${networkId === 4 ? '-staging': ''}.rarible.org/v0.1/nft-order/activities/byItem`,
+        withCredentials: false,
+        params: {
+          contract,
+          tokenId,
+          type: 'MATCH'
+        },
+      });
+      if (response.data.items.length) {
+        console.log(response.data.items[0].price, 'last price')
+      }
+      return response.data.items[0].price
+      console.log(response.data.items);
+    } catch (error) {
+      
+    }
+  }
 
   clearOrder = () => {
     this.order = null;

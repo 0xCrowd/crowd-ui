@@ -1,92 +1,138 @@
-import React, { FC } from 'react';
+import React, { FC } from "react";
+import Loader from "react-loader-spinner";
 
 //#region styles
-import { styled } from '@linaria/react';
-import { css, cx } from '@linaria/core';
+import { styled } from "@linaria/react";
+import { css, cx } from "@linaria/core";
+import { textPrimaryDark } from "@app/assets/styles/constants";
 
-interface ButtonProps {
-  isLight?: boolean;
-  active: boolean;
-}
+type StyleProps = {
+  height: number;
+  width: number;
+};
 
-const Root = styled.div<ButtonProps>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: ${({ active }) => active ? '53px' : '54px'};
-  width: ${({ active }) => active ? '176px' : '163px'};
-  background: ${({ active }) => active ? 'linear-gradient(97.56deg, #00F0FF 8.07%, #FF1CF7 91.93%)' : '#263238'};;
-  border-radius: 10px;
-`;
-
-const StyledButton = styled.button<ButtonProps>`
+const StyledButton = styled.button<StyleProps>`
+  height: ${({ height }) => `${height}px`};
+  width: ${({ width }) => `${width}px`};
   flex-shrink: 0;
-  height: ${({ active }) => active ? '50px' : '54px'};
-  width: ${({ active }) => active ? '172px' : '164px'};
-  background: ${({ isLight }) => isLight ? 'linear-gradient(0deg, #FFFFFF, #FFFFFF), #263238' : '#263238'};
-  border: 1px solid #263238;
+  background-color: #263238;
   box-sizing: border-box;
   border-radius: 10px;
   font-family: Inter;
   font-weight: bold;
   font-size: 14px;
   line-height: 12px;
-  color: ${({ isLight }) => isLight ? '#263238' : '#fff'};
+  color: #fff;
+  border: none;
   cursor: pointer;
   outline: none;
 
-  &::focus {
+  &:focus {
     outline: none;
     border: none;
   }
+
+  &:hover {
+    background-color: #111618;
+  }
+
+  &:active {
+    background-color: #fff;
+    color: ${textPrimaryDark}
+  }
+`;
+
+const lightButton = css`
+  background-color: linear-gradient(0deg, #ffffff, #ffffff), #263238;
+  color: #263238;
 `;
 
 const disabledButton = css`
-  color: #5C5C5C;
-  background: linear-gradient(0deg, #171E22, #171E22), linear-gradient(0deg, #263238, #263238), linear-gradient(0deg, #141414, #141414), #FFFFFF;
+  color: #5c5c5c;
+  background: linear-gradient(0deg, #171e22, #171e22),
+    linear-gradient(0deg, #263238, #263238),
+    linear-gradient(0deg, #141414, #141414), #ffffff;
 `;
 
-const disabledContainer = css`
-  background: #5C5C5C;
+const gradientButton = css`
+  background: linear-gradient(94.13deg, #00f0ff -27.4%, #ff1cf7 95.95%),
+    linear-gradient(0deg, #ffffff, #ffffff), #263238;
+`;
+
+const roundedButton = css`
+  border-radius: 20px;
+`;
+
+const linkButton = css`
+  width: auto;
+  height: 100%;
+  padding: 0;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 700;
 `;
 //#endregion
 
-type PropsType = {
-  active?: boolean;
-  onClick?: (e: any) => void;
-  type?: "button" | "submit" | "reset" | undefined;
-  form?: string;
-  className?: string;
-  containerClassName?: string;
-  disabled?: boolean;
-  mode?: 'dark' | 'light';
+export enum ButtonMode {
+  dark = "dark",
+  light = "light",
+  gradient = "gradient",
+  link = "link",
 }
 
-const Button: FC<PropsType> = ({ 
-  active = false, 
-  form, 
-  type, 
+export enum ButtonSize {
+  large = "large",
+  middle = "middle",
+  small = "small",
+}
+
+export type ButtonProps = {
+  type?: "button" | "submit" | "reset" | undefined;
+  form?: string;
+  disabled?: boolean;
+  mode?: ButtonMode;
+  rounded?: boolean;
+  size?: ButtonSize;
+  loading?: boolean;
+  onClick?: (e: any) => void;
+  className?: string;
+};
+
+const Button: FC<ButtonProps> = ({
+  type,
+  form,
   disabled,
   mode,
+  rounded,
+  size = ButtonSize.middle,
+  loading,
+  onClick,
   className,
-  containerClassName,
-  children, 
-  onClick
+  children,
 }) => {
   return (
-    <Root active={active} className={cx(containerClassName, disabled && disabledContainer)}>
-      <StyledButton
-        className={cx(className, disabled && disabledButton)}
-        onClick={onClick}
-        form={form}
-        type={type}
-        disabled={disabled}
-        isLight={mode === 'light'}
-        active={active}
-      >
-        {children}
-      </StyledButton>
-    </Root>
+    <StyledButton
+      height={size === ButtonSize.large ? 54 : ButtonSize.middle ? 36 : 32}
+      width={size === ButtonSize.large ? 200 : ButtonSize.middle ? 176 : 304}
+      className={cx(
+        rounded && roundedButton,
+        mode === ButtonMode.gradient && gradientButton,
+        mode === ButtonMode.light && lightButton,
+        className,
+        disabled && disabledButton,
+        mode === ButtonMode.link && linkButton
+      )}
+      onClick={onClick}
+      form={form}
+      type={type}
+      disabled={disabled}
+    >
+      {loading ? (
+        <Loader type="Puff" color="#6200E8" height={20} width={20} />
+      ) : (
+        children
+      )}
+    </StyledButton>
   );
 };
 

@@ -19,7 +19,7 @@ const Label = styled.label`
   margin-bottom: 16px;
   font-family: Inter;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 16px;
   letter-spacing: 0.25px;
   color: #263238;
