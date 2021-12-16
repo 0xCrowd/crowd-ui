@@ -174,7 +174,7 @@ const MainPage: FC = observer(() => {
         onRequestClose={closeModal}
         preventScroll={false}
         className={order ? modalLarge : ""}
-        title={order ? "" : "Start a PARTY"}
+        title={order ? "Create a CROWD" : "Start a CROWD"}
         isLight={!order ? true : false}
         onBack={order ? clearOrder : undefined}
       >

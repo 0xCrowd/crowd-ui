@@ -71,10 +71,6 @@ class DaoStore {
       const crowds: AdaptedCrowd[] = [];
 
       await Promise.all(response.data.items.map(async (crowd: CrowdApiType) => {
-        if (!crowd.name || !crowd.price || !crowd.media) {
-          return false;
-        }
-
         const adaptedCrowd = await this.adaptCrowd(crowd);
 
         if (adaptedCrowd) {

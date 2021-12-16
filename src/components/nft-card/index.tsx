@@ -9,7 +9,7 @@ import { styled } from "@linaria/react";
 import {
   defaultBorderRadius,
   textPrimary,
-  textPrimaryDark,
+  textSecondary,
 } from "@app/assets/styles/constants";
 import { mb12 } from "@app/assets/styles/atomic";
 
@@ -124,7 +124,7 @@ const Status = styled.p`
   margin: 0;
   font-size: 12px;
   font-weight: 500;
-  color: ${textPrimaryDark};
+  color: ${textSecondary};
   text-transform: uppercase;
   text-align: center;
 `;
@@ -159,10 +159,7 @@ const NftCard = ({
   const [statusText, setStatusText] = useState<CrowdStatusText>(CrowdStatusText.active);
   const [cardBackground, setCardBackground] = useState('');
 
-  const onImageLoaded = () => {
-    setLoaded(true);
-    console.log('load')
-  };
+  const onImageLoaded = () => setLoaded(true);
 
   useEffect(() => {
     const imgElCurrent = imgEl.current;
@@ -203,7 +200,7 @@ const NftCard = ({
 
   return (
     <Root className={className} background={cardBackground}>
-      <Title className={mb12}>{title}</Title>
+      <Title className={mb12}>{title || 'XXX'}</Title>
       <PreviewContainer>
         <Preview src={image} alt="preview" className={mb12} ref={imgEl}/>
         {!loaded && <PreviewLoader className={mb12}>
@@ -219,17 +216,17 @@ const NftCard = ({
       <PriceRow className={mb12}>
         <PriceLabel>Price</PriceLabel>
         <EthIcon src={eth}/>
-        <Price>{`ETH ${price}`}</Price>
+        <Price>{`ETH ${price || 'XXX'}`}</Price>
       </PriceRow>
       <Row>
         <ParticipantsLabel>Collected</ParticipantsLabel>
         <ParticipantsLabel>Participants</ParticipantsLabel>
       </Row>
       <Row className={mb12}>
-        <ParticipantsValue>{percentage}%</ParticipantsValue>
+        <ParticipantsValue>{percentage || 'XXX'}%</ParticipantsValue>
         <ParticipantsValue>{participants}</ParticipantsValue>
       </Row>
-      <PercentBar percent={percentage} className={mb12}/>
+      <PercentBar percent={percentage || 0} className={mb12}/>
       <Status>{statusText}</Status>
     </Root>
   );

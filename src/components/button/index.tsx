@@ -1,8 +1,10 @@
 import React, { FC } from "react";
+import Loader from "react-loader-spinner";
 
 //#region styles
 import { styled } from "@linaria/react";
 import { css, cx } from "@linaria/core";
+import { textPrimaryDark } from "@app/assets/styles/constants";
 
 type StyleProps = {
   height: number;
@@ -25,9 +27,18 @@ const StyledButton = styled.button<StyleProps>`
   cursor: pointer;
   outline: none;
 
-  &::focus {
+  &:focus {
     outline: none;
     border: none;
+  }
+
+  &:hover {
+    background-color: #111618;
+  }
+
+  &:active {
+    background-color: #fff;
+    color: ${textPrimaryDark}
   }
 `;
 
@@ -66,7 +77,7 @@ export enum ButtonMode {
   dark = "dark",
   light = "light",
   gradient = "gradient",
-  link = 'link'
+  link = "link",
 }
 
 export enum ButtonSize {
@@ -82,6 +93,7 @@ export type ButtonProps = {
   mode?: ButtonMode;
   rounded?: boolean;
   size?: ButtonSize;
+  loading?: boolean;
   onClick?: (e: any) => void;
   className?: string;
 };
@@ -93,6 +105,7 @@ const Button: FC<ButtonProps> = ({
   mode,
   rounded,
   size = ButtonSize.middle,
+  loading,
   onClick,
   className,
   children,
@@ -107,14 +120,18 @@ const Button: FC<ButtonProps> = ({
         mode === ButtonMode.light && lightButton,
         className,
         disabled && disabledButton,
-        mode === ButtonMode.link && linkButton,
+        mode === ButtonMode.link && linkButton
       )}
       onClick={onClick}
       form={form}
       type={type}
       disabled={disabled}
     >
-      {children}
+      {loading ? (
+        <Loader type="Puff" color="#6200E8" height={20} width={20} />
+      ) : (
+        children
+      )}
     </StyledButton>
   );
 };

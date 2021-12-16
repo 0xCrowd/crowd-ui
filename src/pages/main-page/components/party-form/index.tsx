@@ -58,11 +58,7 @@ const PartyForm = ({
         type="submit"
         disabled={loading || disabledSubmit}
       >
-        {loading ? (
-          <Loader type="Puff" color="#6200E8" height={20} width={20} />
-        ) : (
-          "Preview"
-        )}
+        Preview
       </Button>
     </form>
   );

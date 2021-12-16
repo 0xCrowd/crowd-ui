@@ -25,6 +25,10 @@ export const mb20 = css`
   margin-bottom: 20px;
 `;
 
+export const mb24 = css`
+  margin-bottom: 24px;
+`;
+
 //#endregion
 
 //#region margin right
