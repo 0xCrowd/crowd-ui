@@ -1,343 +1,137 @@
-import React, { ReactElement } from "react";
-import Scrollbars from "react-custom-scrollbars";
-import Loader from "react-loader-spinner";
+import React, { ReactElement, useState, useEffect } from "react";
 
-import Card from "@app/components/card";
-import Title from "@components/title";
-import Percentage from "@app/components/percentage";
-import UserBadge from "@app/components/user-badge";
-import Button from "@app/components/button";
+import Users from "./components/Users";
+import ActiveCrowd from "./active-crowd";
+import SuccessCrowd from "./success-crowd";
+import LostCrowd from "./lost-crowd";
 
 //#region styles
 import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
-import { mb4 } from "@assets/styles/atomic";
 
-import eth from "@assets/images/eth_gr.png";
+import activeDetail from "@assets/images/active_detail.png";
+import successDetail from "@assets/images/success_detail.png";
+import lostDetail from "@assets/images/lost_detail.png";
+import resaleDetail from "@assets/images/resale_detail.png";
 
-const title = css`
-  height: 18px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
 
-const card = css`
-  box-sizing: border-box;
-  height: 566px;
-  width: 380px;
-`;
+type RootProps = {
+  background: string;
+};
 
-const percentage = css`
-  box-sizing: border-box;
-  height: 32px;
-  padding: 12px 22px;
-  margin-top: 10px;
-  margin-bottom: 18px;
-`;
-
-const percentRow = css`
-  height: 8px;
-`;
-
-const percent = css`
-  height: 8px;
-`;
-
-const button = css`
-  width: 300px;
-  height: 28px;
-  font-family: Inter;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 12px;
-`;
-
-const buttonContainer = css`
-  flex-shrink: 0;
-  height: 32px;
-  width: 304px;
-  margin-bottom: 18px;
-`;
-
-const smallButton = css`
-  width: 144px;
-  height: 28px;
-  font-family: Inter;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 12px;
-`;
-
-const smallButtonContainer = css`
-  flex-shrink: 0;
-  height: 32px;
-  width: 148px;
-  margin-bottom: 18px;
-`;
-
-const userText = css`
-  font-size: 10px;
-  line-height: 20px;
-  color: #c5c5c5;
-`;
-
-const scroller = css`
-  height: 60px;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-`;
-
-const Badge = styled.div`
-  height: 18px;
-  width: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #e8eeff;
-  border-radius: 15px;
-  font-family: Inter;
-  font-size: 8px;
-  line-height: 18px;
-  letter-spacing: 0.25px;
-`;
-
-const Description = styled.p`
-  flex-shrink: 0;
-  max-height: 56px;
-  margin: 0;
-  margin-bottom: 28px;
-  font-family: Inter;
-  font-weight: 500;
-  font-size: 10px;
-  line-height: 14px;
-  color: #c5c5c5;
-  overflow: hidden; /* Обрезаем все, что не помещается в область */
-  text-overflow: ellipsis; /* Добавляем многоточие */
-`;
-
-const PriceBlock = styled.div`
-  display: flex;
-`;
-
-const Icon = styled.img`
-  height: 44px;
-  width: 44px;
-  margin-right: 12px;
-  border-radius: 50%;
-`;
-
-const PriceInfo = styled.div`
+const Root = styled.div<RootProps>`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  width: 416px;
+  height: 575px;
+  padding: 28px 38px;
+  background-image: ${({ background }) => `url(${background})`};
+  background-size: cover;
+`;
+
+const ContentContainer = styled.div`
+  padding: 18px;
+  width: 340px;
+`;
+
+const Title = styled.p`
+  margin: auto;
+  margin-top: 0;
   margin-bottom: 18px;
-`;
-
-const Current = styled.p`
-  margin: 0;
-  margin-bottom: 8px;
-  font-family: Inter;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 18px;
-  letter-spacing: 0.25px;
-  color: #ffffff;
-`;
-
-const Price = styled.p`
-  margin: 0;
-  font-family: Inter;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 18px;
-  color: #fff;
-`;
-
-const Row = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-`;
-
-const CollectedText = styled.p`
-  margin: 0;
-  font-family: Inter;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 16px;
-  color: #fff;
-`;
-
-const CollectedValue = styled.p`
-  margin: 0;
-  font-family: Inter;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 16px;
-  color: #fff;
-`;
-
-const Funds = styled.p`
-  margin: 0;
-  margin-bottom: 14px;
-  font-family: Inter;
   font-weight: 800;
-  font-size: 12px;
+  font-size: 18px;
   line-height: 18px;
   color: #fff;
-`;
-
-const UserTitle = styled.p`
-  margin: 0;
-  margin-bottom: 4px;
-  font-family: Inter;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 20px;
-  color: #fff;
-`;
-
-const Hr = styled.div`
-  width: 100%;
-  height: 0.5px;
-  margin-bottom: 14px;
-  background: linear-gradient(97.56deg, #00f0ff 8.07%, #ff1cf7 91.93%);
-`;
-
-const LoaderContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: 20px 0;
 `;
 //#endregion
 
 interface Props {
-  partyName: string;
-  description: string;
-  price: number;
-  tokenName?: string;
+  type: CrowdStatusType;
   collected: number;
-  participants: IDeposits[];
-  myPaid?: IDeposits;
-  isSold: boolean;
-  isBuyout: boolean;
-  onAddClick: () => void;
-  onWithdrawClick: () => void;
+  percentage: number;
+  price: string | number;
+  onWithdraw?: () => void;
+  participant: IDeposits[];
+  listingPrice?: number;
+  yourFound?: number;
+  yourPercent?: number;
+  afterFounds?: number;
+  leftovers?: number;
 }
 
 const CrowdBlock = ({
-  partyName,
-  description,
-  price,
-  tokenName,
   collected,
-  participants,
-  myPaid,
-  isSold,
-  isBuyout,
-  onAddClick,
-  onWithdrawClick,
+  percentage,
+  type,
+  price,
+  participant,
+  listingPrice,
+  yourPercent,
+  yourFound,
+  afterFounds,
+  leftovers,
+  onWithdraw,
 }: Props): ReactElement => {
+  const [background, setBackground] = useState<string>(activeDetail);
+  const [title, setTitle] = useState("ACTIVE 🙌");
+  const [content, setContent] = useState<JSX.Element | null>(
+    <ActiveCrowd
+      price={price}
+      onWithdraw={onWithdraw}
+      collected={collected}
+      percentage={percentage}
+      isParticipant={!!participant.length}
+    />
+  );
+
+  useEffect(() => {
+    switch (type) {
+      case "complete":
+        setBackground(successDetail);
+        setTitle("SUCCESSFUL BUYOUT 😄");
+        setContent(
+          <SuccessCrowd
+            votingType="noVoting"
+            collected={collected}
+            percentage={percentage}
+            price={price}
+            isParticipant={true}
+            isLeftovers={!!leftovers}
+            listingPrice={listingPrice}
+            yourFound={yourFound}
+            yourPercent={yourPercent}
+            afterFounds={afterFounds}
+            leftovers={leftovers}
+          />
+        );
+        break;
+
+      case "resolved":
+        setBackground(resaleDetail);
+        break;
+
+      case "failed":
+        setBackground(lostDetail);
+        setTitle("UNSUCESSFUL BUYOUT 😔");
+        setContent(
+          <LostCrowd
+            collected={collected}
+            percentage={percentage}
+            price={price}
+          />
+        );
+        break;
+    }
+  }, [type]);
+
   return (
-    <Card className={card}>
-      <Header>
-        <Title className={title}>{partyName}</Title>
-        <Badge>{tokenName}</Badge>
-      </Header>
-      <Description>{description}</Description>
-      <PriceBlock>
-        <Icon src={eth} alt="eth" />
-        <PriceInfo>
-          <Current>Current price</Current>
-          <Price>ETH {price}</Price>
-        </PriceInfo>
-      </PriceBlock>
-      {!isBuyout && collected >= 100 ? (
-        <LoaderContainer>
-          <Loader
-            type="Puff"
-            color="#6200E8"
-            height={20}
-            width={20}
-          />
-        </LoaderContainer>
-      ) : (
-        <>
-          <Row>
-            <CollectedText>Collected</CollectedText>
-            <CollectedText>Participants</CollectedText>
-          </Row>
-          <Row>
-            <CollectedValue>{parseInt(`${collected}`)}%</CollectedValue>
-            <CollectedValue>{participants?.length}</CollectedValue>
-          </Row>
-          <Percentage
-            number={collected}
-            className={percentage}
-            mainClassName={percentRow}
-            precentClassName={percent}
-          />
-        </>
-      )}
-      {isSold && myPaid && (
-        <Button
-          className={button}
-          onClick={() => {}}
-        >
-          - Withdraw
-        </Button>
-      )}
-      {!isSold &&
-        !isBuyout &&
-        collected < 100 &&
-        (myPaid ? (
-          <Row>
-            <Button
-              className={smallButton}
-              onClick={onAddClick}
-            >
-              + Add
-            </Button>
-            <Button
-              className={smallButton}
-              onClick={onWithdrawClick}
-            >
-              - Withdraw
-            </Button>
-          </Row>
-        ) : (
-          <Button
-            className={button}
-            onClick={onAddClick}
-          >
-            + Add funds
-          </Button>
-        ))}
-      <Funds>Your funds: {myPaid?.total_deposit || 0} ETH</Funds>
-      <Hr />
-      {participants?.length > 0 && <UserTitle>User party name</UserTitle>}
-      <Scrollbars className={scroller}>
-        {participants?.length > 0 &&
-          participants.map(({ address, total_deposit }) => {
-            return (
-              <UserBadge
-                key={address}
-                number={total_deposit}
-                name={address}
-                className={mb4}
-                textClassName={userText}
-              />
-            );
-          })}
-      </Scrollbars>
-    </Card>
+    <Root background={background}>
+      <Title>{title}</Title>
+      <ContentContainer>
+        {content}
+        <Users participants={[]} />
+      </ContentContainer>
+    </Root>
   );
 };
 

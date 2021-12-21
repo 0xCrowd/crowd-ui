@@ -2,27 +2,20 @@ import React, { FC, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 
 import Layout from "@app/components/layout";
-import Modal from "@app/components/modal";
-import PartyForm from "./components/party-form";
-import NftPreview from "./components/nft-preview";
 import Parties from "./components/parties";
-import TabButtons from "./components/tab-buttons/index";
 import MobileTopline from "./components/mobile-topline/index";
 
-import raribleStore from "@stores/raribleStore";
 import chainStore from "@stores/chainStore";
 import daoStore from "@app/stores/daoStore";
 
 import { TabsEnum } from "@enums/tabs";
 import { StateEnum } from "@enums/state-enum";
-import { IPartyFormData } from "./components/party-form/constants";
-import { getImageUrl } from "@app/utils/getImageUrl";
 
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { media } from '../../assets/styles/atomic';
-import { notify } from '../../utils/notify';
+import { media } from "../../assets/styles/atomic";
+import { notify } from "../../utils/notify";
 
 import plus from "@app/assets/images/plus.svg";
 
@@ -83,26 +76,22 @@ const tabs = css`
 //#endregion
 
 const MainPage: FC = observer(() => {
-  const { order, nftDataLoadingState, price, getOrder, clearOrder, getPrice } = raribleStore;
-  const { loadWeb3, loadBlockChain, balance, blockChainState, address } = chainStore;
+  const { loadWeb3, loadBlockChain, balance, blockChainState, address } =
+    chainStore;
 
   const {
     getCrowdList,
     loadMoreCrowds,
-    createDao,
     getDelta,
-    clearPage,
-    delta,
+    clearPreview,
     crowds,
     totalCrowds,
     daoState,
-    createDaoState,
     loadedCrowds,
   } = daoStore;
 
   const [activeTab, setActiveTab] = useState(TabsEnum.All);
   const [modalIsOpen, setIsOpen] = React.useState(false);
-  const [party, setParty] = useState<IPartyFormData | null>(null);
 
   useEffect(() => {
     loadWeb3();
@@ -118,47 +107,8 @@ const MainPage: FC = observer(() => {
   const openModal = () => setIsOpen(true);
 
   const closeModal = () => {
-    clearOrder();
+    clearPreview();
     setIsOpen(false);
-    setParty(null);
-  };
-
-  const onSubmit = (data: IPartyFormData) => {
-    try {
-      setParty(data);
-
-    let id = "";
-
-    const [, , domain, page, address, nftId] = data.url.split("/");
-
-    if (domain === "rarible.com" || domain === "rinkeby.rarible.com") {
-      if (page === "token") {
-        id = address.split("?")[0];
-      }
-    }
-
-    if (domain === "opensea.io") {
-      if (page === "assets") {
-        id = `${address}:${nftId}`;
-      }
-    }
-    const [nftAddress, newNftId] = id.split(":");
-
-    getOrder(id);
-    getPrice(nftAddress, newNftId);
-    } catch (error: any) {
-      notify(error.message);
-    }
-  };
-  
-
-  const onCreate = async () => {
-    try {
-      await createDao(party as IPartyFormData);
-      closeModal();
-      clearPage();
-      getCrowdList(activeTab === TabsEnum.My ? address : "");
-    } catch (error) {}
   };
 
   const onTabChange = (active: TabsEnum) => {
@@ -168,40 +118,12 @@ const MainPage: FC = observer(() => {
   };
 
   return (
-    <Layout balance={balance} blockChainState={blockChainState} onAddNew={() => setIsOpen(true)}>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        preventScroll={false}
-        className={order ? modalLarge : ""}
-        title={order ? "Create a CROWD" : "Start a CROWD"}
-        isLight={!order ? true : false}
-        onBack={order ? clearOrder : undefined}
-      >
-        {!order ? (
-          <PartyForm
-            loading={nftDataLoadingState === StateEnum.Loading}
-            onSubmit={onSubmit}
-          />
-        ) : (
-          <NftPreview
-            loading={createDaoState === StateEnum.Loading}
-            price={price || 0 + delta}
-            nftName={order.meta.name}
-            partyName="Crowd party"
-            userName={order.owners[0]}
-            description={order.meta.description}
-            image={getImageUrl(
-              order.meta.image ?
-                order.meta.image.url.ORIGINAL || order.meta.image.url.PREVIEW :
-                order.meta.animation.url.ORIGINAL
-            )}
-            nftId={order.id}
-            onSubmit={onCreate}
-            disabledSubmit={nftDataLoadingState === StateEnum.Error}
-          />
-        )}
-      </Modal>
+    <Layout
+      onSubmit={() => getCrowdList(activeTab === TabsEnum.My ? address : "")}
+      openModal={openModal}
+      closeModal={closeModal}
+      isModalOpen={modalIsOpen}
+    >
       <MobileTopline
         activeTab={activeTab}
         onChange={onTabChange}

@@ -117,6 +117,7 @@ const CustomModal = ({
   isLight = true,
   children,
 }: PropsWithChildren<Props>): ReactElement => {
+  console.log(onBack, 'b');
   return (
     <Modal
       isOpen={isOpen}

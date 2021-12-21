@@ -2,16 +2,17 @@ import React, { ReactElement } from "react";
 import SkeletonLoader from "tiny-skeleton-loader-react";
 
 import RaribleButton from "@app/components/rarible-button";
-import Button from "@app/components/button";
+import Voting from "@app/components/voting";
+import GradientBorderButton from "@app/components/gradient-border-button";
 import CrowdBlock from "./components/crowd-block";
-import Proposals from "./components/proposals/index";
 
 import { ModalModeEnum } from "../index";
 
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { media } from "@app/assets/styles/atomic";
+import { mb36, media } from "@app/assets/styles/atomic";
+import { lightGray } from "@app/assets/styles/constants";
 
 const MainBlock = styled.div`
   display: flex;
@@ -25,15 +26,15 @@ const MainBlock = styled.div`
 const NftBlock = styled.div`
   display: flex;
   flex-direction: column;
-  width: 800px;
-  margin-right: 40px;
+  width: 640px;
+  margin-right: 94px;
 `;
 
 const UserRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 40px;
 `;
 
 const UserName = styled.div`
@@ -44,13 +45,21 @@ const UserName = styled.div`
   color: #fff;
 `;
 
+const PreviewContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 640px;
+  height: 640px;
+  margin-bottom: 48px
+  border-radius: 30px;
+  background-color: ${lightGray};
+`;
 
 const Preview = styled.img`
-  height: 440px;
-  width: auto;
-  max-width: 800px;
+  max-width: 640px;
+  max-height: 640px;
   margin-bottom: 18px;
-  border-radius: 10px;
   margin: auto;
   background-size: contain;
 `;
@@ -63,25 +72,21 @@ const Loading = styled.div`
   width: 100%;
 `;
 
-const button = css`
-  width: calc(100% - 2px);
-  height: 46px;
-`;
-
-const buttonContainer = css`
-  width: 100%;
-  height: 48px;
-`;
-
 const proposalVisible = css`
   ${media("mobile")} {
     display: none;
   }
 `;
+
+const proposalButton = css`
+  width: 100%;
+  height: 48px;
+  margin-bottom: 36px;
+`;
 //#endregion
 
 interface Props {
-  adaptedDao: IAdaptedDao;
+  adaptedCrowd: AdaptedCrowd;
   daoLoading: boolean;
   proposalsList: IAdaptedProposal[];
   proposalsLoading: boolean;
@@ -92,7 +97,7 @@ interface Props {
 }
 
 const DesktopPage = ({
-  adaptedDao,
+  adaptedCrowd,
   daoLoading,
   proposalsList,
   proposalsLoading,
@@ -105,14 +110,14 @@ const DesktopPage = ({
     return (
       <MainBlock>
         <SkeletonLoader
-          width={800}
-          height={566}
+          width={640}
+          height={640}
           background="linear-gradient(0deg,#263238,#263238)"
           style={{ marginRight: 40 }}
         />
         <SkeletonLoader
-          height={566}
-          width={380}
+          height={578}
+          width={416}
           background="linear-gradient(0deg,#263238,#263238)"
         />
       </MainBlock>
@@ -123,44 +128,31 @@ const DesktopPage = ({
       <MainBlock>
         <NftBlock>
           <UserRow>
-            <UserName>{adaptedDao?.partyName}</UserName>
+            <UserName>{adaptedCrowd?.name}</UserName>
             <RaribleButton tokenId={nftId}/>
           </UserRow>
-          <Preview 
-            height={adaptedDao?.imageMeta.height} 
-            width={adaptedDao?.imageMeta.width} 
-            src={adaptedDao?.image} 
-            alt="preview"
-          />
-          <Button
-            onClick={() => onOpenModal(ModalModeEnum.Proposal)}
-            className={button}
-            disabled={!adaptedDao?.isBought}
-          >
-            New proposal
-          </Button>
+          <PreviewContainer>
+            <Preview 
+              src={adaptedCrowd.media} 
+              alt="preview"
+            />
+          </PreviewContainer>
+          <GradientBorderButton className={proposalButton}>Put the NFT on sale</GradientBorderButton>
+          <Voting />
         </NftBlock>
         <CrowdBlock
-          partyName={adaptedDao?.partyName}
-          description={adaptedDao?.description}
-          price={adaptedDao?.price}
-          tokenName={adaptedDao?.tokenTicker}
-          collected={adaptedDao?.percentage}
-          participants={adaptedDao?.users}
-          myPaid={adaptedDao?.myPaid}
-          onAddClick={() => onOpenModal(ModalModeEnum.Eth)}
-          onWithdrawClick={() => onOpenModal(ModalModeEnum.Withdraw)}
-          isBuyout={adaptedDao?.isBought || false}
-          isSold={isSold}
+          type={adaptedCrowd?.status}
+          collected={adaptedCrowd?.collected}
+          percentage={adaptedCrowd?.percentage}
+          price={adaptedCrowd?.price}
+          participant={adaptedCrowd?.deposits}
+          listingPrice={1000}
+          yourPercent={100}
+          yourFound={100}
+          afterFounds={100}
+          leftovers={100}
         />
       </MainBlock>
-      {proposalsList.length && adaptedDao.isBought && <Proposals
-        makeVote={makeVote}
-        proposals={proposalsList}
-        className={proposalVisible}
-        loading={proposalsLoading}
-        tokenName={adaptedDao?.tokenTicker}
-      />}
     </>
   );
 };

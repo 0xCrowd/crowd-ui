@@ -35,6 +35,7 @@ const Root = styled.div<RootProps>`
   background-image: ${({ background }) => `url(${background})`};
   background-size: contain;
   border-radius: ${defaultBorderRadius};
+  cursor: pointer;
 `;
 
 const Title = styled.div`
@@ -199,7 +200,7 @@ const NftCard = ({
   }, [status]);
 
   return (
-    <Root className={className} background={cardBackground}>
+    <Root className={className} background={cardBackground} onClick={() => push(id)}>
       <Title className={mb12}>{title || 'XXX'}</Title>
       <PreviewContainer>
         <Preview src={image} alt="preview" className={mb12} ref={imgEl}/>
@@ -223,7 +224,7 @@ const NftCard = ({
         <ParticipantsLabel>Participants</ParticipantsLabel>
       </Row>
       <Row className={mb12}>
-        <ParticipantsValue>{percentage || 'XXX'}%</ParticipantsValue>
+        <ParticipantsValue>{percentage || 0}%</ParticipantsValue>
         <ParticipantsValue>{participants}</ParticipantsValue>
       </Row>
       <PercentBar percent={percentage || 0} className={mb12}/>

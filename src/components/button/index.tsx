@@ -122,7 +122,7 @@ const Button: FC<ButtonProps> = ({
         disabled && disabledButton,
         mode === ButtonMode.link && linkButton
       )}
-      onClick={onClick}
+      onClick={loading ? undefined : onClick}
       form={form}
       type={type}
       disabled={disabled}
