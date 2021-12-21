@@ -139,6 +139,7 @@ const Parties = ({
               ) => {
                 return (
                   <NftCard
+                    key={ceramic_stream}
                     id={ceramic_stream}
                     price={+price}
                     percentage={percentage}

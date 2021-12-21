@@ -6,7 +6,7 @@ import Button, { ButtonProps, ButtonSize } from "@components/button";
 import { styled } from "@linaria/react";
 import { cx } from "@linaria/core";
 
-import { h100 } from "@assets/styles/atomic";
+import { h100, w100 } from "@assets/styles/atomic";
 
 type StyleProps = {
   height: number;
@@ -18,6 +18,7 @@ const Root = styled.div<StyleProps>`
   width: ${({ width }) => `${width}px`};
   background: linear-gradient(97.56deg, #00f0ff 8.07%, #ff1cf7 91.93%);
   padding: 2px;
+  border-radius: 10px;
 `;
 //#endregion
 
@@ -40,7 +41,7 @@ const GradientBorderButton: FC<ButtonProps> = ({
       }
       className={className}
     >
-      <Button {...restProps} className={h100}>
+      <Button {...restProps} className={cx(h100, w100)}>
         {children}
       </Button>
     </Root>

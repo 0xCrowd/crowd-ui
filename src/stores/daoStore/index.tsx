@@ -30,8 +30,11 @@ class DaoStore {
   crowdPage = 0;
   crowdLimit = 12;
   crowds: AdaptedCrowd[] = [];
+
+  crowdPreview!: PreviewApiType | undefined;
+  createCrowdState = StateEnum.Empty;
+
   daoState = StateEnum.Loading;
-  createDaoState = StateEnum.Empty;
 
   donateState = StateEnum.Empty;
 
@@ -48,7 +51,7 @@ class DaoStore {
   voteState = StateEnum.Empty;
 
   //#region daos
-  getCrowdList = async (address?: string) => {
+  getCrowdList = async (address?: string, ceramicStream?: string) => {
     try {
       if (this.crowdPage === 0) {
         this.loadedCrowds = 0;
@@ -60,6 +63,7 @@ class DaoStore {
           offset: this.crowdPage * this.crowdLimit,
           limit: this.crowdLimit,
           address,
+          ceramicStream,
         },
         withCredentials: false,
       });
@@ -77,8 +81,6 @@ class DaoStore {
           crowds.push(adaptedCrowd);
         }
       }));
-
-      console.log(response, 'response');
 
       if (this.crowdPage === 0) {
         runInAction(() => {
@@ -117,32 +119,35 @@ class DaoStore {
       collected,
       percentage: Math.ceil((collected / +crowd.price) * 100),
     }
-  }
+  };
 
-  getDao = async (stream: string) => {
+  getPreview = async (item: string) => {
     try {
-      this.daoState = StateEnum.Loading;
+      this.createCrowdState = StateEnum.Loading;
 
-      const response = await axios.get(`${API_ENDPOINT}/daos`, {
+      const response = await axios.get<PreviewApiType>(`${API_ENDPOINT}/item/details`, {
         params: {
-          stream,
+          item,
         },
         withCredentials: false,
       });
 
-      const adaptedDao = await this.getDaoInfo(response.data.items[0], true);
-
-      if (adaptedDao) {
-        runInAction(() => {
-          this.adaptedDao = adaptedDao;
-          this.originalDao = response.data.items[0]
-          this.daoState = StateEnum.Success;
-        });
-      }
+      runInAction(() => {
+        this.crowdPreview = response.data;
+        this.createCrowdState = StateEnum.Success;
+      });
     } catch (error: any) {
+      runInAction(() => {
+        this.createCrowdState = StateEnum.Error;
+      });
       notify(error.message);
-      this.daoState = StateEnum.Error;
     }
+  };
+
+  clearPreview = () => {
+    runInAction(() => {
+      this.crowdPreview = undefined;
+    })
   }
 
   getDaoInfo = async (dao: IDao, withToken = false): Promise<IAdaptedDao | undefined> => {
@@ -204,12 +209,20 @@ class DaoStore {
     this.crowdPage = 0;
   };
 
-  createDao = async ({ tokenName }: IPartyFormData) => {
+  createCrowd = async (tokenId: string) => {
     try {
       const { address, factoryContract } = chainStore;
-      const { order } = raribleStore;
 
-      this.createDaoState = StateEnum.Loading;
+      runInAction(() => {
+        this.createCrowdState = StateEnum.Loading;
+      });
+
+      let tokenName = '';
+
+      const matches = this.crowdPreview?.name.match(/\b(\w)/g);
+      if (matches) {
+        tokenName = `CROWD_${matches.join('')}`;
+      }
 
       //const initAmount = window.web3.utils.toWei('1000');
       let vaultAddress = '';
@@ -223,10 +236,11 @@ class DaoStore {
       await factoryContract.events.NewVault({}, listener);
 
       await factoryContract.methods
-        .newVault(tokenName, tokenName.slice(0, 5), 100)
+        .newVault(tokenName, tokenName, 100)
         .send({ from: address, value: 0 });
 
-      await axios.post(`${API_ENDPOINT}/dao`, {
+      console.log(vaultAddress, 'add');
+      await axios.post(`${API_ENDPOINT}/crowd`, {
         name: tokenName,
         l1_type: "ethereum",
         l1_vault: vaultAddress,
@@ -234,13 +248,17 @@ class DaoStore {
         proposal_total_threshold: 0.5,
         proposal_for_threshold: 0.5,
         proposal_timeout: 3600,
-        pool_target: order.id,
+        pool_target: tokenId,
       });
 
-      this.createDaoState = StateEnum.Success;
+      runInAction(() => {
+        this.createCrowdState = StateEnum.Success;
+      });
     } catch (error: any) {
       notify(error.message);
-      this.createDaoState = StateEnum.Error;
+      runInAction(() => {
+        this.createCrowdState = StateEnum.Error;
+      });
     }
   };
 

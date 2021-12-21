@@ -56,7 +56,8 @@ const PartyForm = ({
         className={button}
         form="party-form-data"
         type="submit"
-        disabled={loading || disabledSubmit}
+        loading={loading}
+        disabled={disabledSubmit}
       >
         Preview
       </Button>

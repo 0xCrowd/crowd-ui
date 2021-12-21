@@ -17,14 +17,14 @@ import { mb24 } from "@app/assets/styles/atomic";
 
 const Root = styled.div`
   display: flex;
-  flex-direction: column; ;
+  flex-direction: column;
+  width: 400px;
 `;
 
 const PreviewContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 364px;
   width: 364px;
 `;
 
@@ -49,6 +49,7 @@ const PreviewLoader = styled.div`
 
 const Name = styled.p`
   margin: 0;
+  margin-bottom: 24px;
   font-weight: bold;
   font-size: 18px;
   line-height: 18px;
@@ -58,11 +59,6 @@ const Name = styled.p`
 interface Props {
   nftName: string;
   image: string;
-  partyName: string;
-  description: string;
-  price: number;
-  userName: string;
-  nftId: string;
   loading: boolean;
   disabledSubmit: boolean;
   onSubmit: () => void;
@@ -106,7 +102,7 @@ const NftPreview = ({
           />
         </PreviewLoader>
       )}
-      <Name className={mb24}>{nftName}</Name>
+      <Name>{nftName}</Name>
       <Button size={ButtonSize.large} loading={loading} onClick={onSubmit}>
         Start Fundrising
       </Button>

@@ -2,12 +2,10 @@ import { validateUrl } from '@app/utils/validateUrl';
 
 export interface IPartyFormData {
   url: string;
-  tokenName: string;
 }
 
 export const initialValues: IPartyFormData = {
   url: '',
-  tokenName: '',
 };
 
 export const validate = (values: IPartyFormData): ErrorType => {

@@ -1,7 +1,7 @@
 type CrowdApiType = {
   ceramic_stream: string;
   created: string;
-  deposits: [];
+  deposits: IDeposits[];
   item: string;
   l1_token: string;
   l1_type: string;
@@ -18,7 +18,7 @@ type CrowdStatusType = 'active' | 'complete' | 'failed' | 'resolved';
 type ApiResponse<T> = {
   items: T[];
   status: string;
-  total: number
+  total: number;
 }
 
 type HealthResponse = {
@@ -27,10 +27,18 @@ type HealthResponse = {
     amount: string;
     delta: string;
   }
-  amount: string
-  capacity: string
-  delta: string
-  pottery_provider_status: string
-  pottery_registry: string
-  service_status: string
+  amount: string;
+  capacity: string;
+  delta: string;
+  pottery_provider_status: string;
+  pottery_registry: string;
+  service_status: string;
+}
+
+type PreviewApiType = {
+  name: string;
+	description: string;
+	media: string;
+	media_type: string;
+	price: string;
 }

@@ -1,8 +1,16 @@
 import { css } from '@linaria/core';
 
 //#region margin bottom
+export const mb2 = css`
+  margin-bottom: 2px;
+`;
+
 export const mb4 = css`
   margin-bottom: 4px;
+`;
+
+export const mb6 = css`
+  margin-bottom: 6px;
 `;
 
 export const mb8 = css`
@@ -26,12 +34,24 @@ export const mb20 = css`
 `;
 
 export const mb24 = css`
-  margin-bottom: 24px;
+  margin-bottom: 24px !important;
+`;
+
+export const mb28 = css`
+  margin-bottom: 28px;
+`;
+
+export const mb36 = css`
+  margin-bottom: 36px;
 `;
 
 //#endregion
 
 //#region margin right
+export const mr4 = css`
+  margin-right: 4px;
+`;
+
 export const mr14 = css`
   margin-right: 14px;
 `;
@@ -88,6 +108,6 @@ export const h100 = css`
 
 //#region height
 export const w100 = css`
-  width: 100%;
+  width: 100% !important;
 `;
 //#endregion
