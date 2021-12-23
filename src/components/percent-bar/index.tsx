@@ -26,7 +26,7 @@ type Props = {
 const PercentBar: FC<Props> = ({ percent, className }) => {
   return (
     <Root className={className}>
-      <Percent style={{ width: percent }} />
+      <Percent style={{ width: `${percent}%` }} />
     </Root>
   )
 }

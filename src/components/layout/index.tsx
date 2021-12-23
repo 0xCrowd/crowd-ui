@@ -96,8 +96,6 @@ const Layout = observer(
       } catch (error) {}
     };
 
-    console.log(crowdPreview, 'pr');
-
     return (
       <Root className={className}>
         <Modal

@@ -2,7 +2,7 @@ import React, { ReactElement, useState } from 'react';
 import Loader from 'react-loader-spinner';
 
 import Input from '@app/components/input';
-import Button from '@app/components/button';
+import Button, { ButtonSize } from '@app/components/button';
 
 import { IProposalFormData, validate, initialValues } from './constants';
 
@@ -52,15 +52,9 @@ const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
         form="proposal"
         type="submit"
         disabled={loading}
+        size={ButtonSize.large}
       >
-        {loading ? (
-          <Loader
-            type="Puff"
-            color="#6200E8"
-            height={20}
-            width={20}
-          />
-          )  : 'Create'}
+        Create
       </Button>
     </form>
   )

@@ -86,7 +86,7 @@ const MainPage: FC = observer(() => {
     clearPreview,
     crowds,
     totalCrowds,
-    daoState,
+    crowdState,
     loadedCrowds,
   } = daoStore;
 
@@ -112,7 +112,7 @@ const MainPage: FC = observer(() => {
   };
 
   const onTabChange = (active: TabsEnum) => {
-    if (daoState !== StateEnum.Loading) {
+    if (crowdState !== StateEnum.Loading) {
       setActiveTab(active);
     }
   };
@@ -130,7 +130,7 @@ const MainPage: FC = observer(() => {
         onAdd={openModal}
       />
       <Parties
-        loading={daoState === StateEnum.Loading}
+        loading={crowdState === StateEnum.Loading}
         crowds={crowds}
         onCreateClick={openModal}
         loadMore={loadMoreCrowds}

@@ -38,18 +38,22 @@ export const mb24 = css`
 `;
 
 export const mb28 = css`
-  margin-bottom: 28px;
+  margin-bottom: 28px !important;
 `;
 
 export const mb36 = css`
-  margin-bottom: 36px;
+  margin-bottom: 36px !important;
+`;
+
+export const mb45 = css`
+  margin-bottom: 45px !important;
 `;
 
 //#endregion
 
 //#region margin right
 export const mr4 = css`
-  margin-right: 4px;
+  margin-right: 4px !important;
 `;
 
 export const mr14 = css`

@@ -34,7 +34,6 @@ const PartyForm = ({
   const { handleSubmit, handleChange, values, errors, touched } = useFormik({
     initialValues,
     onSubmit: (values) => {
-      console.log(values, 'val')
       onSubmit(values);
     },
     validate: validate,

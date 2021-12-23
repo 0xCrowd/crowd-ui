@@ -16,7 +16,8 @@ import {
   textGray,
   textPrimary,
 } from "@app/assets/styles/constants";
-import { mb24 } from "@app/assets/styles/atomic";
+import { mb24, mb28, mb45 } from "@app/assets/styles/atomic";
+import { mb36 } from "../../assets/styles/atomic";
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -46,6 +47,7 @@ const Timer = styled.div`
   width: 202px;
   height: 48px;
   background-color: ${bgLightGray};
+  border-radius: 5px;
 `;
 
 const Description = styled.p`
@@ -64,6 +66,9 @@ const MainBlock = styled.div`
 `;
 
 const LeftColumn = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
   width: 196px;
   padding: 22px 15px 22px 24px;
   border-right: 1px solid ${successText};
@@ -158,7 +163,8 @@ const VoteIcon = styled.div`
   height: 48px;
   width: 48px;
   margin-left: 12px;
-  background-color: ${bgGray};
+  background-color: ${bgLightGray};
+  border-radius: 5px;
 `;
 
 const VoteStatus = styled.div`
@@ -167,7 +173,8 @@ const VoteStatus = styled.div`
   justify-content: center;
   height: 48px;
   width: 180px;
-  background-color: ${bgGray};
+  background-color: ${bgLightGray};
+  border-radius: 5px;
 `;
 
 const Status = styled.p`
@@ -194,10 +201,18 @@ type Props = {
     | "success"
     | "noSuccess";
   isParticipants?: boolean;
+  price?: string;
+  makeVote: (option: number, amount: string) => void;
   className?: string;
 };
 
-const Voting: FC<Props> = ({ isParticipants, type = "live", className }) => {
+const Voting: FC<Props> = ({
+  isParticipants,
+  type = "liveNotVote",
+  price,
+  makeVote,
+  className,
+}) => {
   const OverFooter = (
     <Row justify="end">
       <VoteStatus>
@@ -212,9 +227,15 @@ const Voting: FC<Props> = ({ isParticipants, type = "live", className }) => {
       case "liveNotVote":
         return (
           <Row justify="space-between">
-            <Button className={pinkButton}>Vote against selling</Button>
-            <Button className={blueButton}>Agree with avarege</Button>
-            <Button className={greenButton}>Suggest your price</Button>
+            <Button className={pinkButton} onClick={() => makeVote(1, "null")}>
+              Vote against selling
+            </Button>
+            <Button className={blueButton} onClick={() => makeVote(0, "same")}>
+              Agree with avarege
+            </Button>
+            <Button className={greenButton} onClick={() => makeVote(2, "1000")}>
+              Suggest your price
+            </Button>
           </Row>
         );
 
@@ -273,14 +294,14 @@ const Voting: FC<Props> = ({ isParticipants, type = "live", className }) => {
     switch (type) {
       case "success":
         return (
-          <DescriptionLarge>
+          <DescriptionLarge className={mb36}>
             The NFT has been listed by the results of voting
           </DescriptionLarge>
         );
 
       case "noSuccess":
         return (
-          <DescriptionLarge>
+          <DescriptionLarge className={mb45}>
             The majority did not vote or voted against the resale
           </DescriptionLarge>
         );
@@ -322,13 +343,17 @@ const Voting: FC<Props> = ({ isParticipants, type = "live", className }) => {
 
   return (
     <Root className={className}>
-      <Row alignItems="flex-start" justify="space-between">
+      <Row
+        alignItems="flex-start"
+        justify="space-between"
+        className={(type === "noSuccess" || type === "success") ? mb28 : ''}
+      >
         {getTitle()}
-        <Timer />
+        {type !== "noSuccess" && type !== "success" && <Timer />}
       </Row>
       {getDescription()}
       {type !== "noSuccess" && (
-        <MainBlock className={isParticipants ? mb24 : ''}>
+        <MainBlock className={isParticipants ? mb24 : ""}>
           <LeftColumn>
             <ColumnText>
               {type !== "success"
@@ -338,7 +363,7 @@ const Voting: FC<Props> = ({ isParticipants, type = "live", className }) => {
           </LeftColumn>
           <RightColumn>
             <Row alignItems="flex-end">
-              <Price>1000</Price>
+              <Price>{price}</Price>
               <PriceLabel>ETH</PriceLabel>
             </Row>
           </RightColumn>

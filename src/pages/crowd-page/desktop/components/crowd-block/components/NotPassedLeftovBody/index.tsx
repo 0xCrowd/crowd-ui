@@ -17,14 +17,9 @@ const button = css`
 
 type Props = {
   sum: number | string;
-  percent: number;
   leftovers: number;
 };
-const NotPassedLeftovBody: FC<Props> = ({
-  sum,
-  percent,
-  leftovers,
-}) => {
+const NotPassedLeftovBody: FC<Props> = ({ sum, leftovers }) => {
   return (
     <>
       <InfoText className={mb28}>Resale proposal did not pass</InfoText>
@@ -37,9 +32,7 @@ const NotPassedLeftovBody: FC<Props> = ({
       </GradientBorderButton>
       <Row className={mb2}>
         <SecondaryText className={mr4}>Your funds:</SecondaryText>
-        <PrimaryText className={mr4}>
-          {percent}% / {sum}
-        </PrimaryText>
+        <PrimaryText className={mr4}>{sum}</PrimaryText>
         <SecondaryText className={mr4}>ETH</SecondaryText>
       </Row>
       <Row className={mb28}>

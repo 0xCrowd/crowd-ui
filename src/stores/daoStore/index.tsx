@@ -2,39 +2,36 @@ import { makeAutoObservable, runInAction } from "mobx";
 import axios from 'axios';
 
 import chainStore from '@stores/chainStore';
-import raribleStore from "@stores/raribleStore";
 
 import { StateEnum } from '@enums/state-enum/index';
-import { ProposalTypeEnum } from "@app/enums/proposalTypeEnum";
-import { IPartyFormData } from '@pages/main-page/components/party-form/constants';
-import { getImageUrl } from "@app/utils/getImageUrl";
+import { ProposalStatusEnum } from "@app/enums/proposal-status-enum";
 import { notify } from '@app/utils/notify';
 
 import DAO from "../../../ABI/Vault.json";
-import { fixedRound } from "@app/utils/round";
+import { ProposalTypeEnum } from "@app/enums/proposal-type-Enum";
 
 const API_ENDPOINT = "https://crowd-protocol-master-9iojf.ondigitalocean.app"
-
-const { getOrder, getPrice, getLastPurchase } = raribleStore;
 
 class DaoStore {
   constructor() {
     makeAutoObservable(this);
   }
 
-  originalDao!: IDao;
-  adaptedDao!: IAdaptedDao;
-  daosOriginal: IDao[] = [];
+  // To delete
+  daoState = StateEnum.Loading;
+  delta = 0;
+  
+  // new
   loadedCrowds: number = 0;
   totalCrowds = 0;
   crowdPage = 0;
   crowdLimit = 12;
   crowds: AdaptedCrowd[] = [];
+  detailedCrowd!: DetailedCrowd;
+  crowdState = StateEnum.Loading;
 
   crowdPreview!: PreviewApiType | undefined;
   createCrowdState = StateEnum.Empty;
-
-  daoState = StateEnum.Loading;
 
   donateState = StateEnum.Empty;
 
@@ -42,20 +39,18 @@ class DaoStore {
   createProposalState = StateEnum.Empty;
   proposalPage: number = 0;
   proposalLimit: number = 10;
-  proposalsList: IAdaptedProposal[] = [];
-
-  delta = 0;
+  proposalsList: AdaptedProposal[] = [];
 
   balanceOfDaoToken = 0;
 
   voteState = StateEnum.Empty;
 
   //#region daos
-  getCrowdList = async (address?: string, ceramicStream?: string) => {
+  getCrowdList = async (address?: string) => {
     try {
       if (this.crowdPage === 0) {
         this.loadedCrowds = 0;
-        this.daoState = StateEnum.Loading;
+        this.crowdState = StateEnum.Loading;
       }
 
       const response = await axios.get<ApiResponse<CrowdApiType>>(`${API_ENDPOINT}/crowd`, {
@@ -63,7 +58,6 @@ class DaoStore {
           offset: this.crowdPage * this.crowdLimit,
           limit: this.crowdLimit,
           address,
-          ceramicStream,
         },
         withCredentials: false,
       });
@@ -94,11 +88,37 @@ class DaoStore {
 
       runInAction(() => {
         this.totalCrowds = response.data.total;
-        this.daoState = StateEnum.Success;
+        this.crowdState = StateEnum.Success;
       });
     } catch (error: any) {
       notify(error.message);
-      this.daoState = StateEnum.Error;
+      this.crowdState = StateEnum.Error;
+    }
+  };
+
+  getCrowd = async (stream: string) => {
+    try {
+      runInAction(() => {
+        this.crowdState = StateEnum.Loading;
+      });
+
+      const response = await axios.get<CrowdApiType>(`${API_ENDPOINT}/crowd`, {
+        params: {
+          stream,
+        },
+        withCredentials: false,
+      });
+
+      const adaptedCrowd = await this.adaptCrowd(response.data);
+      const detailedCrowd = await this.getDetails(adaptedCrowd);
+
+      runInAction(() => {
+        this.crowdState = StateEnum.Success;
+        this.detailedCrowd = detailedCrowd;
+      });
+    } catch (error: any) {
+      notify(error.message);
+      this.crowdState = StateEnum.Error;
     }
   };
 
@@ -120,6 +140,28 @@ class DaoStore {
       percentage: Math.ceil((collected / +crowd.price) * 100),
     }
   };
+
+  getDetails = (crowd: AdaptedCrowd): DetailedCrowd => {
+    const { address } = chainStore;
+
+    const deposits = crowd.deposits.map(item => ({
+      address: item.address,
+      total_deposit: +window.web3.utils.fromWei(item.total_deposit.toString(), 'ether'),
+    }))
+
+    const myDeposite = crowd.deposits.find(item => item.address === address)
+
+    let myFound = 0;
+
+    if (myDeposite) {
+      myFound = +window.web3.utils.fromWei(myDeposite.total_deposit.toString(), 'ether');
+    }
+    return {
+      ...crowd,
+      myFound,
+      deposits
+    }
+  }
 
   getPreview = async (item: string) => {
     try {
@@ -149,50 +191,6 @@ class DaoStore {
       this.crowdPreview = undefined;
     })
   }
-
-  getDaoInfo = async (dao: IDao, withToken = false): Promise<IAdaptedDao | undefined> => {
-    try {
-      const { meta } = await getOrder(dao.buyout_target, false);
-      const [contract, id] = dao.buyout_target.split(':');
-
-      let price = await getPrice(contract, id);
-      const priceWithDelta = price + this.delta;
-
-      if (!price) {
-        price = await getLastPurchase(contract, id);
-      }
-
-      // @ts-ignore
-      const l1Dao = new window.web3.eth.Contract(DAO.abi, dao.l1_vault);
-
-      const total = await l1Dao.methods.getBalance().call();
-      const collected = +await window.web3.utils.fromWei(total, 'ether') + this.delta;
-
-      let tokenTicker = '';
-      if (withToken) tokenTicker = await l1Dao.methods.getTokenTicker().call();
-
-      const { address } = chainStore;
-    
-      const isBought = await this.isBought(dao.ceramic_stream);
-
-      const imagePath = meta.image ?? meta.animation;
-
-      return {
-        ceramic_stream: dao.ceramic_stream,
-        partyName: meta.name,
-        description: meta.description,
-        image: getImageUrl(imagePath.url.ORIGINAL || imagePath.url.PREVIEW),
-        price: priceWithDelta || undefined,
-        collected,
-        users: dao.deposits,
-        percentage: isBought ? 100 : Math.ceil((collected / priceWithDelta) * 100),
-        myPaid: dao.deposits.find(elem => elem.address === address),
-        imageMeta: imagePath.meta.ORIGINAL || imagePath.meta.PREVIEW,
-        tokenTicker,
-        isBought,
-      };
-    } catch (error: any) {}
-  };
 
   loadMoreCrowds = async (address?: string) => {
     try {
@@ -239,7 +237,6 @@ class DaoStore {
         .newVault(tokenName, tokenName, 100)
         .send({ from: address, value: 0 });
 
-      console.log(vaultAddress, 'add');
       await axios.post(`${API_ENDPOINT}/crowd`, {
         name: tokenName,
         l1_type: "ethereum",
@@ -276,8 +273,8 @@ class DaoStore {
 
       await axios.post(`${API_ENDPOINT}/deposit`, {
         address,
-        dao_stream: daoStream,
-        amount,
+        crowd: daoStream,
+        amount: value,
       });
 
       runInAction(() => {
@@ -289,25 +286,36 @@ class DaoStore {
     }
   };
 
-  isBought = async (daoStream: string) => {
+  withdraw = async (amount: string) => {
     try {
-      const response = await axios.get(`${API_ENDPOINT}/proposals`, {
-        params: {
-          dao_stream: daoStream,
-          offset: 0,
-          limit: 1,
-        }
+      runInAction(() => {
+        this.donateState = StateEnum.Loading;
       });
-      const data: IProposal[] = response.data.items;
 
-      if (response.data.total > 1) {
-        return true
-      }
-      return data[0].fulfilled
-    } catch (error) {
-      console.log(error)
+      const { address } = chainStore;
+
+      // @ts-ignore
+      const l1Dao = new window.web3.eth.Contract(DAO.abi, this.detailedCrowd.l1_vault);
+      const weiAmount = window.web3.utils.toWei(amount);
+      await l1Dao.methods.withdrawDeposit(weiAmount).send({ from: address });
+
+      await axios.post(`${API_ENDPOINT}/withdraw`, {
+        address,
+        crowd: this.detailedCrowd.ceramic_stream,
+        amount: weiAmount,
+      });
+
+      runInAction(() => {
+        this.donateState = StateEnum.Success;
+      });
+    } catch (error: any) {
+      runInAction(() => {
+        this.donateState = StateEnum.Error;
+      });
+
+      notify(error.message);
     }
-  };
+  }
   //#endregion
 
   //#region proposals
@@ -317,21 +325,23 @@ class DaoStore {
         this.proposalState = StateEnum.Loading;
       });
 
-      const response = await axios.get(`${API_ENDPOINT}/proposals`, {
+      const response = await axios.get<ApiResponse<ProposalApiType>>(`${API_ENDPOINT}/proposal`, {
         params: {
-          dao_stream: daoStream,
+          crowd: daoStream,
           offset: this.proposalPage * this.proposalLimit,
           limit: this.proposalLimit,
         }
       });
 
-      const newProposals: IAdaptedProposal[] = [];
+      const newProposals: AdaptedProposal[] = [];
 
-      await Promise.all(response.data.items.map(async (item: IProposal) => {
+      await Promise.all(response.data.items.map(async (item: ProposalApiType) => {
         const adaptedProposal = await this.adaptProposal(item);
-        newProposals.push(adaptedProposal);
+        if (adaptedProposal && item.type === ProposalTypeEnum.Sell) {
+          newProposals.push(adaptedProposal);
+        }
       }));
-
+      console.log(newProposals, 'prop')
       runInAction(() => {
         this.proposalsList = newProposals;
         this.proposalState = StateEnum.Success;
@@ -343,79 +353,52 @@ class DaoStore {
     }
   };
 
-  adaptProposal = async (proposal: IProposal): Promise<IAdaptedProposal> => {
-    const voteData = await this.getVotesData(proposal.ceramic_stream);
-    let voteForPercent = 0;
-    if (proposal.type === ProposalTypeEnum.Buyout) {
-      voteForPercent = 100;
-    }
-
-    let voteFor = 0;
-    let voteAgainst = 0;
-    let voteAgainstPercent = 0;
-
+  adaptProposal = async (proposal: ProposalApiType): Promise<AdaptedProposal | undefined> => {
+    const voteData = await this.getVotesData(proposal.stream);
+    console.log(proposal, 'prp')
+    const ethPrice = window.web3.utils.fromWei(proposal.price, 'ether');
     if (voteData) {
-      let voteForObj = voteData.filter((item) => item.option === 0);
-      voteFor = voteForObj.reduce(
-        (accum, curr) => accum + +window.web3.utils.fromWei(curr.amount, 'ether'),
-        voteFor
-      );
+      let type: VotingType | null = null;
 
-      let voteAgainsObj = voteData.filter((item) => item.option === 1);
-      voteAgainst = voteAgainsObj.reduce(
-        (accum, curr) => accum + +window.web3.utils.fromWei(curr.amount, 'ether'),
-        voteFor
-      );
+      if (proposal.status === ProposalStatusEnum.Success) {
+        type = 'success';
+      } else if (proposal.status === ProposalStatusEnum.Fail) {
+        type = 'noSuccess';
+      } else {
+        if (!voteData.address) {
+          type = 'liveNotVote';
+        } else if (proposal.options[voteData.option] === 'Against') {
+          type = 'liveVoteAgainst';
+        } else {
+          type = 'liveVoteFor'
+        }
+      }
 
-      const commonAmount = voteFor + voteAgainst;
-
-      if (proposal.type !== ProposalTypeEnum.Buyout) {
-        voteForPercent = fixedRound((voteFor / commonAmount) * 100);
-        voteAgainstPercent = 100 - voteForPercent;
-      } 
+      return {
+        price: ethPrice,
+        timeLeft: proposal.time_left,
+        votingPower: voteData.voting_power,
+        options: proposal.options,
+        type,
+        proposal: proposal.stream,
+      };
     }
-
-    let title = proposal.title;
-
-    if (proposal.type === ProposalTypeEnum.Sell) {
-      const price = proposal.price ? window.web3.utils.fromWei(proposal.price, 'ether') : 0;
-      title = `Sell for ${price}`;
-    }
-
-    return {
-      ...proposal,
-      voteFor,
-      voteAgainst,
-      voteForPercent,
-      voteAgainstPercent,
-      title,
-    };
   };
 
-  getVotesData = async (proposalStream: string): Promise<IProposalVoteData[] | undefined> => {
+  getVotesData = async (proposalStream: string): Promise<VoteApiType | undefined> => {
     try {
-      const response = await axios.get(`${API_ENDPOINT}/votes`, {
+      const { address } = chainStore;
+      const response = await axios.get<VoteApiType>(`${API_ENDPOINT}/vote`, {
         params: {
-          proposal_stream: proposalStream,
+          proposal: proposalStream,
+          address, 
         },
       });
-      return response.data.items;
+      return response.data;
     } catch (error: any) {
       notify(error.message);
     }
   };
-
-  updateProposal = async (proposalStream: string) => {
-    try {
-      const newProposalsList = [...this.proposalsList];
-      const index = newProposalsList.findIndex(elem => elem.ceramic_stream === proposalStream);
-      const newProposal = await this.adaptProposal(newProposalsList[index]);
-
-      newProposalsList[index] = newProposal;
-    } catch (error: any) {
-      notify(error.message);
-    }
-  }
 
   loadMoreProposals = async (daoStream: string) => {
     try {
@@ -432,9 +415,8 @@ class DaoStore {
       });
 
       await axios.post(`${API_ENDPOINT}/proposal`, {
-        dao_stream: daoStream,
-        asset: this.originalDao.buyout_target,
-        price: window.web3.utils.toWei(price, 'ether'),
+        crowd: daoStream,
+        asset: window.web3.utils.toWei(price, 'ether'),
       });
 
       runInAction(() => {
@@ -452,13 +434,23 @@ class DaoStore {
         this.voteState = StateEnum.Loading;
       });
 
+      let newAmount = '';
+
+      if (amount === 'same') {
+        newAmount = this.proposalsList[0].price;
+      } else if (amount === 'null') {
+        newAmount = '';
+      } else {
+        newAmount = window.web3.utils.toWei(amount, 'ether');
+      }
+
       const { address } = chainStore;
 
       await axios.post(`${API_ENDPOINT}/vote`, {
         address,
         proposal_stream: proposalStream,
         option,
-        amount: window.web3.utils.toWei(amount, 'ether'),
+        amount: newAmount,
       });
 
       runInAction(() => {
@@ -484,31 +476,6 @@ class DaoStore {
       notify(error.message);
     }
   };
-
-  withdraw = async (amount: string) => {
-    try {
-      runInAction(() => {
-        this.donateState === StateEnum.Loading;
-      });
-
-      const { address } = chainStore;
-
-      // @ts-ignore
-      const l1Dao = new window.web3.eth.Contract(DAO.abi, this.originalDao.l1_vault);
-      const weiAmount = window.web3.utils.toWei(amount);
-      await l1Dao.methods.withdrawDeposit(weiAmount).send({ from: address });
-
-      runInAction(() => {
-        this.donateState === StateEnum.Success;
-      });
-    } catch (error: any) {
-      runInAction(() => {
-        this.donateState === StateEnum.Error;
-      });
-
-      notify(error.message);
-    }
-  }
 }
 
 export default new DaoStore();

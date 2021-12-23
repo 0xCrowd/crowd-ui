@@ -13,6 +13,7 @@ import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import { mb36, media } from "@app/assets/styles/atomic";
 import { lightGray } from "@app/assets/styles/constants";
+import Proposals from "./components/proposals";
 
 const MainBlock = styled.div`
   display: flex;
@@ -86,12 +87,11 @@ const proposalButton = css`
 //#endregion
 
 interface Props {
-  adaptedCrowd: AdaptedCrowd;
+  adaptedCrowd: DetailedCrowd;
   daoLoading: boolean;
-  proposalsList: IAdaptedProposal[];
+  proposalsList: AdaptedProposal[];
   proposalsLoading: boolean;
   nftId: string;
-  isSold: boolean;
   makeVote: (proposalStream: string, option: number, amount: string) => void;
   onOpenModal: (mode: ModalModeEnum) => void;
 }
@@ -102,7 +102,6 @@ const DesktopPage = ({
   proposalsList,
   proposalsLoading,
   nftId,
-  isSold,
   makeVote,
   onOpenModal,
 }: Props): ReactElement => {
@@ -129,16 +128,32 @@ const DesktopPage = ({
         <NftBlock>
           <UserRow>
             <UserName>{adaptedCrowd?.name}</UserName>
-            <RaribleButton tokenId={nftId}/>
+            <RaribleButton tokenId={nftId} />
           </UserRow>
           <PreviewContainer>
-            <Preview 
-              src={adaptedCrowd.media} 
-              alt="preview"
-            />
+            <Preview src={adaptedCrowd?.media} alt="preview" />
           </PreviewContainer>
-          <GradientBorderButton className={proposalButton}>Put the NFT on sale</GradientBorderButton>
-          <Voting />
+          {adaptedCrowd?.status === "complete" && (
+            <>
+              {!!adaptedCrowd?.myFound && (
+                <GradientBorderButton
+                  className={proposalButton}
+                  onClick={() => onOpenModal(ModalModeEnum.Proposal)}
+                  disabled={
+                    !!proposalsList.find(elem => elem.type === 'liveNotVote' || elem.type === 'liveVoteFor' || elem.type === 'liveVoteAgainst')
+                  }
+                >
+                  Put the NFT on sale
+                </GradientBorderButton>
+              )}
+              <Proposals
+                proposals={proposalsList}
+                loading={proposalsLoading}
+                isParticipants={!!adaptedCrowd?.myFound}
+                makeVote={makeVote}
+              />
+            </>
+          )}
         </NftBlock>
         <CrowdBlock
           type={adaptedCrowd?.status}
@@ -147,10 +162,10 @@ const DesktopPage = ({
           price={adaptedCrowd?.price}
           participant={adaptedCrowd?.deposits}
           listingPrice={1000}
-          yourPercent={100}
-          yourFound={100}
+          myFound={adaptedCrowd?.myFound}
           afterFounds={100}
           leftovers={100}
+          onOpenModal={onOpenModal}
         />
       </MainBlock>
     </>

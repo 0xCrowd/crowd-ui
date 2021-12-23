@@ -56,40 +56,31 @@ interface Props {
     | "notPassed"
     | "youFor"
     | "youAgainst";
-  collected: number;
-  percentage: number;
   price: string | number;
   onWithdraw?: () => void;
-  isParticipant?: boolean;
-  isLeftovers?: boolean;
   listingPrice?: number;
-  yourFound?: number;
-  yourPercent?: number;
+  myFound?: number;
   afterFounds?: number;
   leftovers?: number;
 }
 
 const SuccessCrowd = ({
   votingType,
-  collected,
-  percentage,
   price,
-  isParticipant,
-  isLeftovers,
   listingPrice,
-  yourFound,
-  yourPercent,
+  myFound,
   afterFounds,
   leftovers,
 }: Props): ReactElement => {
+  const isLeftovers = !!leftovers;
+
   const renderBody = () => {
     switch (votingType) {
       case "passed":
         if (isLeftovers) {
           return (
             <PassedBody
-              sum={yourFound as number}
-              percent={yourPercent as number}
+              sum={myFound as number}
               afterSum={afterFounds as number}
               listingPrice={listingPrice as number}
             />
@@ -97,8 +88,7 @@ const SuccessCrowd = ({
         }
         return (
           <PassedLeftovBody
-            sum={yourFound as number}
-            percent={yourPercent as number}
+            sum={myFound as number}
             afterSum={afterFounds as number}
             listingPrice={listingPrice as number}
             leftovers={leftovers as number}
@@ -109,15 +99,13 @@ const SuccessCrowd = ({
         if (isLeftovers) {
           return (
             <NotPassedBody
-              sum={yourFound as number}
-              percent={yourPercent as number}
+              sum={myFound as number}
             />
           );
         }
         return (
           <NotPassedLeftovBody
-            sum={yourFound as number}
-            percent={yourPercent as number}
+            sum={myFound as number}
             leftovers={leftovers as number}
           />
         );
@@ -126,25 +114,23 @@ const SuccessCrowd = ({
         if (isLeftovers) {
           return (
             <ParticipantBody
-              sum={yourFound as number}
-              percent={yourPercent as number}
+              sum={myFound as number}
             />
           );
         }
         return (
           <ParticipantLeftovBody
-            sum={yourFound as number}
-            percent={yourPercent as number}
+            sum={myFound as number}
             leftovers={leftovers as number}
           />
         );
     }
   };
-
+  console.log(!!myFound, 'found');
   return (
     <>
       <PriceBock type={PriceBlockEnum.primary} price={price} className={mb28} />
-      {!isParticipant ? (
+      {!myFound ? (
         <NotParticipantBody
           votingType={votingType}
           listingPrice={listingPrice as number}

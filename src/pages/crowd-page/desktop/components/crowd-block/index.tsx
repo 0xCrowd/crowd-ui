@@ -5,6 +5,8 @@ import ActiveCrowd from "./active-crowd";
 import SuccessCrowd from "./success-crowd";
 import LostCrowd from "./lost-crowd";
 
+import { ModalModeEnum } from '../../../index';
+
 //#region styles
 import { styled } from "@linaria/react";
 
@@ -53,10 +55,10 @@ interface Props {
   onWithdraw?: () => void;
   participant: IDeposits[];
   listingPrice?: number;
-  yourFound?: number;
-  yourPercent?: number;
+  myFound?: number;
   afterFounds?: number;
   leftovers?: number;
+  onOpenModal: (mode: ModalModeEnum) => void;
 }
 
 const CrowdBlock = ({
@@ -66,11 +68,11 @@ const CrowdBlock = ({
   price,
   participant,
   listingPrice,
-  yourPercent,
-  yourFound,
+  myFound,
   afterFounds,
   leftovers,
   onWithdraw,
+  onOpenModal,
 }: Props): ReactElement => {
   const [background, setBackground] = useState<string>(activeDetail);
   const [title, setTitle] = useState("ACTIVE 🙌");
@@ -80,7 +82,8 @@ const CrowdBlock = ({
       onWithdraw={onWithdraw}
       collected={collected}
       percentage={percentage}
-      isParticipant={!!participant.length}
+      myFound={myFound}
+      onOpenModal={onOpenModal}
     />
   );
 
@@ -92,14 +95,9 @@ const CrowdBlock = ({
         setContent(
           <SuccessCrowd
             votingType="noVoting"
-            collected={collected}
-            percentage={percentage}
             price={price}
-            isParticipant={true}
-            isLeftovers={!!leftovers}
             listingPrice={listingPrice}
-            yourFound={yourFound}
-            yourPercent={yourPercent}
+            myFound={myFound}
             afterFounds={afterFounds}
             leftovers={leftovers}
           />
@@ -129,7 +127,7 @@ const CrowdBlock = ({
       <Title>{title}</Title>
       <ContentContainer>
         {content}
-        <Users participants={[]} />
+        <Users participants={participant} />
       </ContentContainer>
     </Root>
   );

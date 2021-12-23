@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { cx } from "@linaria/core";
 
 import PercentBar from "@app/components/percent-bar";
@@ -6,6 +6,8 @@ import PriceBock, { PriceBlockEnum } from ".././components/PriceBlock";
 import { Row } from "@app/components/row/Row";
 import GradientBorderButton from "@app/components/gradient-border-button";
 import ActiveDescription from ".././components/ActiveDescription";
+
+import { ModalModeEnum } from '../../../../index';
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -46,10 +48,21 @@ interface Props {
   percentage: number;
   price: string | number;
   onWithdraw?: () => void;
-  isParticipant?: boolean;
+  onOpenModal: (mode: ModalModeEnum) => void;
+  myFound?: number;
 }
 
-const ActiveCrowd = ({ collected, percentage, price, isParticipant }: Props): ReactElement => {
+const ActiveCrowd = ({ collected = 0, percentage, price = 0, myFound, onOpenModal }: Props): ReactElement => {
+  const [fixedNumber, setFixedNumber] = useState(0);
+
+  useEffect(() => {
+    if (collected === 0) {
+      setFixedNumber(price.toString().length - 2);
+    } else {
+      setFixedNumber(collected.toString().length - 2);
+    }
+  }, []);
+
   return (
     <>
       <PriceBock type={PriceBlockEnum.primary} price={price} className={mb28} />
@@ -63,28 +76,26 @@ const ActiveCrowd = ({ collected, percentage, price, isParticipant }: Props): Re
       </PriceRow>
       <PriceRow className={mb28}>
         <Row className={priceRowContainer}>
-          <BlueNumber>{+price - collected}</BlueNumber>
+          <BlueNumber>{(+price - collected).toFixed(fixedNumber)}</BlueNumber>
           <SecondaryText>ETH more required for a buyout</SecondaryText>
         </Row>
       </PriceRow>
-      {isParticipant ? (
+      {myFound ? (
         <>
           <Row className={mb12}>
-            <GradientBorderButton className={mr4}>
+            <GradientBorderButton className={mr4} onClick={() => onOpenModal(ModalModeEnum.Eth)}>
               + Add Funds
             </GradientBorderButton>
-            <GradientBorderButton>+ Add Funds</GradientBorderButton>
+            <GradientBorderButton onClick={() => onOpenModal(ModalModeEnum.Withdraw)}>- Withdraw</GradientBorderButton>
           </Row>
           <Row className={mb28}>
-            <SecondaryText>Your funds:</SecondaryText>
-            <PrimaryText>20</PrimaryText>
-            <SecondaryText>/</SecondaryText>
-            <PrimaryText>20</PrimaryText>
+            <SecondaryText className={mr4}>Your funds:</SecondaryText>
+            <PrimaryText className={mr4}>{myFound}</PrimaryText>
             <SecondaryText>ETH</SecondaryText>
           </Row>
         </>
       ) : (
-        <GradientBorderButton className={cx(mb28, w100)}>
+        <GradientBorderButton className={cx(mb28, w100)} onClick={() => onOpenModal(ModalModeEnum.Eth)}>
           + Add Funds
         </GradientBorderButton>
       )}
