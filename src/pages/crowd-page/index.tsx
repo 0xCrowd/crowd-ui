@@ -15,11 +15,11 @@ import daoStore from "@app/stores/daoStore";
 
 import { StateEnum } from "@enums/state-enum/index";
 import { IEthFormData } from "./components/eth-form/constants";
+import { IProposalFormData } from "./components/proposal-form/constants";
 
 //#region styles
 import { styled } from "@linaria/react";
 import { media } from "@app/assets/styles/atomic";
-import { ProposalTypeEnum } from "../../enums/proposalTypeEnum/index";
 
 const Root = styled.div`
   display: flex;
@@ -42,26 +42,26 @@ export enum ModalModeEnum {
 const CrowdPage: FC = observer(() => {
   const { pathname } = useLocation();
 
-  const { address, balance, loadWeb3, loadBlockChain, blockChainState } =
+  const { address, loadWeb3, loadBlockChain, blockChainState } =
     chainStore;
 
   const {
-    getCrowdList,
+    getCrowd,
     getProposals,
     donate,
     createProposal,
     makeVote,
     getDelta,
     withdraw,
-    updateProposal,
-    crowds,
-    daoState,
+    detailedCrowd,
+    crowdState,
     donateState,
-    originalDao,
     proposalsList,
     createProposalState,
     proposalState,
   } = daoStore;
+
+  console.log(donateState, 'st');
 
   const [isOpen, setIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
@@ -80,9 +80,15 @@ const CrowdPage: FC = observer(() => {
     if (blockChainState === StateEnum.Success) {
       const id = pathname.split("/")[1];
       setCeramicStream(id);
-      getCrowdList(undefined, id);
+      getCrowd(id);
     }
   }, [pathname, blockChainState]);
+
+  useEffect(() => {
+    if (detailedCrowd && detailedCrowd.status === 'complete') {
+      getProposals(ceramicStream);
+    }
+  }, [ceramicStream, detailedCrowd]);
 
   // useEffect(() => {
   //   if (adaptedDao) {
@@ -138,77 +144,65 @@ const CrowdPage: FC = observer(() => {
     setModalTitle(title);
   };
 
-  // const onProposalSubmit = async ({ price }: IProposalFormData) => {
-  //   try {
-  //     await createProposal(adaptedDao.ceramic_stream, price);
-  //     onCloseModal();
-  //     getProposals(ceramicStream);
-  //   } catch (error) {}
-  // };
+  const onProposalSubmit = async ({ price }: IProposalFormData) => {
+    try {
+      await createProposal(detailedCrowd.ceramic_stream, price);
+      onCloseModal();
+      getProposals(ceramicStream);
+    } catch (error) {}
+  };
 
-  // const onEthSubmit = async (data: IEthFormData) => {
-  //   try {
-  //     await donate(
-  //       address,
-  //       adaptedDao.ceramic_stream,
-  //       data.deposite,
-  //       originalDao.l1_vault
-  //     );
-  //     onCloseModal();
-  //     getCrowdList(undefined, ceramicStream);
-  //   } catch (error) {}
-  // };
+  const onEthSubmit = async (data: IEthFormData) => {
+    try {
+      await donate(
+        address,
+        detailedCrowd.ceramic_stream,
+        data.deposite,
+        detailedCrowd.l1_vault
+      );
+      onCloseModal();
+      getCrowd(ceramicStream);
+    } catch (error) { }
+  };
 
   const onWithdrawSubmit = async ({ deposite }: IEthFormData) => {
     try {
       await withdraw(deposite);
       onCloseModal();
-      getCrowdList(undefined, ceramicStream);
+      getCrowd(ceramicStream);
     } catch (error) {}
   };
 
-  const renderModalContent = (modalMode: ModalModeEnum) => {
+  const renderModalContent = () => {
     switch (modalMode) {
-      // case ModalModeEnum.Eth:
-      //   return (
-      //     <EthForm
-      //       onSubmit={onEthSubmit}
-      //       loading={donateState === StateEnum.Loading}
-      //     />
-      //   );
+      case ModalModeEnum.Eth:
+        return (
+          <EthForm
+            onSubmit={onEthSubmit}
+            loading={donateState === StateEnum.Loading}
+          />
+        );
 
-      // case ModalModeEnum.Proposal:
-      //   return (
-      //     <ProposalForm
-      //       onSubmit={onProposalSubmit}
-      //       loading={createProposalState === StateEnum.Loading}
-      //     />
-      //   );
+      case ModalModeEnum.Proposal:
+        return (
+          <ProposalForm
+            onSubmit={onProposalSubmit}
+            loading={createProposalState === StateEnum.Loading}
+          />
+        );
 
-      // case ModalModeEnum.Withdraw:
-      //   return (
-      //     <WithdrawForm
-      //       onSubmit={onWithdrawSubmit}
-      //       loading={donateState === StateEnum.Loading}
-      //       onAmountButtonClick={(setValue) => {
-      //         setValue(adaptedDao?.myPaid?.total_deposit.toString() || "");
-      //       }}
-      //     />
-      //   );
+      case ModalModeEnum.Withdraw:
+        const myFound = detailedCrowd.myFound as number;
+        return (
+          <WithdrawForm
+            onSubmit={onWithdrawSubmit}
+            loading={donateState === StateEnum.Loading}
+            onAmountButtonClick={(setValue) => {
+              setValue(myFound.toString());
+            }}
+          />
+        );
     }
-  };
-
-  const checkIsSold = (): boolean => {
-    if (proposalsList.length) {
-      const sellProposal = proposalsList.find(
-        (elem) => elem.type === ProposalTypeEnum.Sell
-      );
-      if (sellProposal && sellProposal.fulfilled) {
-        return true;
-      }
-      return false;
-    }
-    return false;
   };
 
   const onMakeVote = (
@@ -217,12 +211,11 @@ const CrowdPage: FC = observer(() => {
     amount: string
   ) => {
     makeVote(proposalStream, option, amount);
-    updateProposal(proposalStream);
   };
 
   return (
     <Layout
-      onSubmit={() => getCrowdList(undefined, ceramicStream)}
+      onSubmit={() => getCrowd(ceramicStream)}
       openModal={() => setCreateModalIsOpen(true)}
       closeModal={() => setCreateModalIsOpen(false)}
       isModalOpen={createModalIsOpen}
@@ -233,21 +226,20 @@ const CrowdPage: FC = observer(() => {
         isLight
         title={modalTitle}
       >
-        
+        {renderModalContent()}
       </Modal>
       <Root>
         {/* ортобразится только при ширине экрана меньше 420px */}
         <MobilePage />
         {/* ортобразится только при ширине экрана больше 420px */}
         <DesktopPage
-          adaptedCrowd={crowds[0]}
+          adaptedCrowd={detailedCrowd}
           proposalsList={proposalsList}
           onOpenModal={onOpenModal}
           makeVote={onMakeVote}
           proposalsLoading={proposalState === StateEnum.Loading}
-          daoLoading={daoState === StateEnum.Loading}
-          nftId={originalDao?.buyout_target}
-          isSold={checkIsSold()}
+          daoLoading={crowdState === StateEnum.Loading}
+          nftId={detailedCrowd?.item}
         />
       </Root>
     </Layout>

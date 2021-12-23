@@ -20,13 +20,16 @@ const UserTitle = styled.p`
 `;
 
 const scroller = css`
-  height: 60px;
+  height: 60px !important;
 `;
 
 const hr = css`
   margin: 0;
 `;
 
+const text = css`
+  color: #9095B4;
+`;
 //#endregion
 
 type Props = {
@@ -47,6 +50,7 @@ const Users: FC<Props> = ({ participants }) => {
                 number={total_deposit}
                 name={address}
                 className={mb4}
+                textClassName={text}
               />
             );
           })}

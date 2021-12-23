@@ -3,7 +3,7 @@ import Loader from 'react-loader-spinner';
 import { useFormik } from 'formik';
 
 import Input from '@app/components/input';
-import Button from '@app/components/button';
+import Button, { ButtonSize } from '@app/components/button';
 
 import { IEthFormData, initialValues, validate } from './constants';
 
@@ -35,7 +35,7 @@ const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
     },
     validate,
   });
-
+  console.log(loading, 'lll');
   return (
     <form onSubmit={handleSubmit} id="eth">
       <Input
@@ -51,15 +51,10 @@ const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
         className={button}
         form="eth"
         type="submit"
+        loading={loading}
+        size={ButtonSize.large}
       >
-        {loading ? (
-          <Loader
-            type="Puff"
-            color="#6200E8"
-            height={20}
-            width={20}
-          />
-          )  : 'Add funds'}
+        Add funds
       </Button>
     </form>
   )

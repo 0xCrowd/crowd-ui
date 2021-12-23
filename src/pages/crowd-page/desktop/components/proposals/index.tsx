@@ -1,11 +1,10 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement } from "react";
 import SkeletonLoader from "tiny-skeleton-loader-react";
 
-import Proposal from '../proposal';
-import VoteBlock from '../vote-block';
-
 //#region styles
-import { styled } from '@linaria/react';
+import { styled } from "@linaria/react";
+import Voting from "@app/components/voting";
+import { mb20 } from "@assets/styles/atomic";
 
 const Root = styled.div`
   display: flex;
@@ -13,99 +12,48 @@ const Root = styled.div`
   width: 1220px;
 `;
 
-const Row = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 28px;
-`;
-//#endregion
-
-//#region const
-const SKELETON_ROWS = [
-  {
-    proposal: {
-      width: 800,
-      height: 192,
-      styles: { marginRight: 40 }
-    },
-    vote: {
-      width: 380,
-      height: 192,
-    },
-  },
-  {
-    proposal: {
-      width: 800,
-      height: 192,
-      styles: { marginRight: 40 }
-    },
-    vote: {
-      width: 380,
-      height: 192,
-    },
-  },
-  {
-    proposal: {
-      width: 800,
-      height: 192,
-      styles: { marginRight: 40 }
-    },
-    vote: {
-      width: 380,
-      height: 192,
-    },
-  },
-]
 //#endregion
 
 interface Props {
-  proposals: IAdaptedProposal[];
-  makeVote: (proposalStream: string, option: number, amount: string) => void;
+  proposals: AdaptedProposal[];
   loading: boolean;
-  tokenName?: string;
+  isParticipants: boolean;
+  makeVote: (proposalStream: string, option: number, amount: string) => void;
   className?: string;
 }
 
-const Proposals = ({ proposals, tokenName, makeVote, loading, className }: Props): ReactElement => {
+const Proposals = ({
+  proposals,
+  loading,
+  isParticipants,
+  makeVote,
+  className,
+}: Props): ReactElement => {
   if (loading) {
     return (
       <Root className={className}>
-        {SKELETON_ROWS.map(({ proposal, vote }, index) => (
-          <Row key={index}>
-            <SkeletonLoader {...proposal} background="linear-gradient(0deg,#263238,#263238)"/>
-            <SkeletonLoader {...vote} background="linear-gradient(0deg,#263238,#263238)"/>
-          </Row>
-        ))}
+        <SkeletonLoader
+          width={640}
+          height={342}
+          background="linear-gradient(0deg,#263238,#263238)"
+        />
       </Root>
-    )
+    );
   }
+
   return (
     <Root className={className}>
-      {proposals.map(({
-        title, 
-        description,
-        voteAgainst,
-        voteFor,
-        voteAgainstPercent,
-        voteForPercent,
-        status,
-        ceramic_stream,
-        type,
-      }) => (
-        <Row key={title}>
-          <Proposal title={title} description={description} type={type} />
-          <VoteBlock
-            ceramicStream={ceramic_stream}
-            voteFor={voteFor} 
-            voteAgainst={voteAgainst} 
-            status={status}
-            voteAgainstPercent={voteAgainstPercent}
-            voteForPercent={voteForPercent}
-            tokenTicker={tokenName}
-            onVoteFor={() => makeVote(ceramic_stream, 0, '0')}
-            onVoteAgainst ={() => makeVote(ceramic_stream, 1, '0')}
-          />
-        </Row>
+      {proposals.map(({ proposal, type, price }) => (
+        <Voting
+          key={proposal}
+          type={type}
+          isParticipants={isParticipants}
+          price={price}
+          makeVote={(option: number, amount: string) =>
+            makeVote(proposal, option, amount)
+          }
+          className={mb20}
+        />
       ))}
     </Root>
   );

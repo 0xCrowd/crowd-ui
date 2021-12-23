@@ -1,9 +1,8 @@
-import React, { ReactElement, useState } from "react";
-import Loader from "react-loader-spinner";
+import React, { ReactElement } from "react";
 import { useFormik } from "formik";
 
 import Input from "@app/components/input";
-import Button from "@app/components/button";
+import Button, { ButtonSize } from "@app/components/button";
 
 import { initialValues, validate, IEthFormData } from "../eth-form/constants";
 
@@ -11,10 +10,6 @@ import { initialValues, validate, IEthFormData } from "../eth-form/constants";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { mb12 } from "@assets/styles/atomic";
-
-const buttonContainer = css`
-  width: 100% !important;
-`;
 
 const button = css`
   width: 100%;
@@ -79,12 +74,10 @@ const WithdrawForm = ({
         className={button}
         form="withdraw"
         type="submit"
+        loading={loading}
+        size={ButtonSize.large}
       >
-        {loading ? (
-          <Loader type="Puff" color="#6200E8" height={20} width={20} />
-        ) : (
-          "Withdraw"
-        )}
+        Withdraw
       </Button>
     </form>
   );

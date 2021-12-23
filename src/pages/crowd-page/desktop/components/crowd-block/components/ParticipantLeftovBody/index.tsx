@@ -17,11 +17,10 @@ const button = css`
 
 type Props = {
   sum: number | string;
-  percent: number;
   leftovers: number | string;
 };
 
-const ParticipantLeftovBody: FC<Props> = ({ sum, percent, leftovers }) => {
+const ParticipantLeftovBody: FC<Props> = ({ sum, leftovers }) => {
   return (
     <>
       <InfoText className={mb12}>NFT was successfully purchased 🎉</InfoText>
@@ -38,9 +37,7 @@ const ParticipantLeftovBody: FC<Props> = ({ sum, percent, leftovers }) => {
       </GradientBorderButton>
       <Row className={mb2}>
         <SecondaryText className={mr4}>Your funds:</SecondaryText>
-        <PrimaryText className={mr4}>
-          {percent}% / {sum}
-        </PrimaryText>
+        <PrimaryText className={mr4}>{sum}</PrimaryText>
         <SecondaryText className={mr4}>ETH</SecondaryText>
       </Row>
       <Row className={mb28}>

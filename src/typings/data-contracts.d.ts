@@ -1,3 +1,8 @@
+type IDeposits = {
+  address: string;
+  total_deposit: number;
+};
+
 type CrowdApiType = {
   ceramic_stream: string;
   created: string;
@@ -41,4 +46,29 @@ type PreviewApiType = {
 	media: string;
 	media_type: string;
 	price: string;
+}
+
+type ProposalApiType = {
+  crowd: string;
+  stream: string;
+  title: string;
+	description: string;
+	asset: string;
+	time_left: string;
+	price: string;
+	voted: number | null;
+	against: number | null;
+	status: ProposalStatusEnum;
+	type: ProposalTypeEnum;
+  options: [];
+  fulfilled: boolean;
+  created: string;
+}
+
+type VoteApiType = {
+  address: string;
+  proposal: string;
+  amount: string;
+  voting_power: string;
+  option: number;
 }

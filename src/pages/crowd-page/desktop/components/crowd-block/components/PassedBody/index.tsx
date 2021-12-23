@@ -11,13 +11,11 @@ import PriceBock, { PriceBlockEnum } from "../PriceBlock";
 
 type Props = {
   sum: number | string;
-  percent: number;
   afterSum: number;
   listingPrice: number;
 }
 const PassedBody: FC<Props> = ({
   sum,
-  percent,
   afterSum,
   listingPrice
 }) => {
@@ -29,7 +27,7 @@ const PassedBody: FC<Props> = ({
         <SecondaryText className={mr4}>
           Your funds:
         </SecondaryText>
-        <PrimaryText className={mr4}>{percent}% / {sum}</PrimaryText>
+        <PrimaryText className={mr4}>{sum}</PrimaryText>
         <SecondaryText className={mr4}>
           ETH
         </SecondaryText>
