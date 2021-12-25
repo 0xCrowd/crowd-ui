@@ -38,20 +38,32 @@ type Props = {
 }
 
 const Timer: FC<Props> = ({ time }) => {
+  const [days, setDays] = useState('-');
   const [hours, setHours] = useState('-');
   const [minutes, setMinutes] = useState('-');
   const [seconds, setSeconds] = useState('-');
   
   useEffect(() => {
-    const arr = time.split(':');
+    const date1 = new Date();
+    const date2 = new Date(time);
 
-    let hours = +arr[0];
-    let minutes = +arr[1];
-    let seconds = +arr[2].split('.')[0];
+    // @ts-ignore
+    let diff = (date2 - date1)/1000;
+    diff = Math.abs(Math.floor(diff));
+
+    let days = Math.floor(diff/(24*60*60));
+    let seconds = diff - days * 24*60*60;
+
+    let hours = Math.floor(seconds/(60*60));
+    seconds = seconds - hours * 60*60;
+
+    let minutes = Math.floor(seconds/(60));
+    seconds = seconds - minutes * 60;
 
     let hoursSt = plusZero(hours);
     let minutesSt = plusZero(minutes);
     let secondsSt = plusZero(seconds);
+    let daysSt = plusZero(days);
 
     const timer = () => {
       seconds -= 1;
@@ -68,8 +80,14 @@ const Timer: FC<Props> = ({ time }) => {
 
           hours -= hours;
           
-          if (hours === 0) {
-            return false;
+          if (hours < 0) {
+            hours = 23;
+
+            days -= 1;
+
+            if (days === 0) {
+              return false;
+            }
           }
         }
       }
@@ -77,9 +95,11 @@ const Timer: FC<Props> = ({ time }) => {
       secondsSt = plusZero(seconds);
       minutesSt = plusZero(minutes);
       hoursSt = plusZero(hours);
+      daysSt = plusZero(days);
       setHours(hoursSt);
       setMinutes(minutesSt);
       setSeconds(secondsSt);
+      setDays(daysSt);
     }
 
     const id = setInterval(timer, 1000);
@@ -91,7 +111,7 @@ const Timer: FC<Props> = ({ time }) => {
 
   return (
     <Root>
-      <Number>{`${hours} : ${minutes} : ${seconds}`}</Number>
+      <Number>{`${days} : ${hours} : ${minutes} : ${seconds}`}</Number>
     </Root>
   )
 }

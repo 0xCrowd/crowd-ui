@@ -54,7 +54,7 @@ type ProposalApiType = {
   title: string;
 	description: string;
 	asset: string;
-	time_left: string;
+	till: string;
 	price: string;
 	voted: number | null;
 	against: number | null;
