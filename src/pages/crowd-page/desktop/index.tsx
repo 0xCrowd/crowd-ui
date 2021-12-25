@@ -138,9 +138,9 @@ const DesktopPage = ({
                 <GradientBorderButton
                   className={proposalButton}
                   onClick={() => onOpenModal(ModalModeEnum.Proposal)}
-                  // disabled={
-                  //   !!proposalsList.find(elem => elem.type === 'liveNotVote' || elem.type === 'liveVoteFor' || elem.type === 'liveVoteAgainst')
-                  // }
+                  disabled={
+                    !!proposalsList.find(elem => elem.type === 'liveNotVote' || elem.type === 'liveVoteFor' || elem.type === 'liveVoteAgainst')
+                  }
                 >
                   Put the NFT on sale
                 </GradientBorderButton>
@@ -160,7 +160,7 @@ const DesktopPage = ({
           percentage={adaptedCrowd?.percentage}
           price={adaptedCrowd?.price}
           participant={adaptedCrowd?.deposits}
-          listingPrice={1000}
+          listingPrice={proposalsList.length ? +proposalsList[0].price : 0}
           myFound={adaptedCrowd?.myFound}
           afterFounds={100}
           leftovers={100}

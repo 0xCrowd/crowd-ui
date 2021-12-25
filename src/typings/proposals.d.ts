@@ -6,7 +6,7 @@ type VotingType = "liveNotVote"
 
 type AdaptedProposal = {
   proposal: string;
-	timeLeft: string;
+	till: string;
 	price: string;
   type: VotingType;
   votingPower: string;

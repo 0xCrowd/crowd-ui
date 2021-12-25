@@ -124,7 +124,6 @@ class DaoStore {
 
   adaptCrowd = async (crowd: CrowdApiType, withToken?: boolean): Promise<AdaptedCrowd> => {
     if (crowd.price.length < 15) {
-      console.log(crowd.name)
       crowd.price = '1000000000000000';
     }
 
@@ -385,7 +384,7 @@ class DaoStore {
 
       return {
         price: ethPrice,
-        timeLeft: proposal.time_left,
+        till: proposal.till,
         votingPower: voteData.voting_power,
         options: proposal.options,
         type,

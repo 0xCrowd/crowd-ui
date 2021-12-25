@@ -44,7 +44,7 @@ const Proposals = ({
 
   return (
     <Root className={className}>
-      {proposals.map(({ proposal, type, price, timeLeft }) => (
+      {proposals.map(({ proposal, type, price, till }) => (
         <Voting
           key={proposal}
           type={type}
@@ -53,7 +53,7 @@ const Proposals = ({
           makeVote={(option: number, amount: string) =>
             makeVote(proposal, option, amount)
           }
-          time={timeLeft}
+          time={till}
           className={mb20}
         />
       ))}
