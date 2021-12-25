@@ -53,14 +53,23 @@ interface Props {
 }
 
 const ActiveCrowd = ({ collected = 0, percentage, price = 0, myFound, onOpenModal }: Props): ReactElement => {
-  const [fixedNumber, setFixedNumber] = useState(0);
+  const [remain, setRemain] = useState(0);
 
   useEffect(() => {
+    let fixedNumber = 0;
     if (collected === 0) {
-      setFixedNumber(price.toString().length - 2);
+      fixedNumber = price.toString().length - 2;
     } else {
-      setFixedNumber(collected.toString().length - 2);
+      fixedNumber = collected.toString().length - 2
     }
+
+    let remain = +(+price - collected).toFixed(fixedNumber);
+
+    if (remain < 0) {
+      remain = 0;
+    }
+
+    setRemain(remain);
   }, []);
 
   return (
@@ -76,7 +85,7 @@ const ActiveCrowd = ({ collected = 0, percentage, price = 0, myFound, onOpenModa
       </PriceRow>
       <PriceRow className={mb28}>
         <Row className={priceRowContainer}>
-          <BlueNumber>{(+price - collected).toFixed(fixedNumber)}</BlueNumber>
+          <BlueNumber>{remain}</BlueNumber>
           <SecondaryText>ETH more required for a buyout</SecondaryText>
         </Row>
       </PriceRow>

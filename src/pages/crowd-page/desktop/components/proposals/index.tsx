@@ -5,6 +5,7 @@ import SkeletonLoader from "tiny-skeleton-loader-react";
 import { styled } from "@linaria/react";
 import Voting from "@app/components/voting";
 import { mb20 } from "@assets/styles/atomic";
+import { ModalModeEnum } from "@app/pages/crowd-page";
 
 const Root = styled.div`
   display: flex;
@@ -43,7 +44,7 @@ const Proposals = ({
 
   return (
     <Root className={className}>
-      {proposals.map(({ proposal, type, price }) => (
+      {proposals.map(({ proposal, type, price, timeLeft }) => (
         <Voting
           key={proposal}
           type={type}
@@ -52,6 +53,7 @@ const Proposals = ({
           makeVote={(option: number, amount: string) =>
             makeVote(proposal, option, amount)
           }
+          time={timeLeft}
           className={mb20}
         />
       ))}

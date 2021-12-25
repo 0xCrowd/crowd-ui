@@ -2,7 +2,6 @@ import React, { ReactElement } from "react";
 import SkeletonLoader from "tiny-skeleton-loader-react";
 
 import RaribleButton from "@app/components/rarible-button";
-import Voting from "@app/components/voting";
 import GradientBorderButton from "@app/components/gradient-border-button";
 import CrowdBlock from "./components/crowd-block";
 
@@ -11,7 +10,7 @@ import { ModalModeEnum } from "../index";
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { mb36, media } from "@app/assets/styles/atomic";
+import { media } from "@app/assets/styles/atomic";
 import { lightGray } from "@app/assets/styles/constants";
 import Proposals from "./components/proposals";
 
@@ -139,9 +138,9 @@ const DesktopPage = ({
                 <GradientBorderButton
                   className={proposalButton}
                   onClick={() => onOpenModal(ModalModeEnum.Proposal)}
-                  disabled={
-                    !!proposalsList.find(elem => elem.type === 'liveNotVote' || elem.type === 'liveVoteFor' || elem.type === 'liveVoteAgainst')
-                  }
+                  // disabled={
+                  //   !!proposalsList.find(elem => elem.type === 'liveNotVote' || elem.type === 'liveVoteFor' || elem.type === 'liveVoteAgainst')
+                  // }
                 >
                   Put the NFT on sale
                 </GradientBorderButton>
@@ -166,6 +165,7 @@ const DesktopPage = ({
           afterFounds={100}
           leftovers={100}
           onOpenModal={onOpenModal}
+          votingType={proposalsList.length ? proposalsList[0].type : 'notVoting'}
         />
       </MainBlock>
     </>

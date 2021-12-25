@@ -8,26 +8,20 @@ import PriceBock, { PriceBlockEnum } from "../PriceBlock";
 //#endregion
 
 type Props = {
-  votingType:
-    | "noVoting"
-    | "votingLive"
-    | "passed"
-    | "notPassed"
-    | "youFor"
-    | "youAgainst";
+  votingType: VotingType | 'notVoting';
   listingPrice: number;
 };
 const NotParticipantBody: FC<Props> = ({ votingType, listingPrice }) => {
 
   const renderText = () => {
     switch (votingType) {
-      case 'votingLive':
-      case 'youAgainst':
-      case 'youFor':
+      case 'liveNotVote':
+      case 'liveVoteAgainst':
+      case 'liveVoteFor':
         return 'The NFT was listed for the resale by voting 🤑'
 
-      case 'passed':
-      case 'notPassed':
+      case 'success':
+      case 'noSuccess':
         'Resale proposal did not pass'
 
       default:
@@ -36,7 +30,7 @@ const NotParticipantBody: FC<Props> = ({ votingType, listingPrice }) => {
   }
   return (
     <>
-      {votingType === 'passed' && <PriceBock type={PriceBlockEnum.success} price={listingPrice} className={mb28} />}
+      {votingType === 'success' && <PriceBock type={PriceBlockEnum.success} price={listingPrice} className={mb28} />}
       <InfoText className={mb28}>{renderText()}</InfoText>
     </>
   );

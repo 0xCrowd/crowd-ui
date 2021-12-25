@@ -2,6 +2,7 @@ import React, { FC } from "react";
 
 import Button from "../button";
 import { Row } from "../row/Row";
+import Timer from "../timer";
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -9,15 +10,16 @@ import { css } from "@linaria/core";
 
 import {
   bgDark,
-  bgGray,
   bgLightGray,
   pink,
   successText,
   textGray,
   textPrimary,
 } from "@app/assets/styles/constants";
-import { mb24, mb28, mb45 } from "@app/assets/styles/atomic";
-import { mb36 } from "../../assets/styles/atomic";
+import { mb24, mb28, mb36, mb45 } from "@app/assets/styles/atomic";
+
+import okIcon from '@assets/images/ok.svg';
+import dissIcon from '@assets/images/diss.svg';
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -41,13 +43,6 @@ const SubTitle = styled.span`
 
 const SubTitlePink = styled.span`
   color: ${pink};
-`;
-
-const Timer = styled.div`
-  width: 202px;
-  height: 48px;
-  background-color: ${bgLightGray};
-  border-radius: 5px;
 `;
 
 const Description = styled.p`
@@ -160,6 +155,9 @@ const LostLabel = styled.p`
 `;
 
 const VoteIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 48px;
   width: 48px;
   margin-left: 12px;
@@ -202,6 +200,7 @@ type Props = {
     | "noSuccess";
   isParticipants?: boolean;
   price?: string;
+  time: string;
   makeVote: (option: number, amount: string) => void;
   className?: string;
 };
@@ -210,6 +209,7 @@ const Voting: FC<Props> = ({
   isParticipants,
   type = "liveNotVote",
   price,
+  time,
   makeVote,
   className,
 }) => {
@@ -218,7 +218,9 @@ const Voting: FC<Props> = ({
       <VoteStatus>
         <Status>Voting is over</Status>
       </VoteStatus>
-      <VoteIcon />
+      <VoteIcon>
+        <img src={type ==='success' ? okIcon : dissIcon} />
+      </VoteIcon>
     </Row>
   );
 
@@ -233,7 +235,7 @@ const Voting: FC<Props> = ({
             <Button className={blueButton} onClick={() => makeVote(0, "same")}>
               Agree with avarege
             </Button>
-            <Button className={greenButton} onClick={() => makeVote(2, "1000")}>
+            <Button className={greenButton} onClick={() => makeVote(0, "1000")}>
               Suggest your price
             </Button>
           </Row>
@@ -349,7 +351,7 @@ const Voting: FC<Props> = ({
         className={(type === "noSuccess" || type === "success") ? mb28 : ''}
       >
         {getTitle()}
-        {type !== "noSuccess" && type !== "success" && <Timer />}
+        {type !== "noSuccess" && type !== "success" && <Timer time={time} />}
       </Row>
       {getDescription()}
       {type !== "noSuccess" && (

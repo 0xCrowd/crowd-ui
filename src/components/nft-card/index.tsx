@@ -172,7 +172,6 @@ const NftCard = ({
   }, []);
 
   useEffect(() => {
-    console.log(status, 'efff');
     switch (status) {
       case "active":
         setCardBackground(activeCard);
@@ -185,7 +184,6 @@ const NftCard = ({
         break;
       
       case "complete":
-        console.log('compl');
         setCardBackground(successCard);
         setStatusText(CrowdStatusText.success);
         break;
@@ -200,9 +198,6 @@ const NftCard = ({
         setStatusText(CrowdStatusText.active);
     }
   }, [status]);
-
-  console.log(cardBackground, 'back');
-  console.log(statusText, 'pr');
 
   return (
     <Root className={className} background={cardBackground} onClick={() => push(id)}>

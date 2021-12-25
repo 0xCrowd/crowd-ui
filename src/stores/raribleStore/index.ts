@@ -103,7 +103,6 @@ class RaribleStore {
         console.log(response.data.items[0].price, 'last price')
       }
       return response.data.items[0].price
-      console.log(response.data.items);
     } catch (error) {
       
     }
