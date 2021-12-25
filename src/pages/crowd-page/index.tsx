@@ -20,6 +20,7 @@ import { IProposalFormData } from "./components/proposal-form/constants";
 //#region styles
 import { styled } from "@linaria/react";
 import { media } from "@app/assets/styles/atomic";
+import PriceForm from './components/price-form/index';
 
 const Root = styled.div`
   display: flex;
@@ -37,13 +38,13 @@ export enum ModalModeEnum {
   Proposal = "proposal",
   Eth = "eth",
   Withdraw = "withdraw",
+  Price = "price",
 }
 
 const CrowdPage: FC = observer(() => {
   const { pathname } = useLocation();
 
-  const { address, loadWeb3, loadBlockChain, blockChainState } =
-    chainStore;
+  const { address, loadWeb3, loadBlockChain, blockChainState } = chainStore;
 
   const {
     getCrowd,
@@ -59,15 +60,15 @@ const CrowdPage: FC = observer(() => {
     proposalsList,
     createProposalState,
     proposalState,
+    voteState,
   } = daoStore;
-
-  console.log(donateState, 'st');
 
   const [isOpen, setIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
   const [modalMode, setModalMode] = useState(ModalModeEnum.Proposal);
   const [modalTitle, setModalTitle] = useState("");
   const [ceramicStream, setCeramicStream] = useState("");
+  const [proposalStream, setProposalStream] = useState("");
   const [isUserNotified, setIsUserNotified] = useState(false);
 
   useEffect(() => {
@@ -85,7 +86,7 @@ const CrowdPage: FC = observer(() => {
   }, [pathname, blockChainState]);
 
   useEffect(() => {
-    if (detailedCrowd && detailedCrowd.status === 'complete') {
+    if (detailedCrowd && detailedCrowd.status === "complete") {
       getProposals(ceramicStream);
     }
   }, [ceramicStream, detailedCrowd]);
@@ -139,6 +140,10 @@ const CrowdPage: FC = observer(() => {
 
       case ModalModeEnum.Withdraw:
         title = "Withdraw Funds";
+        break;
+      
+      case ModalModeEnum.Price:
+        title = "Put NFT on selling";
     }
 
     setModalTitle(title);
@@ -162,7 +167,7 @@ const CrowdPage: FC = observer(() => {
       );
       onCloseModal();
       getCrowd(ceramicStream);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const onWithdrawSubmit = async ({ deposite }: IEthFormData) => {
@@ -170,6 +175,14 @@ const CrowdPage: FC = observer(() => {
       await withdraw(deposite);
       onCloseModal();
       getCrowd(ceramicStream);
+    } catch (error) {}
+  };
+
+  const onPriceSubmit = async ({ price }: IProposalFormData) => {
+    try {
+      await makeVote(proposalStream, 0, price);
+      onCloseModal();
+      getProposals(ceramicStream);
     } catch (error) {}
   };
 
@@ -202,6 +215,14 @@ const CrowdPage: FC = observer(() => {
             }}
           />
         );
+
+      case ModalModeEnum.Price:
+        return (
+          <PriceForm
+            onSubmit={onPriceSubmit}
+            loading={voteState === StateEnum.Loading}
+          />
+        );
     }
   };
 
@@ -210,7 +231,12 @@ const CrowdPage: FC = observer(() => {
     option: number,
     amount: string
   ) => {
-    makeVote(proposalStream, option, amount);
+    if (amount !== 'same' && amount !== 'null') {
+      setProposalStream(proposalStream);
+      onOpenModal(ModalModeEnum.Price);
+    } else {
+      makeVote(proposalStream, option, amount);
+    }
   };
 
   return (

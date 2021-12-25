@@ -49,13 +49,7 @@ const priceRowContainer = css`
 //#endregion
 
 interface Props {
-  votingType:
-    | "noVoting"
-    | "votingLive"
-    | "passed"
-    | "notPassed"
-    | "youFor"
-    | "youAgainst";
+  votingType: VotingType | 'notVoting'
   price: string | number;
   onWithdraw?: () => void;
   listingPrice?: number;
@@ -74,9 +68,11 @@ const SuccessCrowd = ({
 }: Props): ReactElement => {
   const isLeftovers = !!leftovers;
 
+  console.log(votingType, 'passed')
+
   const renderBody = () => {
     switch (votingType) {
-      case "passed":
+      case "success":
         if (isLeftovers) {
           return (
             <PassedBody
@@ -95,7 +91,7 @@ const SuccessCrowd = ({
           />
         );
 
-      case "notPassed":
+      case "noSuccess":
         if (isLeftovers) {
           return (
             <NotPassedBody
@@ -126,7 +122,7 @@ const SuccessCrowd = ({
         );
     }
   };
-  console.log(!!myFound, 'found');
+
   return (
     <>
       <PriceBock type={PriceBlockEnum.primary} price={price} className={mb28} />

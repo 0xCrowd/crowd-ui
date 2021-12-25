@@ -5,7 +5,7 @@ import ActiveCrowd from "./active-crowd";
 import SuccessCrowd from "./success-crowd";
 import LostCrowd from "./lost-crowd";
 
-import { ModalModeEnum } from '../../../index';
+import { ModalModeEnum } from "../../../index";
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -14,7 +14,6 @@ import activeDetail from "@assets/images/active_detail.png";
 import successDetail from "@assets/images/success_detail.png";
 import lostDetail from "@assets/images/lost_detail.png";
 import resaleDetail from "@assets/images/resale_detail.png";
-
 
 type RootProps = {
   background: string;
@@ -59,6 +58,7 @@ interface Props {
   afterFounds?: number;
   leftovers?: number;
   onOpenModal: (mode: ModalModeEnum) => void;
+  votingType: VotingType | 'notVoting'
 }
 
 const CrowdBlock = ({
@@ -71,21 +71,13 @@ const CrowdBlock = ({
   myFound,
   afterFounds,
   leftovers,
+  votingType,
   onWithdraw,
   onOpenModal,
 }: Props): ReactElement => {
   const [background, setBackground] = useState<string>(activeDetail);
   const [title, setTitle] = useState("ACTIVE 🙌");
-  const [content, setContent] = useState<JSX.Element | null>(
-    <ActiveCrowd
-      price={price}
-      onWithdraw={onWithdraw}
-      collected={collected}
-      percentage={percentage}
-      myFound={myFound}
-      onOpenModal={onOpenModal}
-    />
-  );
+  const [content, setContent] = useState<JSX.Element | null>(null);
 
   useEffect(() => {
     switch (type) {
@@ -94,7 +86,7 @@ const CrowdBlock = ({
         setTitle("SUCCESSFUL BUYOUT 😄");
         setContent(
           <SuccessCrowd
-            votingType="noVoting"
+            votingType={votingType}
             price={price}
             listingPrice={listingPrice}
             myFound={myFound}
@@ -119,8 +111,20 @@ const CrowdBlock = ({
           />
         );
         break;
+
+      default:
+        setContent(
+          <ActiveCrowd
+            price={price}
+            onWithdraw={onWithdraw}
+            collected={collected}
+            percentage={percentage}
+            myFound={myFound}
+            onOpenModal={onOpenModal}
+          />
+        );
     }
-  }, [type]);
+  }, [type, votingType]);
 
   return (
     <Root background={background}>

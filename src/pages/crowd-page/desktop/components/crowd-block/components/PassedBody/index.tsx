@@ -4,7 +4,7 @@ import { Row } from '@components/row/Row';
 
 //#region styled
 import { PrimaryText, SecondaryText, InfoText } from '../../commonStyles';
-import { mb28, mr4 } from '@assets/styles/atomic';
+import { mb28, mr4, mb2 } from '@assets/styles/atomic';
 import PriceBock, { PriceBlockEnum } from "../PriceBlock";
 
 //#endregion
@@ -23,7 +23,7 @@ const PassedBody: FC<Props> = ({
     <>
       <PriceBock type={PriceBlockEnum.success} price={listingPrice} className={mb28} />
       <InfoText className={mb28}>The NFT was listed for the resale by voting 🤑</InfoText>
-      <Row className={mb28}> 
+      <Row className={mb2}> 
         <SecondaryText className={mr4}>
           Your funds:
         </SecondaryText>

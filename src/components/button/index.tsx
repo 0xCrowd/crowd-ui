@@ -36,10 +36,10 @@ const StyledButton = styled.button<StyleProps>`
     background-color: #111618;
   }
 
-  &:active {
+  /* &:active {
     background-color: #fff;
     color: ${textPrimaryDark}
-  }
+  } */
 `;
 
 const lightButton = css`

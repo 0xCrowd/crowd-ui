@@ -1,63 +1,67 @@
 import React, { ReactElement, useState } from 'react';
 import Loader from 'react-loader-spinner';
-import { useFormik } from 'formik';
 
 import Input from '@app/components/input';
 import Button, { ButtonSize } from '@app/components/button';
 
-import { IEthFormData, initialValues, validate } from './constants';
+import { IProposalFormData, validate, initialValues } from './constants';
 
 //#region styles
+import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
 import { mb12 } from '@assets/styles/atomic';
-
-const buttonContainer = css`
-  width: 100% !important;
-`;
+import { useFormik } from 'formik';
 
 const button = css`
   width: 100%;
+`;
+
+const Title = styled.p`
+  margin: 0;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 16px;
 `;
 //#endregion
 
 
 interface Props {
   loading: boolean;
-  onSubmit: (data: IEthFormData) => void
+  onSubmit: (data: IProposalFormData) => void
 }
 
-const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
+const PriceForm = ({ onSubmit, loading }: Props): ReactElement => {
   const { handleSubmit, handleChange, values, errors, touched } = useFormik({
     initialValues,
     onSubmit: values => {
-      values.deposite = values.deposite.replace(',', '.');
       onSubmit(values);
     },
-    validate,
+    validate: validate,
   });
 
   return (
-    <form onSubmit={handleSubmit} id="eth">
+    <form onSubmit={handleSubmit} id="proposal">
+      <Title>What price do you suggest?</Title>
       <Input
         className={mb12}
-        label="Deposit"
-        id="deposite"
-        placeholder="ETH 100000"
-        value={values.deposite}
+        label="Your Price"
+        id="price"
+        placeholder="ETH 1000"
+        value={values.price}
         onChange={handleChange}
-        error={(touched.deposite && errors.deposite) ? errors.deposite : ''}
+        error={touched.price && errors.price || ''}
       />
       <Button
         className={button}
-        form="eth"
+        form="proposal"
         type="submit"
-        loading={loading}
+        disabled={loading}
         size={ButtonSize.large}
       >
-        Add funds
+        Create
       </Button>
     </form>
   )
 }
 
-export default EthForm;
+export default PriceForm;

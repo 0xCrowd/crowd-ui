@@ -123,21 +123,31 @@ class DaoStore {
   };
 
   adaptCrowd = async (crowd: CrowdApiType, withToken?: boolean): Promise<AdaptedCrowd> => {
+    if (crowd.price.length < 15) {
+      console.log(crowd.name)
+      crowd.price = '1000000000000000';
+    }
+
     // @ts-ignore
     const l1Dao = new window.web3.eth.Contract(DAO.abi, crowd.l1_vault);
-
-    const total = await l1Dao.methods.getBalance().call();
-    const collected = +await window.web3.utils.fromWei(total, 'ether') + this.delta;
-
+    const price = await window.web3.utils.fromWei(crowd.price, 'ether') 
+    const total = await window.web3.eth.getBalance(crowd.l1_vault)
+    const collected = +await window.web3.utils.fromWei(total, 'ether');
     let tokenTicker = '';
     if (withToken) {
       tokenTicker = await l1Dao.methods.getTokenTicker().call();
     }
 
+    let percentage = Math.ceil((collected / +price) * 100);
+
+    if (percentage > 100) {
+      percentage = 100;
+    }
     return {
       ...crowd,
       collected,
-      percentage: Math.ceil((collected / +crowd.price) * 100),
+      percentage,
+      price,
     }
   };
 
@@ -341,7 +351,7 @@ class DaoStore {
           newProposals.push(adaptedProposal);
         }
       }));
-      console.log(newProposals, 'prop')
+
       runInAction(() => {
         this.proposalsList = newProposals;
         this.proposalState = StateEnum.Success;
@@ -355,7 +365,6 @@ class DaoStore {
 
   adaptProposal = async (proposal: ProposalApiType): Promise<AdaptedProposal | undefined> => {
     const voteData = await this.getVotesData(proposal.stream);
-    console.log(proposal, 'prp')
     const ethPrice = window.web3.utils.fromWei(proposal.price, 'ether');
     if (voteData) {
       let type: VotingType | null = null;
@@ -414,10 +423,12 @@ class DaoStore {
         this.createProposalState = StateEnum.Loading;
       });
 
-      await axios.post(`${API_ENDPOINT}/proposal`, {
+      const response = await axios.post<{proposal: string}>(`${API_ENDPOINT}/proposal`, {
         crowd: daoStream,
-        asset: window.web3.utils.toWei(price, 'ether'),
+        asset: this.detailedCrowd.item,
       });
+
+      await this.makeVote(response.data.proposal, 0, price);
 
       runInAction(() => {
         this.createProposalState = StateEnum.Success;        
@@ -448,7 +459,7 @@ class DaoStore {
 
       await axios.post(`${API_ENDPOINT}/vote`, {
         address,
-        proposal_stream: proposalStream,
+        proposal: proposalStream,
         option,
         amount: newAmount,
       });
