@@ -55,6 +55,7 @@ const Proposals = ({
           }
           time={till}
           className={mb20}
+          loading={loading}
         />
       ))}
     </Root>

@@ -139,9 +139,10 @@ class DaoStore {
 
     let percentage = Math.ceil((collected / +price) * 100);
 
-    if (percentage > 100) {
+    if (percentage > 100 || crowd.status === 'complete') {
       percentage = 100;
     }
+
     return {
       ...crowd,
       collected,
@@ -165,10 +166,15 @@ class DaoStore {
     if (myDeposite) {
       myFound = +window.web3.utils.fromWei(myDeposite.total_deposit.toString(), 'ether');
     }
+    let leftovers = 0;
+    if (crowd.status === 'complete' && crowd.collected > 0) {
+      leftovers = crowd.collected;
+    }
     return {
       ...crowd,
       myFound,
-      deposits
+      deposits,
+      leftovers
     }
   }
 
@@ -365,7 +371,9 @@ class DaoStore {
   adaptProposal = async (proposal: ProposalApiType): Promise<AdaptedProposal | undefined> => {
     const voteData = await this.getVotesData(proposal.stream);
     const ethPrice = window.web3.utils.fromWei(proposal.price, 'ether');
+
     if (voteData) {
+      const ethAmount = window.web3.utils.fromWei(voteData?.amount, 'ether');
       let type: VotingType | null = null;
 
       if (proposal.status === ProposalStatusEnum.Success) {
@@ -385,7 +393,7 @@ class DaoStore {
       return {
         price: ethPrice,
         till: proposal.till,
-        votingPower: voteData.voting_power,
+        votingPower: ethAmount,
         options: proposal.options,
         type,
         proposal: proposal.stream,

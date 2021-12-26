@@ -134,7 +134,7 @@ const DesktopPage = ({
           </PreviewContainer>
           {adaptedCrowd?.status === "complete" && (
             <>
-              {!!adaptedCrowd?.myFound && (
+              {!!adaptedCrowd?.myFound && proposalsList[0].type !== 'success' &&(
                 <GradientBorderButton
                   className={proposalButton}
                   onClick={() => onOpenModal(ModalModeEnum.Proposal)}

@@ -125,7 +125,7 @@ const Button: FC<ButtonProps> = ({
       onClick={loading ? undefined : onClick}
       form={form}
       type={type}
-      disabled={disabled}
+      disabled={disabled || loading}
     >
       {loading ? (
         <Loader type="Puff" color="#6200E8" height={20} width={20} />

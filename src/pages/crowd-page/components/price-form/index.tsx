@@ -1,5 +1,5 @@
-import React, { ReactElement, useState } from 'react';
-import Loader from 'react-loader-spinner';
+import React, { ReactElement } from 'react';
+import { useFormik } from 'formik';
 
 import Input from '@app/components/input';
 import Button, { ButtonSize } from '@app/components/button';
@@ -9,8 +9,7 @@ import { IProposalFormData, validate, initialValues } from './constants';
 //#region styles
 import { styled } from '@linaria/react';
 import { css } from '@linaria/core';
-import { mb12 } from '@assets/styles/atomic';
-import { useFormik } from 'formik';
+import { mb12, mb4 } from '@assets/styles/atomic';
 
 const button = css`
   width: 100%;
@@ -23,7 +22,6 @@ const Title = styled.p`
   line-height: 16px;
 `;
 //#endregion
-
 
 interface Props {
   loading: boolean;
@@ -41,7 +39,7 @@ const PriceForm = ({ onSubmit, loading }: Props): ReactElement => {
 
   return (
     <form onSubmit={handleSubmit} id="proposal">
-      <Title>What price do you suggest?</Title>
+      <Title className={mb4}>What price do you suggest?</Title>
       <Input
         className={mb12}
         label="Your Price"

@@ -8,7 +8,7 @@ import { styled } from "@linaria/react";
 import { mr4 } from "@app/assets/styles/atomic";
 import { successText, textGray, textPrimary } from "@app/assets/styles/constants";
 
-import eth from '@assets/images/eth_gr_wh.png';
+import eth from '@assets/images/eth_gr.png';
 
 const PriceBlock = styled.div`
   display: flex;
@@ -25,9 +25,9 @@ const Icon = styled.div<IconProps>`
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid white;
   margin-right: 12px;
   background-image: ${({ background }) => `url(${background})`};
+  background-size: cover;
 `;
 
 const PriceRows = styled.div`
