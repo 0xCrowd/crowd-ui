@@ -1,24 +1,20 @@
 import React, { ReactElement, useRef, useEffect } from "react";
-import { Scrollbars } from "react-custom-scrollbars";
 import Loader from "react-loader-spinner";
 
 import Button, { ButtonSize } from "@app/components/button";
-import Title from "@app/components/title";
-import UserBadge from "@app/components/user-badge";
-import RaribleButton from "@app/components/rarible-button/index";
 
 //#region styles
-import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-
-import share from "@assets/images/share.svg";
-import eth from "@assets/images/eth_gr.png";
+import { styled } from "@linaria/react";
 import { mb24 } from "@app/assets/styles/atomic";
+
+const dn = css`
+  display: none;
+`;
 
 const Root = styled.div`
   display: flex;
   flex-direction: column;
-  width: 400px;
 `;
 
 const PreviewContainer = styled.div`
@@ -34,14 +30,12 @@ const Preview = styled.img`
 `;
 
 const PreviewLoader = styled.div`
-  position: absolute;
-  top: 80px;
-  right: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 304px;
   width: 304px;
+  margin: auto;
   background: #263238;
   border-radius: 40px;
   z-index: 100;
@@ -88,10 +82,8 @@ const NftPreview = ({
 
   return (
     <Root>
-      <PreviewContainer className={mb24}>
-        <Preview src={image} alt="preview" ref={imgEl} />
-      </PreviewContainer>
-      {!loaded && (
+      <img src={image} className={dn} ref={imgEl}/>
+      {!loaded ? (
         <PreviewLoader className={mb24}>
           <Loader
             type="Puff"
@@ -101,6 +93,10 @@ const NftPreview = ({
             timeout={0}
           />
         </PreviewLoader>
+      ) : (
+        <PreviewContainer className={mb24}>
+          <Preview src={image} alt="preview" ref={imgEl} />
+        </PreviewContainer>
       )}
       <Name>{nftName}</Name>
       <Button size={ButtonSize.large} loading={loading} onClick={onSubmit}>
