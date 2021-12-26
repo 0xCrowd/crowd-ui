@@ -6,4 +6,5 @@ type AdaptedCrowd = CrowdApiType & {
 type DetailedCrowd = AdaptedCrowd & {
   myFound?: number;
   remained?: number;
+  leftovers?: number;
 }

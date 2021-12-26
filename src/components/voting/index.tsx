@@ -201,6 +201,7 @@ type Props = {
   isParticipants?: boolean;
   price?: string;
   time: string;
+  loading: boolean;
   makeVote: (option: number, amount: string) => void;
   className?: string;
 };
@@ -210,6 +211,7 @@ const Voting: FC<Props> = ({
   type = "liveNotVote",
   price,
   time,
+  loading,
   makeVote,
   className,
 }) => {
@@ -229,13 +231,13 @@ const Voting: FC<Props> = ({
       case "liveNotVote":
         return (
           <Row justify="space-between">
-            <Button className={pinkButton} onClick={() => makeVote(1, "null")}>
+            <Button loading={loading} className={pinkButton} onClick={() => makeVote(1, "null")}>
               Vote against selling
             </Button>
-            <Button className={blueButton} onClick={() => makeVote(0, "same")}>
+            <Button loading={loading} className={blueButton} onClick={() => makeVote(0, "same")}>
               Agree with avarege
             </Button>
-            <Button className={greenButton} onClick={() => makeVote(0, "1000")}>
+            <Button loading={loading} className={greenButton} onClick={() => makeVote(0, "1000")}>
               Suggest your price
             </Button>
           </Row>
