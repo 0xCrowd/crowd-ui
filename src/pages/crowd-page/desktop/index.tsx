@@ -155,7 +155,7 @@ const DesktopPage = ({
           )}
         </NftBlock>
         <CrowdBlock
-          type={adaptedCrowd?.status}
+          type={adaptedCrowd?.status || 'failed'}
           collected={adaptedCrowd?.collected}
           percentage={adaptedCrowd?.percentage}
           price={adaptedCrowd?.price}

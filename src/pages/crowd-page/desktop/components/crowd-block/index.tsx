@@ -75,8 +75,8 @@ const CrowdBlock = ({
   onWithdraw,
   onOpenModal,
 }: Props): ReactElement => {
-  const [background, setBackground] = useState<string>(activeDetail);
-  const [title, setTitle] = useState("ACTIVE 🙌");
+  const [background, setBackground] = useState<string>(lostDetail);
+  const [title, setTitle] = useState("UNSUCESSFUL BUYOUT 😔");
   const [content, setContent] = useState<JSX.Element | null>(null);
 
   useEffect(() => {
@@ -100,19 +100,9 @@ const CrowdBlock = ({
         setBackground(resaleDetail);
         break;
 
-      case "failed":
-        setBackground(lostDetail);
-        setTitle("UNSUCESSFUL BUYOUT 😔");
-        setContent(
-          <LostCrowd
-            collected={collected}
-            percentage={percentage}
-            price={price}
-          />
-        );
-        break;
-
-      default:
+      case "active":
+        setBackground(activeDetail);
+        setTitle("ACTIVE 🙌");
         setContent(
           <ActiveCrowd
             price={price}
@@ -121,6 +111,16 @@ const CrowdBlock = ({
             percentage={percentage}
             myFound={myFound}
             onOpenModal={onOpenModal}
+          />
+        );
+        break;
+
+      default:
+        setContent(
+          <LostCrowd
+            collected={collected}
+            percentage={percentage}
+            price={price}
           />
         );
     }
