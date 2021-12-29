@@ -6,7 +6,7 @@ export const mb2 = css`
 `;
 
 export const mb4 = css`
-  margin-bottom: 4px;
+  margin-bottom: 4px !important;
 `;
 
 export const mb6 = css`

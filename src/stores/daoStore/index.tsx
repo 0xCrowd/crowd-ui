@@ -123,14 +123,17 @@ class DaoStore {
   };
 
   adaptCrowd = async (crowd: CrowdApiType, withToken?: boolean): Promise<AdaptedCrowd> => {
-    if (crowd.price.length < 15) {
-      crowd.price = '1000000000000000';
+    if (crowd.price) {
+      if (crowd.price.length < 15) {
+        crowd.price = '1000000000000000';
+      }
+    } else {
+      crowd.price = '0';
     }
-
     // @ts-ignore
     const l1Dao = new window.web3.eth.Contract(DAO.abi, crowd.l1_vault);
-    const price = await window.web3.utils.fromWei(crowd.price, 'ether') 
-    const total = await window.web3.eth.getBalance(crowd.l1_vault)
+    const price = await window.web3.utils.fromWei(crowd.price, 'ether');
+    const total = await window.web3.eth.getBalance(crowd.l1_vault);
     const collected = +await window.web3.utils.fromWei(total, 'ether');
     let tokenTicker = '';
     if (withToken) {
@@ -170,6 +173,7 @@ class DaoStore {
     if (crowd.status === 'complete' && crowd.collected > 0) {
       leftovers = crowd.collected;
     }
+
     return {
       ...crowd,
       myFound,
