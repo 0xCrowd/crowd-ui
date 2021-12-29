@@ -90,7 +90,7 @@ const Navbar = ({ balance, onAddNew, className }: Props): ReactElement => {
         <a href="/">
           <Logo src={logo} alt="logo" />
         </a>
-        <LogoText href="/">Crowd protocol</LogoText>
+        <LogoText href="/">Crowd</LogoText>
       </Row>
       <PriceBlock>
         <ButtonBlock>
