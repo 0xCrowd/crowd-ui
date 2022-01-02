@@ -24,6 +24,7 @@ const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
   const { handleSubmit, handleChange, values, errors, touched } = useFormik({
     initialValues,
     onSubmit: values => {
+      values.price = values.price.replace(',', '.');
       onSubmit(values);
     },
     validate: validate,

@@ -101,6 +101,7 @@ const CrowdBlock = ({
         setBackground(resaleDetail);
         break;
 
+      case "on_execution":
       case "active":
         setBackground(activeDetail);
         setTitle("ACTIVE 🙌");
