@@ -79,7 +79,6 @@ const CrowdBlock = ({
   const [title, setTitle] = useState("UNSUCESSFUL BUYOUT 😔");
   const [content, setContent] = useState<JSX.Element | null>(null);
 
-  console.log(type, 'type');
   useEffect(() => {
     switch (type) {
       case "complete":

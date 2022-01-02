@@ -10,7 +10,7 @@ import { notify } from '@app/utils/notify';
 import DAO from "../../../ABI/Vault.json";
 import { ProposalTypeEnum } from "@app/enums/proposal-type-Enum";
 
-const API_ENDPOINT = "https://crowd-protocol-master-9iojf.ondigitalocean.app";
+const API_ENDPOINT = "https://5cf9-185-30-229-66.ngrok.io";
 
 class DaoStore {
   constructor() {
@@ -355,9 +355,11 @@ class DaoStore {
       const newProposals: AdaptedProposal[] = [];
 
       await Promise.all(response.data.items.map(async (item: ProposalApiType) => {
-        const adaptedProposal = await this.adaptProposal(item);
-        if (adaptedProposal && item.type === ProposalTypeEnum.Sell) {
-          newProposals.push(adaptedProposal);
+        if (item.type === ProposalTypeEnum.Sell) {
+          const adaptedProposal = await this.adaptProposal(item);
+          if (adaptedProposal) {
+            newProposals.push(adaptedProposal);
+          }
         }
       }));
 
@@ -377,7 +379,7 @@ class DaoStore {
     const ethPrice = window.web3.utils.fromWei(proposal.price, 'ether');
 
     if (voteData) {
-      const ethAmount = window.web3.utils.fromWei(voteData?.amount, 'ether');
+      const ethAmount = window.web3.utils.fromWei(voteData.amount, 'ether');
       let type: VotingType | null = null;
 
       if (proposal.status === ProposalStatusEnum.Success) {
