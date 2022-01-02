@@ -18,7 +18,7 @@ type CrowdApiType = {
   status: CrowdStatusType;
 };
 
-type CrowdStatusType = 'active' | 'complete' | 'failed' | 'resolved';
+type CrowdStatusType = 'active' | 'complete' | 'failed' | 'resolved' | "on_execution";
 
 type ApiResponse<T> = {
   items: T[];
