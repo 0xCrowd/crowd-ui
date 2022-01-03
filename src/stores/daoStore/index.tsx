@@ -397,8 +397,8 @@ class DaoStore {
         }
       }
       
-      let voted = undefined;
-      let against = undefined;
+      let voted = 0;
+      let against = 0;
 
       if (proposal.voted) {
         voted = Math.round(proposal.voted * 1000) / 10;
