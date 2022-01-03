@@ -379,7 +379,7 @@ class DaoStore {
     const ethPrice = window.web3.utils.fromWei(proposal.price, 'ether');
 
     if (voteData) {
-      let ethAmount = '0';
+      let ethAmount = '';
       let type: VotingType | null = null;
 
       if (proposal.status === ProposalStatusEnum.Success) {
@@ -393,7 +393,7 @@ class DaoStore {
           type = 'liveVoteAgainst';
         } else {
           type = 'liveVoteFor'
-          ethAmount = window.web3.utils.fromWei(voteData.amount, 'ether');
+          ethAmount = window.web3.utils.fromWei(voteData.amount, 'ether')
         }
       }
       
