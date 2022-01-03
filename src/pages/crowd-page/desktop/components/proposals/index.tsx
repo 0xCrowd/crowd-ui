@@ -44,7 +44,7 @@ const Proposals = ({
 
   return (
     <Root className={className}>
-      {proposals.map(({ proposal, type, price, till }) => (
+      {proposals.map(({ proposal, type, price, till, votingPower, voted, against }) => (
         <Voting
           key={proposal}
           type={type}
@@ -56,6 +56,9 @@ const Proposals = ({
           time={till}
           className={mb20}
           loading={loading}
+          votingPower={votingPower}
+          voted={voted}
+          against={against}
         />
       ))}
     </Root>
