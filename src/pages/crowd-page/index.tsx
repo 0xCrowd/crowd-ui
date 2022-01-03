@@ -226,7 +226,7 @@ const CrowdPage: FC = observer(() => {
     }
   };
 
-  const onMakeVote = (
+  const onMakeVote = async (
     proposalStream: string,
     option: number,
     amount: string
@@ -235,7 +235,8 @@ const CrowdPage: FC = observer(() => {
       setProposalStream(proposalStream);
       onOpenModal(ModalModeEnum.Price);
     } else {
-      makeVote(proposalStream, option, amount);
+      await makeVote(proposalStream, option, amount);
+      getProposals(ceramicStream);
     }
   };
 
