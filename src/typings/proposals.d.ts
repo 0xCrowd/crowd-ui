@@ -11,4 +11,6 @@ type AdaptedProposal = {
   type: VotingType;
   votingPower: string;
   options: string[];
+  voted?: number;
+  against?: number;
 }

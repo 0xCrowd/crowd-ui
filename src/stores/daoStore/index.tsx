@@ -10,7 +10,7 @@ import { notify } from '@app/utils/notify';
 import DAO from "../../../ABI/Vault.json";
 import { ProposalTypeEnum } from "@app/enums/proposal-type-Enum";
 
-const API_ENDPOINT = "https://5cf9-185-30-229-66.ngrok.io";
+const API_ENDPOINT = "https://crowd-protocol-master-9iojf.ondigitalocean.app";
 
 class DaoStore {
   constructor() {
@@ -379,7 +379,7 @@ class DaoStore {
     const ethPrice = window.web3.utils.fromWei(proposal.price, 'ether');
 
     if (voteData) {
-      const ethAmount = window.web3.utils.fromWei(voteData.amount, 'ether');
+      let ethAmount = '0';
       let type: VotingType | null = null;
 
       if (proposal.status === ProposalStatusEnum.Success) {
@@ -393,7 +393,19 @@ class DaoStore {
           type = 'liveVoteAgainst';
         } else {
           type = 'liveVoteFor'
+          ethAmount = window.web3.utils.fromWei(voteData.amount, 'ether');
         }
+      }
+      
+      let voted = undefined;
+      let against = undefined;
+
+      if (proposal.voted) {
+        voted = Math.round(proposal.voted * 1000) / 10;
+      }
+
+      if (proposal.against) {
+        against = Math.round(proposal.against * 1000) / 10;
       }
 
       return {
@@ -403,6 +415,8 @@ class DaoStore {
         options: proposal.options,
         type,
         proposal: proposal.stream,
+        voted,
+        against
       };
     }
   };

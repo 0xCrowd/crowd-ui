@@ -204,6 +204,9 @@ type Props = {
   loading: boolean;
   makeVote: (option: number, amount: string) => void;
   className?: string;
+  votingPower: string;
+  voted?: number;
+  against?: number;
 };
 
 const Voting: FC<Props> = ({
@@ -213,6 +216,9 @@ const Voting: FC<Props> = ({
   time,
   loading,
   makeVote,
+  votingPower,
+  voted,
+  against,
   className,
 }) => {
   const OverFooter = (
@@ -251,7 +257,7 @@ const Voting: FC<Props> = ({
             </LeftColumn>
             <RightColumn className={smallRight}>
               <Row alignItems="flex-end">
-                <SmallPrice>1000</SmallPrice>
+                <SmallPrice>{votingPower}</SmallPrice>
                 <SmallPriceLabel>ETH</SmallPriceLabel>
               </Row>
             </RightColumn>
@@ -313,8 +319,8 @@ const Voting: FC<Props> = ({
       default:
         return (
           <>
-            <Description>5% of votes against the selling</Description>
-            <Description className={mb24}>50% voted</Description>
+            <Description>{against}% of votes against the selling</Description>
+            <Description className={mb24}>{voted}% voted</Description>
           </>
         );
     }
