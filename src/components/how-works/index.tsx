@@ -20,8 +20,9 @@ const Root = styled.div<RootProps>`
   padding-left: 25px;
   background: ${({ collapsed }) =>
     collapsed ? "linear-gradient(0deg, #202527, #202527), #263238" : "#475C67"};
-  box-shadow: 0px 1px 2px #40525B;
+  box-shadow: 0px 1px 2px #40525b;
   border-radius: 5px;
+  transition: 1000ms;
 `;
 
 const RootRow = styled.div`
@@ -54,14 +55,18 @@ const Icon = styled.div`
   border-radius: 50%;
 `;
 
-const StyledOl = styled.ol`
+const StyledOl = styled.ol<RootProps>`
+  height: ${({ collapsed }) => (collapsed ? "0px" : "252px")};
   width: 340px;
-  margin-top: 10px;
+  margin-top: ${({ collapsed }) => collapsed ? '0' : '10px'};
+  margin-bottom: ${({ collapsed }) => collapsed ? '0' : '12px'};
   padding-left: 25px;
   font-size: 12px;
   font-weight: 500;
   color: ${textGray};
   line-height: 18px;
+  overflow: hidden;
+  transition: 1000ms;
 `;
 
 const Arrow = styled.div`
@@ -121,38 +126,33 @@ const HowWorks = ({ collapsed, onChange, className }: Props): ReactElement => {
           </ArrowButton>
         )}
       </RootRow>
-      {!collapsed && (
-        <>
-          <StyledOl>
-            <li>
-              Automatic NFT buyout happens after the requirement funds are
-              collected
-            </li>
-            <li>
-              Each collector receives a stake in NFT proportional to the amount
-              of his/her ETH used to purchase this NFT
-            </li>
-            <li>
-              If the Crowd does not succeed in purchasing the NFT, or if any of
-              your ETH is not used in the purchase, or if you don’t want to
-              participate in this Crowd anymore you are able to withdraw all
-              unused funds from your contribution
-            </li>
-            <li>
-              After a successful buyout, any collector can start a Voting for
-              the NFT Resale
-            </li>
-            <li>
-              The Resale price is set as the weighted average of all collectors’
-              votes
-            </li>
-            <li>
-              After the Resale of NFT, all collectors receive income in
-              proportion to their stakes
-            </li>
-          </StyledOl>
-        </>
-      )}
+      <StyledOl collapsed={collapsed}>
+        <li>
+          Automatic NFT buyout happens after the requirement funds are collected
+        </li>
+        <li>
+          Each collector receives a stake in NFT proportional to the amount of
+          his/her ETH used to purchase this NFT
+        </li>
+        <li>
+          If the Crowd does not succeed in purchasing the NFT, or if any of your
+          ETH is not used in the purchase, or if you don’t want to participate
+          in this Crowd anymore you are able to withdraw all unused funds from
+          your contribution
+        </li>
+        <li>
+          After a successful buyout, any collector can start a Voting for the
+          NFT Resale
+        </li>
+        <li>
+          The Resale price is set as the weighted average of all collectors’
+          votes
+        </li>
+        <li>
+          After the Resale of NFT, all collectors receive income in proportion
+          to their stakes
+        </li>
+      </StyledOl>
     </Root>
   );
 };

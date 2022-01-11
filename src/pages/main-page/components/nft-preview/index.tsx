@@ -47,6 +47,9 @@ const Name = styled.p`
   font-weight: bold;
   font-size: 18px;
   line-height: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 //#endregion
 
@@ -98,7 +101,7 @@ const NftPreview = ({
           <Preview src={image} alt="preview" ref={imgEl} />
         </PreviewContainer>
       )}
-      <Name>{nftName}</Name>
+      <Name title={nftName}>{nftName}</Name>
       <Button size={ButtonSize.large} loading={loading} onClick={onSubmit}>
         Start Fundrising
       </Button>
