@@ -1,13 +1,15 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement } from "react";
 
-import Button, { ButtonMode, ButtonSize } from '@components/button';
+import Button, { ButtonMode, ButtonSize } from "@components/button";
 
 //#region styles
-import { styled } from '@linaria/react';
-import { css } from '@linaria/core';
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 
-import eth from '@app/assets/images/eth_wh.png';
-import logo from '@assets/images/logo.png';
+import eth from "@app/assets/images/eth_wh.png";
+import logo from "@assets/images/logo.png";
+import { Link } from "react-router-dom";
+import { RouteNames } from '../../router/route-names';
 
 const Root = styled.div`
   height: 68px;
@@ -29,12 +31,12 @@ const Logo = styled.img`
 const LogoText = styled.a`
   margin: 0;
   margin-right: 64px;
-  font-family: 'Alata', sans-serif;
+  font-family: "Alata", sans-serif;
   font-weight: bold;
   font-size: 18px;
   line-height: 24px;
   letter-spacing: 0.44px;
-  color: #FFFFFF;
+  color: #ffffff;
   outline: none;
   text-decoration: none;
 `;
@@ -59,7 +61,7 @@ const Price = styled.p`
   font-size: 18px;
   line-height: 24px;
   letter-spacing: 0.44px;
-  color: #FFFFFF;
+  color: #ffffff;
 `;
 
 const Row = styled.div`
@@ -95,14 +97,24 @@ const Navbar = ({ balance, onAddNew, className }: Props): ReactElement => {
       <PriceBlock>
         <ButtonBlock>
           <Button mode={ButtonMode.link}>About us</Button>
-          <Button mode={ButtonMode.link}>My crowds</Button>
-          <Button mode={ButtonMode.gradient} rounded className={gradientButton} size={ButtonSize.small} onClick={onAddNew}>Start a Crowd</Button>
+          <Link to={RouteNames.MY_CROWDS}>
+            <Button mode={ButtonMode.link}>My crowds</Button>
+          </Link>
+          <Button
+            mode={ButtonMode.gradient}
+            rounded
+            className={gradientButton}
+            size={ButtonSize.small}
+            onClick={onAddNew}
+          >
+            Start a Crowd
+          </Button>
         </ButtonBlock>
         <Price>{balance}</Price>
         <Icon src={eth} alt="eth" />
       </PriceBlock>
     </Root>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

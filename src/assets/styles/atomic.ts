@@ -49,6 +49,10 @@ export const mb45 = css`
   margin-bottom: 45px !important;
 `;
 
+export const mb62 = css`
+  margin-bottom: 62px !important;
+`;
+
 //#endregion
 
 //#region margin right
@@ -68,6 +72,10 @@ export const mr32 = css`
   margin-right: 32px;
 `;
 
+export const mr52 = css`
+  margin-right: 52px !important;
+`;
+
 //#endregion
 
 //#region margin left
@@ -75,6 +83,9 @@ export const ml10 = css`
   margin-left: 10px;
 `;
 
+export const ml52 = css`
+  margin-left: 52px !important;
+`;
 //#endregion
 
 //#region  margin top

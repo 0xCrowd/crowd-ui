@@ -10,7 +10,7 @@ import { notify } from '@app/utils/notify';
 import DAO from "../../../ABI/Vault.json";
 import { ProposalTypeEnum } from "@app/enums/proposal-type-Enum";
 
-const API_ENDPOINT = "https://crowd-protocol-master-9iojf.ondigitalocean.app";
+const API_ENDPOINT = "https://68b9-185-30-229-66.ngrok.io";
 
 class DaoStore {
   constructor() {

@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
 import SkeletonLoader from "tiny-skeleton-loader-react";
 
 import RaribleButton from "@app/components/rarible-button";
@@ -10,9 +10,10 @@ import { ModalModeEnum } from "../index";
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { media } from "@app/assets/styles/atomic";
+import { mb28, media } from "@app/assets/styles/atomic";
 import { lightGray } from "@app/assets/styles/constants";
 import Proposals from "./components/proposals";
+import HowWorks from "@app/components/how-works";
 
 const MainBlock = styled.div`
   display: flex;
@@ -72,6 +73,11 @@ const Loading = styled.div`
   width: 100%;
 `;
 
+const Columns = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const proposalVisible = css`
   ${media("mobile")} {
     display: none;
@@ -104,6 +110,8 @@ const DesktopPage = ({
   makeVote,
   onOpenModal,
 }: Props): ReactElement => {
+  const [collapsed, setCollapsed] = useState(true);
+
   if (daoLoading) {
     return (
       <MainBlock>
@@ -134,17 +142,24 @@ const DesktopPage = ({
           </PreviewContainer>
           {adaptedCrowd?.status === "complete" && (
             <>
-              {!!adaptedCrowd?.myFound && (proposalsList[0] && proposalsList[0].type !== 'success' || !proposalsList[0]) &&(
-                <GradientBorderButton
-                  className={proposalButton}
-                  onClick={() => onOpenModal(ModalModeEnum.Proposal)}
-                  disabled={
-                    !!proposalsList.find(elem => elem.type === 'liveNotVote' || elem.type === 'liveVoteFor' || elem.type === 'liveVoteAgainst')
-                  }
-                >
-                  Put the NFT on sale
-                </GradientBorderButton>
-              )}
+              {!!adaptedCrowd?.myFound &&
+                ((proposalsList[0] && proposalsList[0].type !== "success") ||
+                  !proposalsList[0]) && (
+                  <GradientBorderButton
+                    className={proposalButton}
+                    onClick={() => onOpenModal(ModalModeEnum.Proposal)}
+                    disabled={
+                      !!proposalsList.find(
+                        (elem) =>
+                          elem.type === "liveNotVote" ||
+                          elem.type === "liveVoteFor" ||
+                          elem.type === "liveVoteAgainst"
+                      )
+                    }
+                  >
+                    Put the NFT on sale
+                  </GradientBorderButton>
+                )}
               <Proposals
                 proposals={proposalsList}
                 loading={proposalsLoading}
@@ -154,19 +169,25 @@ const DesktopPage = ({
             </>
           )}
         </NftBlock>
-        <CrowdBlock
-          type={adaptedCrowd?.status || 'failed'}
-          collected={adaptedCrowd?.collected}
-          percentage={adaptedCrowd?.percentage}
-          price={adaptedCrowd?.price}
-          participant={adaptedCrowd?.deposits}
-          listingPrice={proposalsList.length ? +proposalsList[0].price : 0}
-          myFound={adaptedCrowd?.myFound}
-          afterFounds={100}
-          leftovers={100}
-          onOpenModal={onOpenModal}
-          votingType={proposalsList.length ? proposalsList[0].type : 'notVoting'}
-        />
+        <Columns>
+          <CrowdBlock
+            type={adaptedCrowd?.status || "failed"}
+            collected={adaptedCrowd?.collected}
+            percentage={adaptedCrowd?.percentage}
+            price={adaptedCrowd?.price}
+            participant={adaptedCrowd?.deposits}
+            listingPrice={proposalsList.length ? +proposalsList[0].price : 0}
+            myFound={adaptedCrowd?.myFound}
+            afterFounds={100}
+            leftovers={100}
+            onOpenModal={onOpenModal}
+            votingType={
+              proposalsList.length ? proposalsList[0].type : "notVoting"
+            }
+            className={mb28}
+          />
+          <HowWorks collapsed={collapsed} onChange={setCollapsed} />
+        </Columns>
       </MainBlock>
     </>
   );
