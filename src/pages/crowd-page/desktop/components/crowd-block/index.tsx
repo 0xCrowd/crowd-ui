@@ -20,6 +20,7 @@ type RootProps = {
 };
 
 const Root = styled.div<RootProps>`
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -58,7 +59,8 @@ interface Props {
   afterFounds?: number;
   leftovers?: number;
   onOpenModal: (mode: ModalModeEnum) => void;
-  votingType: VotingType | 'notVoting'
+  votingType: VotingType | 'notVoting';
+  className?: string;
 }
 
 const CrowdBlock = ({
@@ -74,6 +76,7 @@ const CrowdBlock = ({
   votingType,
   onWithdraw,
   onOpenModal,
+  className,
 }: Props): ReactElement => {
   const [background, setBackground] = useState<string>(lostDetail);
   const [title, setTitle] = useState("UNSUCESSFUL BUYOUT 😔");
@@ -98,6 +101,7 @@ const CrowdBlock = ({
 
       case "resolved":
         setBackground(resaleDetail);
+        setTitle("SUCCESSFUL RESALE 💸");
         break;
 
       case "on_execution":
@@ -128,7 +132,7 @@ const CrowdBlock = ({
   }, [type, votingType]);
 
   return (
-    <Root background={background}>
+    <Root background={background} className={className}>
       <Title>{title}</Title>
       <ContentContainer>
         {content}

@@ -21,6 +21,11 @@ export const appRoutes: IAppRoute[] = [
     render: () => <MainPage />,
   },
   {
+    path: RouteNames.MY_CROWDS,
+    exact: true,
+    render: () => <MainPage />,
+  },
+  {
     path: RouteNames.SETTER,
     exact: true,
     render: () => <Setter />,

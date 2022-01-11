@@ -1,14 +1,18 @@
 import React, { ReactElement } from "react";
 import Loader from "react-loader-spinner";
-import cn from "classnames";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import NftCard from "@app/components/nft-card";
+import NftCard from "@components/nft-card";
+import { ButtonSize } from "@components/button";
+import GradientBorderButton from "@components/gradient-border-button";
+import { Row } from '@components/row/Row';
 
 //#region styles
 import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
-import { media, mr32 } from "@assets/styles/atomic";
+import { css, cx } from "@linaria/core";
+
+import { mb62, media, mr32, mr52, ml52 } from "@assets/styles/atomic";
+import { useHistory } from "react-router";
 
 const Root = styled.div`
   display: flex;
@@ -34,7 +38,7 @@ const LoaderContainer = styled.div`
 `;
 
 const EmptyTitle = styled.p`
-  margin-bottom: 84px;
+  margin: 0;
   font-weight: bold;
   font-size: 36px;
   line-height: 24px;
@@ -84,15 +88,18 @@ interface Props {
   onCreateClick: () => void;
   loadMore: () => void;
   hasMore: boolean;
+  isMyCrowds?: boolean;
 }
 
-const Parties = ({
+const CrowdList = ({
   crowds,
   loading,
   onCreateClick,
   loadMore,
   hasMore,
+  isMyCrowds,
 }: Props): ReactElement => {
+  const { push } = useHistory();
   if (loading) {
     return (
       <LoaderContainer>
@@ -102,16 +109,31 @@ const Parties = ({
   }
 
   if (!loading && !crowds.length) {
+    if (isMyCrowds) {
+      return (
+        <LoaderContainer>
+          <Row className={mb62}>
+            <EmptyTitle>You have not yet participated in any of the Crowds</EmptyTitle>
+          </Row>
+          <Row>
+            <GradientBorderButton size={ButtonSize.large} onClick={() => push('/')}>Join existing one</GradientBorderButton>
+            <EmptyTitle className={cx(ml52, mr52)}>or</EmptyTitle>
+            <GradientBorderButton size={ButtonSize.large} onClick={onCreateClick}>Start a new one</GradientBorderButton>
+          </Row>
+        </LoaderContainer>
+      );
+    }
     return (
       <LoaderContainer>
-        <EmptyTitle>There is no parties yet!</EmptyTitle>
+        <EmptyTitle className={mb62}>There is no Crowds yet!</EmptyTitle>
+        <GradientBorderButton size={ButtonSize.large} onClick={onCreateClick}>Start a new one</GradientBorderButton>
       </LoaderContainer>
     );
   }
 
   return (
     <>
-      {(
+      {
         <InfiniteScroll
           dataLength={8}
           next={loadMore}
@@ -145,7 +167,7 @@ const Parties = ({
                     percentage={percentage}
                     title={name}
                     participants={deposits.length}
-                    className={cn(card, (index + 1) % 4 === 0 ? '' : mr32)}
+                    className={cx(card, (index + 1) % 4 === 0 ? "" : mr32)}
                     status={status}
                     image={media}
                   />
@@ -154,9 +176,9 @@ const Parties = ({
             )}
           </Root>
         </InfiniteScroll>
-      )}
+      }
     </>
   );
 };
 
-export default Parties;
+export default CrowdList;
