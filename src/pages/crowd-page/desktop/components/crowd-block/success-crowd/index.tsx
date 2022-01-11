@@ -89,7 +89,7 @@ const SuccessCrowd = ({
 
   return (
     <>
-      <PriceBock type={PriceBlockEnum.primary} price={price} className={mb28} />
+      <PriceBock type={PriceBlockEnum.primary} price={price === '0' ? 'N/A' : price} className={mb28} />
       {!myFound ? (
         <NotParticipantBody
           votingType={votingType}

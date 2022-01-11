@@ -32,6 +32,7 @@ const Root = styled.div<RootProps>`
 `;
 
 const ContentContainer = styled.div`
+  box-sizing: border-box;
   padding: 18px;
   width: 340px;
 `;

@@ -193,10 +193,16 @@ class DaoStore {
         withCredentials: false,
       });
 
-      runInAction(() => {
-        this.crowdPreview = response.data;
-        this.createCrowdState = StateEnum.Success;
-      });
+      if (Object.keys(response.data).length) {
+        runInAction(() => {
+          this.crowdPreview = response.data;
+          this.createCrowdState = StateEnum.Success;
+        });
+      } else {
+        throw new Error('Wrong NFT');
+      }
+
+      
     } catch (error: any) {
       runInAction(() => {
         this.createCrowdState = StateEnum.Error;
