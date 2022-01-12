@@ -4,16 +4,18 @@ import SkeletonLoader from "tiny-skeleton-loader-react";
 import RaribleButton from "@app/components/rarible-button";
 import GradientBorderButton from "@app/components/gradient-border-button";
 import CrowdBlock from "./components/crowd-block";
+import Proposals from "./components/proposals";
+import HowWorks from "@app/components/how-works";
 
 import { ModalModeEnum } from "../index";
+import { fixedRound } from "@app/utils/round";
 
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
+
 import { mb28, media } from "@app/assets/styles/atomic";
 import { lightGray } from "@app/assets/styles/constants";
-import Proposals from "./components/proposals";
-import HowWorks from "@app/components/how-works";
 
 const MainBlock = styled.div`
   display: flex;
@@ -112,6 +114,11 @@ const DesktopPage = ({
 }: Props): ReactElement => {
   const [collapsed, setCollapsed] = useState(true);
 
+  const listingPrice = proposalsList.length ? fixedRound(+proposalsList[0].price, 2) : 0;
+  const fraction = (adaptedCrowd?.myFound || 0) / +adaptedCrowd?.price
+
+  console.log(fraction, 'fr');
+
   if (daoLoading) {
     return (
       <MainBlock>
@@ -176,10 +183,10 @@ const DesktopPage = ({
             percentage={adaptedCrowd?.percentage}
             price={adaptedCrowd?.price}
             participant={adaptedCrowd?.deposits}
-            listingPrice={proposalsList.length ? +proposalsList[0].price : 0}
+            listingPrice={listingPrice}
             myFound={adaptedCrowd?.myFound}
-            afterFounds={100}
-            leftovers={100}
+            afterFounds={listingPrice * fraction}
+            leftovers={adaptedCrowd?.leftovers}
             onOpenModal={onOpenModal}
             votingType={
               proposalsList.length ? proposalsList[0].type : "notVoting"

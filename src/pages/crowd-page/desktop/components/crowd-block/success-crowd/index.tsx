@@ -15,7 +15,7 @@ import { mb28 } from "@assets/styles/atomic";
 //#endregion
 
 interface Props {
-  votingType: VotingType | 'notVoting'
+  votingType: VotingType | "notVoting";
   price: string | number;
   onWithdraw?: () => void;
   listingPrice?: number;
@@ -34,62 +34,60 @@ const SuccessCrowd = ({
 }: Props): ReactElement => {
   const isLeftovers = !!leftovers;
 
+  console.log(isLeftovers, "is");
+
   const renderBody = () => {
     switch (votingType) {
       case "success":
         if (isLeftovers) {
           return (
-            <PassedBody
+            <PassedLeftovBody
               sum={myFound as number}
               afterSum={afterFounds as number}
               listingPrice={listingPrice as number}
+              leftovers={leftovers as number}
             />
           );
         }
         return (
-          <PassedLeftovBody
+          <PassedBody
             sum={myFound as number}
             afterSum={afterFounds as number}
             listingPrice={listingPrice as number}
-            leftovers={leftovers as number}
           />
         );
 
       case "noSuccess":
         if (isLeftovers) {
           return (
-            <NotPassedBody
+            <NotPassedLeftovBody
               sum={myFound as number}
+              leftovers={leftovers as number}
             />
           );
         }
-        return (
-          <NotPassedLeftovBody
-            sum={myFound as number}
-            leftovers={leftovers as number}
-          />
-        );
+        return <NotPassedBody sum={myFound as number} />;
 
       default:
         if (isLeftovers) {
           return (
-            <ParticipantBody
+            <ParticipantLeftovBody
               sum={myFound as number}
+              leftovers={leftovers as number}
             />
           );
         }
-        return (
-          <ParticipantLeftovBody
-            sum={myFound as number}
-            leftovers={leftovers as number}
-          />
-        );
+        return <ParticipantBody sum={myFound as number} />;
     }
   };
 
   return (
     <>
-      <PriceBock type={PriceBlockEnum.primary} price={price === '0' ? 'N/A' : price} className={mb28} />
+      <PriceBock
+        type={PriceBlockEnum.primary}
+        price={price === "0" ? "N/A" : price}
+        className={mb28}
+      />
       {!myFound ? (
         <NotParticipantBody
           votingType={votingType}

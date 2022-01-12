@@ -117,6 +117,7 @@ class DaoStore {
         this.detailedCrowd = detailedCrowd;
       });
     } catch (error: any) {
+      console.log(error, 'err');
       notify(error.message);
       this.crowdState = StateEnum.Error;
     }
@@ -130,14 +131,19 @@ class DaoStore {
     } else {
       crowd.price = '0';
     }
+
     // @ts-ignore
     const l1Dao = new window.web3.eth.Contract(DAO.abi, crowd.l1_vault);
-    const price = await window.web3.utils.fromWei(crowd.price, 'ether');
+    let price = await window.web3.utils.fromWei(crowd.price, 'ether');
     const total = await window.web3.eth.getBalance(crowd.l1_vault);
     const collected = +await window.web3.utils.fromWei(total, 'ether');
     let tokenTicker = '';
     if (withToken) {
       tokenTicker = await l1Dao.methods.getTokenTicker().call();
+    }
+
+    if (crowd.status === 'complete') {
+      price = window.web3.utils.fromWei(crowd.last_proposal_price, 'ether');
     }
 
     let percentage = Math.ceil((collected / +price) * 100);
@@ -162,23 +168,25 @@ class DaoStore {
       total_deposit: +window.web3.utils.fromWei(item.total_deposit.toString(), 'ether'),
     }))
 
-    const myDeposite = crowd.deposits.find(item => item.address === address)
+    const myDeposit = crowd.deposits.find(item => item.address === address)
 
     let myFound = 0;
-
-    if (myDeposite) {
-      myFound = +window.web3.utils.fromWei(myDeposite.total_deposit.toString(), 'ether');
-    }
     let leftovers = 0;
+
+    if (myDeposit) {
+      myFound = +window.web3.utils.fromWei(myDeposit.total_deposit.toString(), 'ether');
+    }
+
     if (crowd.status === 'complete' && crowd.collected > 0) {
-      leftovers = crowd.collected;
+      const fraction = myFound / +crowd.price;
+      leftovers = crowd.collected * fraction;
     }
 
     return {
       ...crowd,
       myFound,
       deposits,
-      leftovers
+      leftovers,
     }
   }
 

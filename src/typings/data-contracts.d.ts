@@ -14,6 +14,7 @@ type CrowdApiType = {
   media: string;
   name: string;
   price: string;
+  last_proposal_price: string;
   proposals_registry: string;
   status: CrowdStatusType;
 };
