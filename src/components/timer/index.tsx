@@ -49,6 +49,9 @@ const Timer: FC<Props> = ({ time }) => {
 
     // @ts-ignore
     let diff = (date2 - date1)/1000;
+    if (diff < 0) {
+      return;
+    }
     diff = Math.abs(Math.floor(diff));
 
     let days = Math.floor(diff/(24*60*60));

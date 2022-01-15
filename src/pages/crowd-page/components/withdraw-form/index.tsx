@@ -3,30 +3,20 @@ import { useFormik } from "formik";
 
 import Input from "@app/components/input";
 import Button, { ButtonSize } from "@app/components/button";
+import { Badge } from "@app/components/badge";
 
-import { initialValues, validate, IEthFormData } from "../eth-form/constants";
+import { initialValues, IEthFormData } from "../eth-form/constants";
+import { validate } from './constants';
 
 //#region styles
 import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
+
 import { mb12 } from "@assets/styles/atomic";
 
 const button = css`
   width: 100%;
 `;
 
-const Badge = styled.button`
-  height: 18px;
-  padding: 0 15px;
-  margin-bottom: 16px;
-  background: #defdff;
-  border-radius: 5px;
-  line-height: 18px;
-  border: none;
-  font-size: 8px;
-  color: #00a3ff;
-  cursor: pointer;
-`;
 //#endregion
 
 interface Props {
@@ -47,7 +37,7 @@ const WithdrawForm = ({
         values.deposite = values.deposite.replace(",", ".");
         onSubmit(values);
       },
-      validate,
+      validate
     });
 
   return (
@@ -65,6 +55,7 @@ const WithdrawForm = ({
             onClick={() =>
               onAmountButtonClick((value) => setFieldValue("deposite", value))
             }
+            type="button"
           >
             Use full Balance
           </Badge>

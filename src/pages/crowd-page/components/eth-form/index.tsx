@@ -1,19 +1,15 @@
-import React, { ReactElement, useState } from 'react';
-import Loader from 'react-loader-spinner';
+import React, { ReactElement, useCallback } from 'react';
 import { useFormik } from 'formik';
 
 import Input from '@app/components/input';
 import Button, { ButtonSize } from '@app/components/button';
+import { Badge } from '@app/components/badge';
 
 import { IEthFormData, initialValues, validate } from './constants';
 
 //#region styles
 import { css } from '@linaria/core';
 import { mb12 } from '@assets/styles/atomic';
-
-const buttonContainer = css`
-  width: 100% !important;
-`;
 
 const button = css`
   width: 100%;
@@ -23,18 +19,24 @@ const button = css`
 
 interface Props {
   loading: boolean;
-  onSubmit: (data: IEthFormData) => void
+  max: number;
+  userBalance: number;
+  onSubmit: (data: IEthFormData) => void;
 }
 
-const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
-  const { handleSubmit, handleChange, values, errors, touched } = useFormik({
+const EthForm = ({ onSubmit, loading, max, userBalance }: Props): ReactElement => {
+  const { handleSubmit, handleChange, setFieldValue, values, errors, touched } = useFormik({
     initialValues,
     onSubmit: values => {
       values.deposite = values.deposite.replace(',', '.');
       onSubmit(values);
     },
-    validate,
+    validate: validate(max, userBalance),
   });
+
+  const setDeposit = useCallback(() => {
+    setFieldValue('deposite', max.toString());
+  }, [max, setFieldValue]);
 
   return (
     <form onSubmit={handleSubmit} id="eth">
@@ -46,6 +48,14 @@ const EthForm = ({ onSubmit, loading }: Props): ReactElement => {
         value={values.deposite}
         onChange={handleChange}
         error={(touched.deposite && errors.deposite) ? errors.deposite : ''}
+        badge={
+          <Badge
+            onClick={setDeposit}
+            type="button"
+          >
+            Use full Balance
+          </Badge>
+        }
       />
       <Button
         className={button}

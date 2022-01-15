@@ -84,6 +84,7 @@ const CrowdBlock = ({
   const [content, setContent] = useState<JSX.Element | null>(null);
 
   useEffect(() => {
+    console.log(type, 'type')
     switch (type) {
       case "complete":
         setBackground(successDetail);
@@ -106,6 +107,18 @@ const CrowdBlock = ({
         break;
 
       case "on_execution":
+        setBackground(activeDetail);
+        setTitle("BUYOUT ⏳");
+        setContent(
+          <ActiveCrowd
+            price={price}
+            onWithdraw={onWithdraw}
+            collected={collected}
+            percentage={percentage}
+            myFound={myFound}
+            onOpenModal={onOpenModal}
+          />
+        );
       case "active":
         setBackground(activeDetail);
         setTitle("ACTIVE 🙌");

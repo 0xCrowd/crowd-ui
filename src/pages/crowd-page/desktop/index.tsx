@@ -1,5 +1,6 @@
 import React, { ReactElement, useState } from "react";
 import SkeletonLoader from "tiny-skeleton-loader-react";
+import { toNumber } from "lodash";
 
 import RaribleButton from "@app/components/rarible-button";
 import GradientBorderButton from "@app/components/gradient-border-button";
@@ -114,7 +115,7 @@ const DesktopPage = ({
 }: Props): ReactElement => {
   const [collapsed, setCollapsed] = useState(true);
 
-  const listingPrice = proposalsList.length ? fixedRound(+proposalsList[0].price, 2) : 0;
+  const listingPrice = proposalsList.length ? fixedRound(toNumber(proposalsList[0].price), 2) : 0;
   const fraction = (adaptedCrowd?.myFound || 0) / +adaptedCrowd?.price
 
   console.log(fraction, 'fr');

@@ -111,7 +111,7 @@ class DaoStore {
 
       const adaptedCrowd = await this.adaptCrowd(response.data);
       const detailedCrowd = await this.getDetails(adaptedCrowd);
-
+      console.log(detailedCrowd, 'det');
       runInAction(() => {
         this.crowdState = StateEnum.Success;
         this.detailedCrowd = detailedCrowd;
@@ -270,7 +270,7 @@ class DaoStore {
         .newVault(tokenName, tokenName, 100)
         .send({ from: address, value: 0 });
 
-      await axios.post(`${API_ENDPOINT}/crowd`, {
+      const response = await axios.post(`${API_ENDPOINT}/crowd`, {
         name: tokenName,
         l1_type: "ethereum",
         l1_vault: vaultAddress,
@@ -280,6 +280,10 @@ class DaoStore {
         proposal_timeout: 3600,
         pool_target: tokenId,
       });
+
+      console.log(response, 'resp');
+
+      // await this.makeMyCrowd(daoStream, address);
 
       runInAction(() => {
         this.createCrowdState = StateEnum.Success;
@@ -309,6 +313,8 @@ class DaoStore {
         crowd: daoStream,
         amount: value,
       });
+
+      await this.makeMyCrowd(daoStream, address);
 
       runInAction(() => {
         this.donateState = StateEnum.Success;
@@ -348,7 +354,14 @@ class DaoStore {
 
       notify(error.message);
     }
-  }
+  };
+
+  makeMyCrowd = async (crowdStream: string, address: string) => {
+    await axios.post(`${API_ENDPOINT}/my_crowd`, {
+      address,
+      crowd_stream: crowdStream,
+    });
+  };
   //#endregion
 
   //#region proposals
