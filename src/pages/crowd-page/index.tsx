@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useLocation } from "react-router-dom";
+import { toNumber } from "lodash";
 
 import Layout from "@app/components/layout";
 import Modal from "@app/components/modal";
@@ -9,6 +10,7 @@ import ProposalForm from "./components/proposal-form";
 import WithdrawForm from "./components/withdraw-form";
 import MobilePage from "./mobile/index";
 import DesktopPage from "./desktop";
+import PriceForm from './components/price-form/index';
 
 import chainStore from "@app/stores/chainStore";
 import daoStore from "@app/stores/daoStore";
@@ -20,7 +22,6 @@ import { IProposalFormData } from "./components/proposal-form/constants";
 //#region styles
 import { styled } from "@linaria/react";
 import { media } from "@app/assets/styles/atomic";
-import PriceForm from './components/price-form/index';
 
 const Root = styled.div`
   display: flex;
@@ -44,7 +45,7 @@ export enum ModalModeEnum {
 const CrowdPage: FC = observer(() => {
   const { pathname } = useLocation();
 
-  const { address, loadWeb3, loadBlockChain, blockChainState } = chainStore;
+  const { address, balance, loadWeb3, loadBlockChain, blockChainState } = chainStore;
 
   const {
     getCrowd,
@@ -193,6 +194,8 @@ const CrowdPage: FC = observer(() => {
           <EthForm
             onSubmit={onEthSubmit}
             loading={donateState === StateEnum.Loading}
+            max={toNumber(detailedCrowd?.price) - detailedCrowd.collected}
+            userBalance={toNumber(balance)}
           />
         );
 

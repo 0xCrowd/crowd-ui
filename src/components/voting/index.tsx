@@ -1,8 +1,11 @@
 import React, { FC } from "react";
+import { toNumber } from "lodash";
 
 import Button from "../button";
 import { Row } from "../row/Row";
 import Timer from "../timer";
+
+import { fixedRound } from "@app/utils/round";
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -18,8 +21,8 @@ import {
 } from "@app/assets/styles/constants";
 import { mb24, mb28, mb36, mb45 } from "@app/assets/styles/atomic";
 
-import okIcon from '@assets/images/ok.svg';
-import dissIcon from '@assets/images/diss.svg';
+import okIcon from "@assets/images/ok.svg";
+import dissIcon from "@assets/images/diss.svg";
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -221,13 +224,21 @@ const Voting: FC<Props> = ({
   against,
   className,
 }) => {
+  const getRoundedPrice = (price: string) => {
+    const priceArr = price.split(".");
+    if (priceArr[1].length > 4) {
+      return fixedRound(toNumber(price), 4);
+    }
+    return price;
+  };
+
   const OverFooter = (
     <Row justify="end">
       <VoteStatus>
         <Status>Voting is over</Status>
       </VoteStatus>
       <VoteIcon>
-        <img src={type ==='success' ? okIcon : dissIcon} />
+        <img src={type === "success" ? okIcon : dissIcon} />
       </VoteIcon>
     </Row>
   );
@@ -237,13 +248,25 @@ const Voting: FC<Props> = ({
       case "liveNotVote":
         return (
           <Row justify="space-between">
-            <Button loading={loading} className={pinkButton} onClick={() => makeVote(1, "null")}>
+            <Button
+              loading={loading}
+              className={pinkButton}
+              onClick={() => makeVote(1, "null")}
+            >
               Vote against selling
             </Button>
-            <Button loading={loading} className={blueButton} onClick={() => makeVote(0, "same")}>
+            <Button
+              loading={loading}
+              className={blueButton}
+              onClick={() => makeVote(0, "same")}
+            >
               Agree with avarege
             </Button>
-            <Button loading={loading} className={greenButton} onClick={() => makeVote(0, "1000")}>
+            <Button
+              loading={loading}
+              className={greenButton}
+              onClick={() => makeVote(0, "1000")}
+            >
               Suggest your price
             </Button>
           </Row>
@@ -356,7 +379,7 @@ const Voting: FC<Props> = ({
       <Row
         alignItems="flex-start"
         justify="space-between"
-        className={(type === "noSuccess" || type === "success") ? mb28 : ''}
+        className={type === "noSuccess" || type === "success" ? mb28 : ""}
       >
         {getTitle()}
         {type !== "noSuccess" && type !== "success" && <Timer time={time} />}
@@ -373,7 +396,7 @@ const Voting: FC<Props> = ({
           </LeftColumn>
           <RightColumn>
             <Row alignItems="flex-end">
-              <Price>{price}</Price>
+              <Price>{getRoundedPrice(price || '')}</Price>
               <PriceLabel>ETH</PriceLabel>
             </Row>
           </RightColumn>
