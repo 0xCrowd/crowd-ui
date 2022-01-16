@@ -113,13 +113,11 @@ class DaoStore {
 
       const adaptedCrowd = await this.adaptCrowd(response.data);
       const detailedCrowd = await this.getDetails(adaptedCrowd);
-      console.log(detailedCrowd, 'det');
       runInAction(() => {
         this.crowdState = StateEnum.Success;
         this.detailedCrowd = detailedCrowd;
       });
     } catch (error: any) {
-      console.log(error, 'err');
       notify(error.message);
       this.crowdState = StateEnum.Error;
     }
@@ -283,9 +281,7 @@ class DaoStore {
         pool_target: tokenId,
       });
 
-      console.log(response, 'resp');
-
-      // await this.makeMyCrowd(daoStream, address);
+      await this.makeMyCrowd(response.data.stream, address);
 
       runInAction(() => {
         this.createCrowdState = StateEnum.Success;
@@ -405,6 +401,11 @@ class DaoStore {
 
   adaptProposal = async (proposal: ProposalApiType): Promise<AdaptedProposal | undefined> => {
     const voteData = await this.getVotesData(proposal.stream);
+
+    if (proposal.price === 'NaN') {
+      return;
+    }
+
     const ethPrice = window.web3.utils.fromWei(proposal.price, 'ether');
 
     if (voteData) {
@@ -519,7 +520,7 @@ class DaoStore {
         option,
       };
 
-      const signature = this.signMessage(JSON.stringify(message));
+      const { signature } = await this.signMessage(JSON.stringify(message));
 
       await axios.post(`${API_ENDPOINT}/vote`, {
         address,
@@ -544,7 +545,9 @@ class DaoStore {
         throw new Error("No crypto wallet found. Please install it.");
       }
 
-      await window.ethereum.sendAsync("eth_requestAccounts");
+      await window.ethereum.sendAsync({
+        method: "eth_requestAccounts",
+      });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const signature = await signer.signMessage(message);

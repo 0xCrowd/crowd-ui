@@ -226,7 +226,7 @@ const Voting: FC<Props> = ({
 }) => {
   const getRoundedPrice = (price: string) => {
     const priceArr = price.split(".");
-    if (priceArr[1].length > 4) {
+    if (priceArr[1] && priceArr[1].length > 4) {
       return fixedRound(toNumber(price), 4);
     }
     return price;

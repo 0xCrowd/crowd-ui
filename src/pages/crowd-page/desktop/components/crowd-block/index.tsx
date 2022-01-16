@@ -14,6 +14,7 @@ import activeDetail from "@assets/images/active_detail.png";
 import successDetail from "@assets/images/success_detail.png";
 import lostDetail from "@assets/images/lost_detail.png";
 import resaleDetail from "@assets/images/resale_detail.png";
+import { CrowdStatusText } from "@app/enums/crowd-status/crowd-status";
 
 type RootProps = {
   background: string;
@@ -45,6 +46,7 @@ const Title = styled.p`
   font-size: 18px;
   line-height: 18px;
   color: #fff;
+  text-transform: uppercase;
 `;
 //#endregion
 
@@ -80,15 +82,14 @@ const CrowdBlock = ({
   className,
 }: Props): ReactElement => {
   const [background, setBackground] = useState<string>(lostDetail);
-  const [title, setTitle] = useState("UNSUCESSFUL BUYOUT 😔");
+  const [title, setTitle] = useState(CrowdStatusText.lost);
   const [content, setContent] = useState<JSX.Element | null>(null);
 
   useEffect(() => {
-    console.log(type, 'type')
     switch (type) {
       case "complete":
         setBackground(successDetail);
-        setTitle("SUCCESSFUL BUYOUT 😄");
+        setTitle(CrowdStatusText.success);
         setContent(
           <SuccessCrowd
             votingType={votingType}
@@ -103,13 +104,12 @@ const CrowdBlock = ({
 
       case "resolved":
         setBackground(resaleDetail);
-        setTitle("SUCCESSFUL RESALE 💸");
+        setTitle(CrowdStatusText.resale);
         break;
 
       case "on_execution":
-        console.log('on_ex');
         setBackground(activeDetail);
-        setTitle("BUYOUT ⏳");
+        setTitle(CrowdStatusText.buyout);
         setContent(
           <ActiveCrowd
             price={price}
@@ -125,7 +125,7 @@ const CrowdBlock = ({
 
       case "active":
         setBackground(activeDetail);
-        setTitle("ACTIVE 🙌");
+        setTitle(CrowdStatusText.active);
         setContent(
           <ActiveCrowd
             price={price}
@@ -148,8 +148,6 @@ const CrowdBlock = ({
         );
     }
   }, [type, votingType]);
-
-  console.log(title, 'title');
 
   return (
     <Root background={background} className={className}>
