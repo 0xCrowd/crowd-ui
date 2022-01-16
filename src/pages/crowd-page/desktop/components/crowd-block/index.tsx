@@ -1,11 +1,11 @@
 import React, { ReactElement, useState, useEffect } from "react";
 
-import Users from "./components/Users";
+import Users from "./components/users";
 import ActiveCrowd from "./active-crowd";
 import SuccessCrowd from "./success-crowd";
 import LostCrowd from "./lost-crowd";
 
-import { ModalModeEnum } from "../../../index";
+import { ModalModeEnum } from '@app/enums/modal-enum';
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -52,7 +52,7 @@ interface Props {
   type: CrowdStatusType;
   collected: number;
   percentage: number;
-  price: string | number;
+  price: number;
   onWithdraw?: () => void;
   participant: IDeposits[];
   listingPrice?: number;
@@ -107,6 +107,7 @@ const CrowdBlock = ({
         break;
 
       case "on_execution":
+        console.log('on_ex');
         setBackground(activeDetail);
         setTitle("BUYOUT ⏳");
         setContent(
@@ -117,8 +118,11 @@ const CrowdBlock = ({
             percentage={percentage}
             myFound={myFound}
             onOpenModal={onOpenModal}
+            isOnExecution
           />
         );
+        break;
+
       case "active":
         setBackground(activeDetail);
         setTitle("ACTIVE 🙌");
@@ -144,6 +148,8 @@ const CrowdBlock = ({
         );
     }
   }, [type, votingType]);
+
+  console.log(title, 'title');
 
   return (
     <Root background={background} className={className}>

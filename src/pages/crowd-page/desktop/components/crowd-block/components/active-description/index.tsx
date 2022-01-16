@@ -7,7 +7,7 @@ import { InfoText } from '../../commonStyles';
 import { mb4 } from '@assets/styles/atomic';
 import { textGray } from '@app/assets/styles/constants';
 
-const StyledUl = styled.ul`
+export const StyledUl = styled.ul`
   margin-top: 0;
   margin-bottom: 5px;
   padding-left: 25px;
@@ -15,7 +15,7 @@ const StyledUl = styled.ul`
   line-height: 16px;
 `;
 
-const StyledLi = styled.li`
+export const StyledLi = styled.li`
   color: ${textGray};
 `;
 

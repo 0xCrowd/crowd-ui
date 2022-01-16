@@ -16,6 +16,7 @@ import chainStore from "@app/stores/chainStore";
 import daoStore from "@app/stores/daoStore";
 
 import { StateEnum } from "@enums/state-enum/index";
+import { ModalModeEnum } from "@app/enums/modal-enum";
 import { IEthFormData } from "./components/eth-form/constants";
 import { IProposalFormData } from "./components/proposal-form/constants";
 
@@ -35,12 +36,6 @@ const Root = styled.div`
 `;
 //#endregion
 
-export enum ModalModeEnum {
-  Proposal = "proposal",
-  Eth = "eth",
-  Withdraw = "withdraw",
-  Price = "price",
-}
 
 const CrowdPage: FC = observer(() => {
   const { pathname } = useLocation();
@@ -194,7 +189,7 @@ const CrowdPage: FC = observer(() => {
           <EthForm
             onSubmit={onEthSubmit}
             loading={donateState === StateEnum.Loading}
-            max={toNumber(detailedCrowd?.price) - detailedCrowd.collected}
+            max={detailedCrowd?.price - detailedCrowd.collected}
             userBalance={toNumber(balance)}
           />
         );

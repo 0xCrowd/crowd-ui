@@ -1,13 +1,13 @@
 import React, { ReactElement } from "react";
 
-import PriceBock, { PriceBlockEnum } from ".././components/PriceBlock";
-import NotParticipantBody from "../components/NotParticipantBody";
-import ParticipantBody from "../components/ParticipantBody";
-import ParticipantLeftovBody from "../components/ParticipantLeftovBody";
-import PassedBody from "../components/PassedBody/index";
-import PassedLeftovBody from "../components/PassedLeftovBody";
-import NotPassedBody from "../components/NotPassedBody";
-import NotPassedLeftovBody from "../components/NotPassedLeftovBody";
+import PriceBock, { PriceBlockEnum } from "../components/price-block";
+import NotParticipantBody from "../components/not-participant-body";
+import ParticipantBody from "../components/participant-body";
+import ParticipantLeftovBody from "../components/participant-leftov-body";
+import PassedBody from "../components/passed-body/index";
+import PassedLeftovBody from "../components/passed-leftov-body";
+import NotPassedBody from "../components/not-passed-body";
+import NotPassedLeftovBody from "../components/not-passed-leftov-body";
 
 //#region styles
 import { mb28 } from "@assets/styles/atomic";
@@ -16,7 +16,7 @@ import { mb28 } from "@assets/styles/atomic";
 
 interface Props {
   votingType: VotingType | "notVoting";
-  price: string | number;
+  price: number;
   onWithdraw?: () => void;
   listingPrice?: number;
   myFound?: number;
@@ -85,7 +85,7 @@ const SuccessCrowd = ({
     <>
       <PriceBock
         type={PriceBlockEnum.primary}
-        price={price === "0" ? "N/A" : price}
+        price={price ?? "N/A"}
         className={mb28}
       />
       {!myFound ? (

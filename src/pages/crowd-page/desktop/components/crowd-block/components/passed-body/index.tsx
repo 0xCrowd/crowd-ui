@@ -5,7 +5,7 @@ import { Row } from '@components/row/Row';
 //#region styled
 import { PrimaryText, SecondaryText, InfoText } from '../../commonStyles';
 import { mb28, mr4, mb2 } from '@assets/styles/atomic';
-import PriceBock, { PriceBlockEnum } from "../PriceBlock";
+import PriceBock, { PriceBlockEnum } from "../price-block";
 
 //#endregion
 

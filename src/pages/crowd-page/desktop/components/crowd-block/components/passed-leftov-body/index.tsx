@@ -7,7 +7,7 @@ import GradientBorderButton from "@app/components/gradient-border-button";
 import { css } from "@linaria/core";
 import { PrimaryText, SecondaryText, InfoText } from "../../commonStyles";
 import { mb12, mb2, mb28, mr4 } from "@assets/styles/atomic";
-import PriceBock, { PriceBlockEnum } from "../PriceBlock";
+import PriceBock, { PriceBlockEnum } from "../price-block";
 
 const button = css`
   height: 37px;
