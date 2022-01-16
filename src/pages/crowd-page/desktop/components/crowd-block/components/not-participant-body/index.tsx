@@ -3,7 +3,7 @@ import React, { FC } from "react";
 //#region styled
 import { InfoText } from "../../commonStyles";
 import { mb28 } from "@assets/styles/atomic";
-import PriceBock, { PriceBlockEnum } from "../PriceBlock";
+import PriceBock, { PriceBlockEnum } from "../price-block";
 
 //#endregion
 

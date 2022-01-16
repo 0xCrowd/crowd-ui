@@ -1,6 +1,7 @@
-type AdaptedCrowd = CrowdApiType & {
+type AdaptedCrowd = Omit<CrowdApiType, 'price'> & {
   collected: number;
   percentage: number;
+  price: number;
 }
 
 type DetailedCrowd = AdaptedCrowd & {

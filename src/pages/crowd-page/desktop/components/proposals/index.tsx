@@ -5,7 +5,6 @@ import SkeletonLoader from "tiny-skeleton-loader-react";
 import { styled } from "@linaria/react";
 import Voting from "@app/components/voting";
 import { mb20 } from "@assets/styles/atomic";
-import { ModalModeEnum } from "@app/pages/crowd-page";
 
 const Root = styled.div`
   display: flex;

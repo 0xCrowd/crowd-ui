@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import { cx } from "@linaria/core";
 
 import PercentBar from "@app/components/percent-bar";
-import PriceBock, { PriceBlockEnum } from ".././components/PriceBlock";
+import PriceBock, { PriceBlockEnum } from "../components/price-block";
 import { Row } from "@app/components/row/Row";
 import GradientBorderButton from "@app/components/gradient-border-button";
 
@@ -43,7 +43,7 @@ const priceRowContainer = css`
 interface Props {
   collected: number;
   percentage: number;
-  price: string | number;
+  price: number;
   onWithdraw?: () => void;
   isParticipant?: boolean;
   sum?: number;
@@ -53,7 +53,7 @@ interface Props {
 const LostCrowd = ({ collected, percentage, price, isParticipant, sum, percent }: Props): ReactElement => {
   return (
     <>
-      <PriceBock type={PriceBlockEnum.primary} price={price || 'N/A'} className={mb28} />
+      <PriceBock type={PriceBlockEnum.primary} price={price} className={mb28} />
       <InfoText className={mb4}>Someone has already bought NFT</InfoText>
       <PercentBar percent={percentage} className={mb18} />
       <PriceRow className={mb28}>

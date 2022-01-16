@@ -77,7 +77,7 @@ export enum PriceBlockEnum {
 
 type Props = {
   type: PriceBlockEnum;
-  price: string | number;
+  price: number;
   className?: string;
 };
 
@@ -91,7 +91,7 @@ const PriceBock: FC<Props> = ({ type, price, className }) => {
         </PriceTitle>
         <Row>
           {type === PriceBlockEnum.primary ? (
-            <Price className={mr4}>{price}</Price>
+            <Price className={mr4}>{price || 'N/A'}</Price>
           ) : (
             <SuccessPrice className={mr4}>{price}</SuccessPrice>
           )}

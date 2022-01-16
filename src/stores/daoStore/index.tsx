@@ -1,14 +1,16 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import axios from 'axios';
+import { toNumber } from "lodash";
 
 import chainStore from '@stores/chainStore';
 
 import { StateEnum } from '@enums/state-enum/index';
 import { ProposalStatusEnum } from "@app/enums/proposal-status-enum";
+import { ProposalTypeEnum } from "@app/enums/proposal-type-Enum";
 import { notify } from '@app/utils/notify';
 
 import DAO from "../../../ABI/Vault.json";
-import { ProposalTypeEnum } from "@app/enums/proposal-type-Enum";
+import { ethers } from "ethers";
 
 const API_ENDPOINT = "https://crowd-protocol-master-9iojf.ondigitalocean.app";
 
@@ -156,7 +158,7 @@ class DaoStore {
       ...crowd,
       collected,
       percentage,
-      price,
+      price: toNumber(price),
     }
   };
 
@@ -511,11 +513,18 @@ class DaoStore {
 
       const { address } = chainStore;
 
+      const message = {
+        proposal: proposalStream,
+        amount: newAmount,
+        option,
+      };
+
+      const signature = this.signMessage(JSON.stringify(message));
+
       await axios.post(`${API_ENDPOINT}/vote`, {
         address,
-        proposal: proposalStream,
-        option,
-        amount: newAmount,
+        ...message,
+        signature
       });
 
       runInAction(() => {
@@ -526,6 +535,27 @@ class DaoStore {
         notify(error.message);
         this.voteState = StateEnum.Error;
       });
+    }
+  };
+
+  signMessage = async (message: string) => {
+    try {
+      if (!window.ethereum) {
+        throw new Error("No crypto wallet found. Please install it.");
+      }
+
+      await window.ethereum.sendAsync("eth_requestAccounts");
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const signature = await signer.signMessage(message);
+      const address = await signer.getAddress();
+  
+      return {
+        signature,
+        address
+      };
+    } catch (err) {
+      throw err;
     }
   };
   //#endregion

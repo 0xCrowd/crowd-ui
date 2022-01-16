@@ -1,7 +1,4 @@
 import React, { FC } from 'react';
-import cn from 'classnames';
-
-import { PercentEnum } from '@app/enums/percentage';
 
 //#region styles
 import { styled } from '@linaria/react';

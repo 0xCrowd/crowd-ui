@@ -1,9 +1,8 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
-import cn from 'classnames';
 import Modal from "react-modal";
 
 //#region styles
-import { css } from '@linaria/core';
+import { css, cx } from '@linaria/core';
 import { styled } from '@linaria/react';
 import { media } from '@app/assets/styles/atomic';
 
@@ -123,8 +122,8 @@ const CustomModal = ({
       style={customStyles}
       onRequestClose={onRequestClose}
       preventScroll={preventScroll}
-      className={cn(modal, className)}
-      overlayClassName={cn(overlay, overlayClassName)}
+      className={cx(modal, className)}
+      overlayClassName={cx(overlay, overlayClassName)}
       >
         <>
           {title ? <Header>{title}</Header> : null}

@@ -1,18 +1,16 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement } from "react";
 import { cx } from "@linaria/core";
 
-import PercentBar from "@app/components/percent-bar";
-import PriceBock, { PriceBlockEnum } from ".././components/PriceBlock";
+import PriceBock, { PriceBlockEnum } from "../components/price-block";
 import { Row } from "@app/components/row/Row";
 import GradientBorderButton from "@app/components/gradient-border-button";
-import ActiveDescription from ".././components/ActiveDescription";
 
-import { ModalModeEnum } from "../../../../index";
+import { ModalModeEnum } from "@enums/modal-enum";
 
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { mb18, mr4, mb2, mb28, mb12, w100 } from "@assets/styles/atomic";
+import { mr4, mb28, mb12, w100 } from "@assets/styles/atomic";
 import { blueText, successText } from "@app/assets/styles/constants";
 import { PrimaryText, SecondaryText } from ".././commonStyles";
 
@@ -44,7 +42,7 @@ const priceRowContainer = css`
 //#endregion
 
 interface Props {
-  price: string | number;
+  price: number;
   onWithdraw?: () => void;
   onOpenModal: (mode: ModalModeEnum) => void;
   myFound?: number;

@@ -8,7 +8,7 @@ import CrowdBlock from "./components/crowd-block";
 import Proposals from "./components/proposals";
 import HowWorks from "@app/components/how-works";
 
-import { ModalModeEnum } from "../index";
+import { ModalModeEnum } from "@enums/modal-enum";
 import { fixedRound } from "@app/utils/round";
 
 //#region styles

@@ -1,13 +1,15 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { cx } from "@linaria/core";
+import { toNumber } from "lodash";
 
 import PercentBar from "@app/components/percent-bar";
-import PriceBock, { PriceBlockEnum } from ".././components/PriceBlock";
+import PriceBock, { PriceBlockEnum } from "../components/price-block";
 import { Row } from "@app/components/row/Row";
 import GradientBorderButton from "@app/components/gradient-border-button";
-import ActiveDescription from ".././components/ActiveDescription";
+import ActiveDescription from "../components/active-description";
+import ExecutionDescription from "../components/execution-description";
 
-import { ModalModeEnum } from '../../../../index';
+import { ModalModeEnum } from "@app/enums/modal-enum";
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -46,68 +48,102 @@ const priceRowContainer = css`
 interface Props {
   collected: number;
   percentage: number;
-  price: string | number;
+  price: number;
   onWithdraw?: () => void;
   onOpenModal: (mode: ModalModeEnum) => void;
   myFound?: number;
+  isOnExecution?: boolean;
 }
 
-const ActiveCrowd = ({ collected = 0, percentage, price = 0, myFound, onOpenModal }: Props): ReactElement => {
+const ActiveCrowd = ({
+  collected = 0,
+  percentage,
+  price = 0,
+  myFound,
+  isOnExecution,
+  onOpenModal,
+}: Props): ReactElement => {
   const [remain, setRemain] = useState(0);
+  const [description, setDescription] = useState(
+    <ExecutionDescription className={mb18} />
+  );
+  const [cardCollected, setCardCollected] = useState(collected + price);
+  const [cardRemain, setCardRemain] = useState(0);
+  const [cardButtons, setCardButtons] = useState<ReactElement | null>(null);
 
   useEffect(() => {
-    let fixedNumber = 0;
-    if (collected === 0) {
-      fixedNumber = price.toString().length - 2;
-    } else {
-      fixedNumber = collected.toString().length - 2
+    if (!isOnExecution) {
+      setDescription(<ActiveDescription className={mb18} />);
+      setCardCollected(collected);
+      setCardButtons(<ButtonRow />);
+
+      let fixedNumber = 0;
+      if (collected === 0) {
+        fixedNumber = price.toString().length - 2;
+      } else {
+        fixedNumber = collected.toString().length - 2;
+      }
+
+      let remain = toNumber((price - collected).toFixed(fixedNumber));
+
+      if (remain < 0) {
+        remain = 0;
+      }
+
+      setRemain(remain);
     }
+  }, [isOnExecution, collected, price]);
 
-    let remain = +(+price - collected).toFixed(fixedNumber);
-
-    if (remain < 0) {
-      remain = 0;
-    }
-
-    setRemain(remain);
-  }, []);
+  const ButtonRow = () => {
+    return myFound ? (
+      <>
+        <Row className={mb12}>
+          <GradientBorderButton
+            className={mr4}
+            onClick={() => onOpenModal(ModalModeEnum.Eth)}
+          >
+            + Add Funds
+          </GradientBorderButton>
+          <GradientBorderButton
+            onClick={() => onOpenModal(ModalModeEnum.Withdraw)}
+          >
+            - Withdraw
+          </GradientBorderButton>
+        </Row>
+        <Row className={mb28}>
+          <SecondaryText className={mr4}>Your funds:</SecondaryText>
+          <PrimaryText className={mr4}>{myFound}</PrimaryText>
+          <SecondaryText>ETH</SecondaryText>
+        </Row>
+      </>
+    ) : (
+      <GradientBorderButton
+        className={cx(mb28, w100)}
+        onClick={() => onOpenModal(ModalModeEnum.Eth)}
+      >
+        + Add Funds
+      </GradientBorderButton>
+    );
+  };
 
   return (
     <>
       <PriceBock type={PriceBlockEnum.primary} price={price} className={mb28} />
-      <ActiveDescription className={mb18} />
+      {description}
       <PercentBar percent={percentage} className={mb18} />
       <PriceRow className={mb2}>
         <Row className={priceRowContainer}>
-          <GreenNumber>{collected}</GreenNumber>
+          <GreenNumber>{cardCollected}</GreenNumber>
           <SecondaryText>ETH Collected</SecondaryText>
         </Row>
       </PriceRow>
       <PriceRow className={mb28}>
         <Row className={priceRowContainer}>
-          <BlueNumber>{remain}</BlueNumber>
+          <BlueNumber>{cardRemain}</BlueNumber>
           <SecondaryText>ETH more required for a buyout</SecondaryText>
         </Row>
       </PriceRow>
-      {myFound ? (
-        <>
-          <Row className={mb12}>
-            <GradientBorderButton className={mr4} onClick={() => onOpenModal(ModalModeEnum.Eth)}>
-              + Add Funds
-            </GradientBorderButton>
-            <GradientBorderButton onClick={() => onOpenModal(ModalModeEnum.Withdraw)}>- Withdraw</GradientBorderButton>
-          </Row>
-          <Row className={mb28}>
-            <SecondaryText className={mr4}>Your funds:</SecondaryText>
-            <PrimaryText className={mr4}>{myFound}</PrimaryText>
-            <SecondaryText>ETH</SecondaryText>
-          </Row>
-        </>
-      ) : (
-        <GradientBorderButton className={cx(mb28, w100)} onClick={() => onOpenModal(ModalModeEnum.Eth)}>
-          + Add Funds
-        </GradientBorderButton>
-      )}
+      {!isOnExecution && cardButtons}
     </>
   );
 };
