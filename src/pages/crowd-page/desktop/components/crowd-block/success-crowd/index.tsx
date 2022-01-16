@@ -34,8 +34,6 @@ const SuccessCrowd = ({
 }: Props): ReactElement => {
   const isLeftovers = !!leftovers;
 
-  console.log(isLeftovers, "is");
-
   const renderBody = () => {
     switch (votingType) {
       case "success":

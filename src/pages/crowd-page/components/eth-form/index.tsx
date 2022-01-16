@@ -53,7 +53,7 @@ const EthForm = ({ onSubmit, loading, max, userBalance }: Props): ReactElement =
             onClick={setDeposit}
             type="button"
           >
-            Use full Balance
+            Add remaining buyout funds
           </Badge>
         }
       />

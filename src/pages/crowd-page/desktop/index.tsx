@@ -118,8 +118,6 @@ const DesktopPage = ({
   const listingPrice = proposalsList.length ? fixedRound(toNumber(proposalsList[0].price), 2) : 0;
   const fraction = (adaptedCrowd?.myFound || 0) / +adaptedCrowd?.price
 
-  console.log(fraction, 'fr');
-
   if (daoLoading) {
     return (
       <MainBlock>

@@ -193,6 +193,11 @@ const NftCard = ({
         setStatusText(CrowdStatusText.resale);
         break;
 
+      case 'on_execution':
+        setCardBackground(activeCard);
+        setStatusText(CrowdStatusText.buyout);
+        break;
+
       default:
         setCardBackground(activeCard);
         setStatusText(CrowdStatusText.active);
