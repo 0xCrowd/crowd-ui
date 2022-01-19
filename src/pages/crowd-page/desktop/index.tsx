@@ -116,7 +116,7 @@ const DesktopPage = ({
   const [collapsed, setCollapsed] = useState(true);
 
   const listingPrice = proposalsList.length ? fixedRound(toNumber(proposalsList[0].price), 2) : 0;
-  const fraction = (adaptedCrowd?.myFound || 0) / +adaptedCrowd?.price
+  const fraction = (adaptedCrowd?.myFound || 0) / toNumber(adaptedCrowd?.price);
 
   if (daoLoading) {
     return (
@@ -135,6 +135,7 @@ const DesktopPage = ({
       </MainBlock>
     );
   }
+
   return (
     <>
       <MainBlock>
@@ -181,6 +182,8 @@ const DesktopPage = ({
             collected={adaptedCrowd?.collected}
             percentage={adaptedCrowd?.percentage}
             price={adaptedCrowd?.price}
+            priceWei={adaptedCrowd?.priceWei}
+            collectedWei={adaptedCrowd?.collectedWei}
             participant={adaptedCrowd?.deposits}
             listingPrice={listingPrice}
             myFound={adaptedCrowd?.myFound}

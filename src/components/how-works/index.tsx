@@ -23,6 +23,7 @@ const Root = styled.div<RootProps>`
   box-shadow: 0px 1px 2px #40525b;
   border-radius: 5px;
   transition: 1000ms;
+  cursor: pointer;
 `;
 
 const RootRow = styled.div`
@@ -76,7 +77,6 @@ const Arrow = styled.div`
   border-right: 2px solid #fff;
   margin-right: 19px;
   transform: rotate(135deg);
-  cursor: pointer;
 `;
 
 const ReversedArrow = styled.div`
@@ -85,7 +85,6 @@ const ReversedArrow = styled.div`
   border-top: 2px solid #000;
   border-right: 2px solid #000;
   transform: rotate(-45deg);
-  cursor: pointer;
 `;
 
 const ArrowButton = styled.div`

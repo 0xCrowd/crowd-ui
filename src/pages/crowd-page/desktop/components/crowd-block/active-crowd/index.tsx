@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { cx } from "@linaria/core";
 import { toNumber } from "lodash";
+import BigNumber from "bignumber.js";
 
 import PercentBar from "@app/components/percent-bar";
 import PriceBock, { PriceBlockEnum } from "../components/price-block";
@@ -53,6 +54,8 @@ interface Props {
   onOpenModal: (mode: ModalModeEnum) => void;
   myFound?: number;
   isOnExecution?: boolean;
+  priceWei: BigNumber;
+  collectedWei: BigNumber;
 }
 
 const ActiveCrowd = ({
@@ -61,13 +64,17 @@ const ActiveCrowd = ({
   price = 0,
   myFound,
   isOnExecution,
+  collectedWei,
+  priceWei = new BigNumber(0),
   onOpenModal,
 }: Props): ReactElement => {
-  const [remain, setRemain] = useState(0);
+  const { web3: { utils: { fromWei } }} = window;
   const [description, setDescription] = useState(
     <ExecutionDescription className={mb18} />
   );
-  const [cardCollected, setCardCollected] = useState(collected + price);
+  const [cardCollected, setCardCollected] = useState(
+    toNumber(fromWei(collectedWei.plus(priceWei).toString(), 'ether'))
+  );
   const [cardRemain, setCardRemain] = useState(0);
   const [cardButtons, setCardButtons] = useState<ReactElement | null>(null);
 
@@ -77,20 +84,15 @@ const ActiveCrowd = ({
       setCardCollected(collected);
       setCardButtons(<ButtonRow />);
 
-      let fixedNumber = 0;
-      if (collected === 0) {
-        fixedNumber = price.toString().length - 2;
-      } else {
-        fixedNumber = collected.toString().length - 2;
-      }
-
-      let remain = toNumber((price - collected).toFixed(fixedNumber));
+      let remain = toNumber(fromWei(priceWei.minus(collectedWei).toString(), 'ether'));
+      const remainBN = new BigNumber(remain);
+      remain = remainBN.dp(4).toNumber();
 
       if (remain < 0) {
         remain = 0;
       }
 
-      setRemain(remain);
+      setCardRemain(remain);
     }
   }, [isOnExecution, collected, price]);
 

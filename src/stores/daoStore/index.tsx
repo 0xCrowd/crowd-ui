@@ -11,6 +11,7 @@ import { notify } from '@app/utils/notify';
 
 import DAO from "../../../ABI/Vault.json";
 import { ethers } from "ethers";
+import BigNumber from "bignumber.js";
 
 const API_ENDPOINT = "https://crowd-protocol-master-9iojf.ondigitalocean.app";
 
@@ -134,19 +135,19 @@ class DaoStore {
 
     // @ts-ignore
     const l1Dao = new window.web3.eth.Contract(DAO.abi, crowd.l1_vault);
-    let price = await window.web3.utils.fromWei(crowd.price, 'ether');
+    let price = toNumber(await window.web3.utils.fromWei(crowd.price, 'ether'));
     const total = await window.web3.eth.getBalance(crowd.l1_vault);
-    const collected = +await window.web3.utils.fromWei(total, 'ether');
+    const collected = toNumber(await window.web3.utils.fromWei(total, 'ether'));
     let tokenTicker = '';
     if (withToken) {
       tokenTicker = await l1Dao.methods.getTokenTicker().call();
     }
 
     if (crowd.status === 'complete') {
-      price = window.web3.utils.fromWei(crowd.last_proposal_price, 'ether');
+      price = toNumber(window.web3.utils.fromWei(crowd.last_proposal_price, 'ether'));
     }
 
-    let percentage = Math.ceil((collected / +price) * 100);
+    let percentage = Math.ceil((collected / price) * 100);
 
     if (percentage > 100 || crowd.status === 'complete') {
       percentage = 100;
@@ -157,6 +158,8 @@ class DaoStore {
       collected,
       percentage,
       price: toNumber(price),
+      priceWei: new BigNumber(crowd.price),
+      collectedWei: new BigNumber(total)
     }
   };
 
@@ -171,10 +174,12 @@ class DaoStore {
     const myDeposit = crowd.deposits.find(item => item.address === address)
 
     let myFound = 0;
+    let myFoundWei = new BigNumber(0);
     let leftovers = 0;
 
     if (myDeposit) {
-      myFound = +window.web3.utils.fromWei(myDeposit.total_deposit.toString(), 'ether');
+      myFound = toNumber(window.web3.utils.fromWei(myDeposit.total_deposit.toString(), 'ether'));
+      myFoundWei = new BigNumber(myDeposit.total_deposit);
     }
 
     if (crowd.status === 'complete' && crowd.collected > 0) {
@@ -185,6 +190,7 @@ class DaoStore {
     return {
       ...crowd,
       myFound,
+      myFoundWei,
       deposits,
       leftovers,
     }
