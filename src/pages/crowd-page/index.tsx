@@ -185,11 +185,14 @@ const CrowdPage: FC = observer(() => {
   const renderModalContent = () => {
     switch (modalMode) {
       case ModalModeEnum.Eth:
+        const maxWei = detailedCrowd?.priceWei.minus(detailedCrowd.collectedWei).toString();
+        console.log(maxWei, 'wei');
+        const max = toNumber(window.web3.utils.fromWei(maxWei, 'ether'));
         return (
           <EthForm
             onSubmit={onEthSubmit}
             loading={donateState === StateEnum.Loading}
-            max={detailedCrowd?.price - detailedCrowd.collected}
+            max={max}
             userBalance={toNumber(balance)}
           />
         );

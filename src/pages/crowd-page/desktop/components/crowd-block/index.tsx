@@ -1,4 +1,5 @@
 import React, { ReactElement, useState, useEffect } from "react";
+import BigNumber from "bignumber.js";
 
 import Users from "./components/users";
 import ActiveCrowd from "./active-crowd";
@@ -6,6 +7,7 @@ import SuccessCrowd from "./success-crowd";
 import LostCrowd from "./lost-crowd";
 
 import { ModalModeEnum } from '@app/enums/modal-enum';
+import { CrowdStatusText } from "@app/enums/crowd-status/crowd-status";
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -14,7 +16,6 @@ import activeDetail from "@assets/images/active_detail.png";
 import successDetail from "@assets/images/success_detail.png";
 import lostDetail from "@assets/images/lost_detail.png";
 import resaleDetail from "@assets/images/resale_detail.png";
-import { CrowdStatusText } from "@app/enums/crowd-status/crowd-status";
 
 type RootProps = {
   background: string;
@@ -63,6 +64,8 @@ interface Props {
   leftovers?: number;
   onOpenModal: (mode: ModalModeEnum) => void;
   votingType: VotingType | 'notVoting';
+  priceWei: BigNumber;
+  collectedWei: BigNumber;
   className?: string;
 }
 
@@ -77,6 +80,8 @@ const CrowdBlock = ({
   afterFounds,
   leftovers,
   votingType,
+  priceWei,
+  collectedWei,
   onWithdraw,
   onOpenModal,
   className,
@@ -119,6 +124,8 @@ const CrowdBlock = ({
             myFound={myFound}
             onOpenModal={onOpenModal}
             isOnExecution
+            priceWei={priceWei}
+            collectedWei={collectedWei}
           />
         );
         break;
@@ -134,6 +141,8 @@ const CrowdBlock = ({
             percentage={percentage}
             myFound={myFound}
             onOpenModal={onOpenModal}
+            priceWei={priceWei}
+            collectedWei={collectedWei}
           />
         );
         break;
