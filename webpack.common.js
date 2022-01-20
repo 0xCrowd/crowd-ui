@@ -61,7 +61,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Crowd Frontend',
+      title: 'Crowd',
       baseHref: '/',
       template: './src/assets/index.html',
       favicon: './src/assets/images/favicon.ico'
