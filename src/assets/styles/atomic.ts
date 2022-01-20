@@ -22,7 +22,7 @@ export const mb10 = css`
 `;
 
 export const mb12 = css`
-  margin-bottom: 12px;
+  margin-bottom: 12px !important;
 `;
 
 export const mb18 = css`

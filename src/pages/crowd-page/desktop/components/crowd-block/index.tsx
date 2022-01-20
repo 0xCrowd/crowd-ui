@@ -5,8 +5,9 @@ import Users from "./components/users";
 import ActiveCrowd from "./active-crowd";
 import SuccessCrowd from "./success-crowd";
 import LostCrowd from "./lost-crowd";
+import ResoldCrowd from "./resold-crowd";
 
-import { ModalModeEnum } from '@app/enums/modal-enum';
+import { ModalModeEnum } from "@app/enums/modal-enum";
 import { CrowdStatusText } from "@app/enums/crowd-status/crowd-status";
 
 //#region styles
@@ -63,9 +64,10 @@ interface Props {
   afterFounds?: number;
   leftovers?: number;
   onOpenModal: (mode: ModalModeEnum) => void;
-  votingType: VotingType | 'notVoting';
+  votingType: VotingType | "notVoting";
   priceWei: BigNumber;
   collectedWei: BigNumber;
+  proposalsLoading: boolean;
   className?: string;
 }
 
@@ -82,6 +84,7 @@ const CrowdBlock = ({
   votingType,
   priceWei,
   collectedWei,
+  proposalsLoading,
   onWithdraw,
   onOpenModal,
   className,
@@ -110,6 +113,15 @@ const CrowdBlock = ({
       case "resolved":
         setBackground(resaleDetail);
         setTitle(CrowdStatusText.resale);
+        setContent(
+          <ResoldCrowd
+            loading={proposalsLoading}
+            myFound={myFound}
+            price={price}
+            resoldPrice={listingPrice || 0}
+            onOpenModal={onOpenModal}
+          />
+        );
         break;
 
       case "on_execution":
@@ -156,7 +168,7 @@ const CrowdBlock = ({
           />
         );
     }
-  }, [type, votingType]);
+  }, [type, votingType, proposalsLoading]);
 
   return (
     <Root background={background} className={className}>

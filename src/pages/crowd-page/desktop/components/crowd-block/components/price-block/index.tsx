@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState, useEffect } from "react";
 
 import { Row } from '@components/row/Row';
 
@@ -73,6 +73,8 @@ const SuccessPrice = styled.p`
 export enum PriceBlockEnum {
   primary = "primary",
   success = "success",
+  bought = 'bought',
+  resold = 'resold',
 }
 
 type Props = {
@@ -82,19 +84,37 @@ type Props = {
 };
 
 const PriceBock: FC<Props> = ({ type, price, className }) => {
+  const [title, setTitle] = useState('NFT Price');
+  const [priceBlock, setPriceBlock] = useState(<Price className={mr4}>{price || 'N/A'}</Price>);
+
+  useEffect(() => {
+    switch (type) {
+      case PriceBlockEnum.success:
+        setTitle("Listing price");
+        setPriceBlock(<SuccessPrice className={mr4}>{price || 'N/A'}</SuccessPrice>);
+        break;
+
+      case PriceBlockEnum.resold:
+        setTitle('Resold for');
+        setPriceBlock(<SuccessPrice className={mr4}>{price || 'N/A'}</SuccessPrice>);
+        break;
+
+      case PriceBlockEnum.bought:
+        setTitle('Bought for');
+        setPriceBlock(<Price className={mr4}>{price || 'N/A'}</Price>);
+        break;
+    }
+  }, [type, price]);
+
   return (
     <PriceBlock className={className}>
       <Icon background={eth} />
       <PriceRows>
         <PriceTitle>
-          {type === PriceBlockEnum.primary ? "NFT Price" : "Listing price"}
+          {title}
         </PriceTitle>
         <Row>
-          {type === PriceBlockEnum.primary ? (
-            <Price className={mr4}>{price || 'N/A'}</Price>
-          ) : (
-            <SuccessPrice className={mr4}>{price}</SuccessPrice>
-          )}
+          {priceBlock}
           <PriceLabel>ETH</PriceLabel>
         </Row>
       </PriceRows>
