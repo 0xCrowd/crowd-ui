@@ -1,15 +1,17 @@
 import React, { ReactElement } from "react";
+import { Link } from "react-router-dom";
 
 import Button, { ButtonMode, ButtonSize } from "@components/button";
+
+import { RouteNames } from "../../router/route-names";
 
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
+import { textPrimary } from "@app/assets/styles/constants";
 
 import eth from "@app/assets/images/eth_wh.png";
 import logo from "@assets/images/logo.png";
-import { Link } from "react-router-dom";
-import { RouteNames } from '../../router/route-names';
 
 const Root = styled.div`
   height: 68px;
@@ -74,6 +76,13 @@ const Icon = styled.img`
   height: 36px;
 `;
 
+const MenuLink = styled.a`
+  font-size: 14px;
+  font-weight: 700;
+  color: ${textPrimary}
+  text-decoration: none;
+`;
+
 const gradientButton = css`
   width: 140px;
 `;
@@ -96,7 +105,12 @@ const Navbar = ({ balance, onAddNew, className }: Props): ReactElement => {
       </Row>
       <PriceBlock>
         <ButtonBlock>
-          <Button mode={ButtonMode.link}>About us</Button>
+          <MenuLink
+            href="https://solar-peripheral-f65.notion.site/How-to-use-CrowdApp-4b034d8dd0544628b7d25be5cee6849d"
+            target="_blank"
+          >
+            About us
+          </MenuLink>
           <Link to={RouteNames.MY_CROWDS}>
             <Button mode={ButtonMode.link}>My crowds</Button>
           </Link>
