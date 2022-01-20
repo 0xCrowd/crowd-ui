@@ -11,8 +11,8 @@ import { initialValues, validate, IPartyFormData } from "./constants";
 import { css } from "@linaria/core";
 import { mb12 } from "@assets/styles/atomic";
 
-const buttonContainer = css`
-  width: 100% !important;
+const label = css`
+  font-size: 12px;
 `;
 
 const button = css`
@@ -43,9 +43,10 @@ const PartyForm = ({
     <form onSubmit={handleSubmit} id="party-form-data">
       <Input
         className={mb12}
+        labelClassName={label}
         id="url"
-        label="URL of the fixed price NFT on Rarible.com"
-        placeholder="https://rarible.com/token/id"
+        label={<>URL of the fixed price NFT on <a href="rinkeby.rarible.com">rinkeby.rarible.com</a></>}
+        placeholder="https://rinkeby.rarible.com/token/id"
         value={values.url}
         onChange={handleChange}
         error={touched.url && errors.url ? errors.url : ""}

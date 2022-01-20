@@ -71,21 +71,22 @@ const LabelContainer = styled.div`
 //#endregion
 
 type PropsType = {
-  label?: string;
+  label?: string | JSX.Element;
   id?: string;
   placeholder?: string;
   className?: string;
   value?: string;
   error?: string;
   badge?: JSX.Element;
+  labelClassName?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const Input: FC<PropsType> = ({ label, id, placeholder, value, error, badge, onChange, className }) => {
+const Input: FC<PropsType> = ({ label, id, placeholder, value, error, badge, onChange, labelClassName, className }) => {
   return (
     <Root className={className}>
       <LabelContainer>
-        <Label htmlFor={id}>{label}</Label>
+        <Label htmlFor={id} className={labelClassName}>{label}</Label>
         {badge}
       </LabelContainer>
       <StyledInput value={value} onChange={onChange} placeholder={placeholder} id={id} error={error}/>

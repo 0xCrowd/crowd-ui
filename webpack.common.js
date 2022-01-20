@@ -61,9 +61,10 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Crow Frontend',
+      title: 'Crowd Frontend',
       baseHref: '/',
       template: './src/assets/index.html',
+      favicon: './src/assets/images/favicon.ico'
     }),
     new webpack.DefinePlugin({
       __CONFIG__: JSON.stringify(config),
