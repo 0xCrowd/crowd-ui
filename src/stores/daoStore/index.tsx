@@ -143,7 +143,7 @@ class DaoStore {
       tokenTicker = await l1Dao.methods.getTokenTicker().call();
     }
 
-    if (crowd.status === 'complete') {
+    if (crowd.status === 'complete' || crowd.status === 'resolved') {
       price = toNumber(window.web3.utils.fromWei(crowd.last_proposal_price, 'ether'));
     }
 
@@ -412,7 +412,7 @@ class DaoStore {
       return;
     }
 
-    const ethPrice = window.web3.utils.fromWei(proposal.price, 'ether');
+    const price = new BigNumber(proposal.price);
 
     if (voteData) {
       let ethAmount = '0';
@@ -445,7 +445,7 @@ class DaoStore {
       }
 
       return {
-        price: ethPrice,
+        price,
         till: proposal.till,
         votingPower: ethAmount,
         options: proposal.options,
@@ -511,7 +511,7 @@ class DaoStore {
       let newAmount = '';
 
       if (amount === 'same') {
-        newAmount = this.proposalsList[0].price;
+        newAmount = this.proposalsList[0].price.toString();
       } else if (amount === 'null') {
         newAmount = '';
       } else {

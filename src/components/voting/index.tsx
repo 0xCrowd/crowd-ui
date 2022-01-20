@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { toNumber } from "lodash";
+import BigNumber from 'bignumber.js';
 
 import Button from "../button";
 import { Row } from "../row/Row";
@@ -202,7 +203,7 @@ type Props = {
     | "success"
     | "noSuccess";
   isParticipants?: boolean;
-  price?: string;
+  price?: BigNumber;
   time: string;
   loading: boolean;
   makeVote: (option: number, amount: string) => void;
@@ -224,14 +225,6 @@ const Voting: FC<Props> = ({
   against,
   className,
 }) => {
-  const getRoundedPrice = (price: string) => {
-    const priceArr = price.split(".");
-    if (priceArr[1] && priceArr[1].length > 4) {
-      return fixedRound(toNumber(price), 4);
-    }
-    return price;
-  };
-
   const OverFooter = (
     <Row justify="end">
       <VoteStatus>
@@ -396,7 +389,7 @@ const Voting: FC<Props> = ({
           </LeftColumn>
           <RightColumn>
             <Row alignItems="flex-end">
-              <Price>{getRoundedPrice(price || '')}</Price>
+              <Price>{price ? price.dp(4) : ''}</Price>
               <PriceLabel>ETH</PriceLabel>
             </Row>
           </RightColumn>

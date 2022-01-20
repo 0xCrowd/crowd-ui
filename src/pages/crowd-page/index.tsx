@@ -82,7 +82,7 @@ const CrowdPage: FC = observer(() => {
   }, [pathname, blockChainState]);
 
   useEffect(() => {
-    if (detailedCrowd && detailedCrowd.status === "complete") {
+    if (detailedCrowd && (detailedCrowd.status === "complete" || detailedCrowd.status === 'resolved')) {
       getProposals(ceramicStream);
     }
   }, [ceramicStream, detailedCrowd]);

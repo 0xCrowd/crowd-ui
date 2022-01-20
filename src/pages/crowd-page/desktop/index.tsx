@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useState, useMemo } from "react";
 import SkeletonLoader from "tiny-skeleton-loader-react";
 import { toNumber } from "lodash";
 
@@ -9,7 +9,6 @@ import Proposals from "./components/proposals";
 import HowWorks from "@app/components/how-works";
 
 import { ModalModeEnum } from "@enums/modal-enum";
-import { fixedRound } from "@app/utils/round";
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -68,14 +67,6 @@ const Preview = styled.img`
   background-size: contain;
 `;
 
-const Loading = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100%;
-`;
-
 const Columns = styled.div`
   display: flex;
   flex-direction: column;
@@ -115,8 +106,16 @@ const DesktopPage = ({
 }: Props): ReactElement => {
   const [collapsed, setCollapsed] = useState(true);
 
-  const listingPrice = proposalsList.length ? fixedRound(toNumber(proposalsList[0].price), 2) : 0;
   const fraction = (adaptedCrowd?.myFound || 0) / toNumber(adaptedCrowd?.price);
+
+  const listingPrice = useMemo(() => {
+    if (window.web3.utils) {
+      const listingPriceWei = proposalsList.length ? proposalsList[0].price.dp(2).toString() : '0';
+      return toNumber(window.web3.utils.fromWei(listingPriceWei, 'ether'));
+    }
+
+    return 0;
+  }, [window.web3.utils, proposalsList]);
 
   if (daoLoading) {
     return (
@@ -194,6 +193,7 @@ const DesktopPage = ({
               proposalsList.length ? proposalsList[0].type : "notVoting"
             }
             className={mb28}
+            proposalsLoading={proposalsLoading}
           />
           <HowWorks collapsed={collapsed} onChange={setCollapsed} />
         </Columns>
