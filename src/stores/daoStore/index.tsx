@@ -149,7 +149,7 @@ class DaoStore {
 
     let percentage = Math.ceil((collected / price) * 100);
 
-    if (percentage > 100 || crowd.status === 'complete') {
+    if (percentage > 100 || crowd.status === 'complete' || crowd.status === 'resolved') {
       percentage = 100;
     }
 
