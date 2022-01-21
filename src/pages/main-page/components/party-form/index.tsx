@@ -45,7 +45,14 @@ const PartyForm = ({
         className={mb12}
         labelClassName={label}
         id="url"
-        label={<>URL of the fixed price NFT on <a href="rinkeby.rarible.com">rinkeby.rarible.com</a></>}
+        label={
+          <>
+            URL of the fixed price NFT on{" "}
+            <a href="https://rinkeby.rarible.com" target="_blank">
+              rinkeby.rarible.com
+            </a>
+          </>
+        }
         placeholder="https://rinkeby.rarible.com/token/id"
         value={values.url}
         onChange={handleChange}

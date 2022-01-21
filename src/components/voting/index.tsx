@@ -225,6 +225,7 @@ const Voting: FC<Props> = ({
   against,
   className,
 }) => {
+  const { web3: { utils: { fromWei } } } = window;
   const OverFooter = (
     <Row justify="end">
       <VoteStatus>
@@ -389,7 +390,7 @@ const Voting: FC<Props> = ({
           </LeftColumn>
           <RightColumn>
             <Row alignItems="flex-end">
-              <Price>{price ? price.dp(4) : ''}</Price>
+              <Price>{price ? fromWei(price.dp(4).toString(), 'ether') : ''}</Price>
               <PriceLabel>ETH</PriceLabel>
             </Row>
           </RightColumn>
