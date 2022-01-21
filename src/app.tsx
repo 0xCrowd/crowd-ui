@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { configure } from "mobx";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 
 import { appRoutes } from "@app/router/routes";
 
@@ -21,6 +21,7 @@ export const App = (): ReactElement => {
       {appRoutes.map((appRoute, i) => (
         <Route key={i} {...appRoute} />
       ))}
+      <Redirect to="/" />
     </Switch>
   );
 };
