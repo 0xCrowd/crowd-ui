@@ -33,9 +33,6 @@ const NotFoundPage = () => {
       <Title>
         Our magical elves are already working on the problem 🎅🦹🧙‍♀️🦸‍♂️
       </Title>
-      <Title className={mb28}>
-        We plan to return access in less than a day 😎
-      </Title>
       <Title className={mb24}>In the meantime, join our discord to hang out 💃🕺</Title>
       <GradientBorderButton
         onClick={() => (window.location.href = "https://discord.gg/mmgMGm7m5K")}
