@@ -1,7 +1,8 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo } from "react";
 
 //#region styles
-import { styled } from '@linaria/react';
+import { styled } from "@linaria/react";
+import { textPrimary } from "@app/assets/styles/constants";
 
 const Root = styled.div`
   display: flex;
@@ -15,13 +16,18 @@ const NameBlock = styled.div`
   justify-content: start;
 `;
 
-const Name = styled.p`
+const Name = styled.a`
   margin: 0;
   font-family: Inter;
   font-size: 14px;
   line-height: 18px;
   letter-spacing: 0.25px;
   color: #263238;
+  text-decoration: none;
+  
+  &:hover {
+    color: ${textPrimary};
+  }
 `;
 
 const Avatar = styled.div`
@@ -48,25 +54,30 @@ type PropsType = {
   number?: number;
   className?: string;
   textClassName?: string;
-  substrParam?: number
-}
+};
 
-const UserBadge: FC<PropsType> = ({ 
+const UserBadge: FC<PropsType> = ({
   name,
   number,
-  substrParam = 5,
   textClassName,
   className,
 }) => {
+  const firstPart = name.substr(0, 4);
+  const secondPart = name.substr(name.length - 4, name.length);
   return (
     <Root className={className}>
       <NameBlock>
         <Avatar />
-        <Name className={textClassName}>{`${name.substr(0, substrParam)}...`}</Name>
+        <Name
+          title={name}
+          href={`https://rinkeby.etherscan.io/address/${name}`}
+          target="_blank"
+          className={textClassName}
+        >{`${firstPart}...${secondPart}`}</Name>
       </NameBlock>
       {number && <Price className={textClassName}>{number} ETH</Price>}
     </Root>
-  )
-}
+  );
+};
 
 export default memo(UserBadge);
