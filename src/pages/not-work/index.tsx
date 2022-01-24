@@ -38,7 +38,7 @@ const NotFoundPage = () => {
         onClick={() => (window.location.href = "https://discord.gg/mmgMGm7m5K")}
         size={ButtonSize.large}
       >
-        Go to Discrod
+        Go to Discord
       </GradientBorderButton>
     </Root>
   );
