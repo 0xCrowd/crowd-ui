@@ -11,7 +11,7 @@ import {
   textPrimary,
   textSecondary,
 } from "@app/assets/styles/constants";
-import { mb12 } from "@app/assets/styles/atomic";
+import { mb12, media } from "@app/assets/styles/atomic";
 
 import eth from "@app/assets/images/eth_wh.png";
 import activeCard from "@app/assets/images/card_active.png";
@@ -36,6 +36,11 @@ const Root = styled.div<RootProps>`
   background-size: contain;
   border-radius: ${defaultBorderRadius};
   cursor: pointer;
+
+  ${media('mobile')} {
+    background-size: 100% 100%;
+    width: 90%;
+  }
 `;
 
 const Title = styled.div`
@@ -46,6 +51,10 @@ const Title = styled.div`
   text-transform: uppercase;
   color: ${textPrimary};
   text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
 `;
 
 const PreviewContainer = styled.div`
@@ -206,7 +215,7 @@ const NftCard = ({
 
   return (
     <Root className={className} background={cardBackground} onClick={() => push(id)}>
-      <Title className={mb12}>{title || 'XXX'}</Title>
+      <Title title={title} className={mb12}>{title || 'XXX'}</Title>
       <PreviewContainer>
         <Preview src={image} alt="preview" className={mb12} ref={imgEl}/>
         {!loaded && <PreviewLoader className={mb12}>

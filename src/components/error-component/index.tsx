@@ -44,14 +44,14 @@ const Link = styled.a`
 `;
 //#endregion
 
-const ErrorComponent = () => (
-  <Root>
+const ErrorComponent = ({ className }: ClassNameProps) => (
+  <Root className={className}>
     <Title>
-      PLEASE INSTALL METAMASK
+      Please connect a wallet
     </Title>
     <Container>
       <Link href="https://metamask.io/" target="_blank" rel="noopener noreferrer">
-        INSTALL
+        MetaMask
       </Link>
     </Container>
   </Root>

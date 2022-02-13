@@ -41,6 +41,10 @@ export const mb28 = css`
   margin-bottom: 28px !important;
 `;
 
+export const mb30 = css`
+  margin-bottom: 36px !important;
+`;
+
 export const mb36 = css`
   margin-bottom: 36px !important;
 `;
@@ -60,12 +64,20 @@ export const mr4 = css`
   margin-right: 4px !important;
 `;
 
+export const mr12 = css`
+  margin-right: 12px;
+`;
+
 export const mr14 = css`
   margin-right: 14px;
 `;
 
 export const mr24 = css`
   margin-right: 24px;
+`;
+
+export const mr30 = css`
+  margin-right: 30px;
 `;
 
 export const mr32 = css`
@@ -126,3 +138,15 @@ export const w100 = css`
   width: 100% !important;
 `;
 //#endregion
+
+export const desktopComponent = css`
+  ${media("mobile")} {
+    display: none !important;
+  }
+`;
+
+export const mobileComponent = css`
+  ${media("large")} {
+    display: none !important;
+  }
+`;

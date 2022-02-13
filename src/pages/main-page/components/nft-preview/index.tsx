@@ -6,7 +6,7 @@ import Button, { ButtonSize } from "@app/components/button";
 //#region styles
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
-import { mb24 } from "@app/assets/styles/atomic";
+import { mb24, media } from "@app/assets/styles/atomic";
 
 const dn = css`
   display: none;
@@ -22,11 +22,20 @@ const PreviewContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 364px;
+
+  ${media('mobile')} {
+    width: auto;
+  }
 `;
 
 const Preview = styled.img`
   max-height: 364px;
   max-width: 364px;
+
+  ${media('mobile')} {
+    max-width: 90%;
+    max-height: none;
+  }
 `;
 
 const PreviewLoader = styled.div`

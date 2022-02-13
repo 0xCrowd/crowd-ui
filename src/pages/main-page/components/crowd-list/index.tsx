@@ -3,16 +3,14 @@ import Loader from "react-loader-spinner";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import NftCard from "@components/nft-card";
-import { ButtonSize } from "@components/button";
-import GradientBorderButton from "@components/gradient-border-button";
-import { Row } from '@components/row/Row';
+import NoCrowds from "@components/no-crowds";
+import MobileNoCrowds from "@app/mobile-components/no-crowds";
 
 //#region styles
 import { styled } from "@linaria/react";
 import { css, cx } from "@linaria/core";
 
-import { mb62, media, mr32, mr52, ml52 } from "@assets/styles/atomic";
-import { useHistory } from "react-router";
+import { media, mr32 } from "@assets/styles/atomic";
 
 const Root = styled.div`
   display: flex;
@@ -37,20 +35,6 @@ const LoaderContainer = styled.div`
   flex-direction: column;
 `;
 
-const EmptyTitle = styled.p`
-  margin: 0;
-  font-weight: bold;
-  font-size: 36px;
-  line-height: 24px;
-  letter-spacing: 0.44px;
-  color: #fff;
-
-  ${media("mobile")} {
-    font-size: 24px;
-    height: 37px;
-  }
-`;
-
 const card = css`
   margin-bottom: 36px;
 
@@ -63,21 +47,15 @@ const card = css`
   }
 `;
 
-const button = css`
-  width: 302px;
-  height: 50px;
-
+const mobileNoCrowd = css`
   ${media("large")} {
-    height: 42px;
+    display: none;
   }
 `;
 
-const buttonContainer = css`
-  width: 304px;
-  height: 52px;
-
-  ${media("large")} {
-    height: 44px;
+const desktopNoCrowds = css`
+  ${media("mobile")} {
+    display: none;
   }
 `;
 //#endregion
@@ -97,9 +75,8 @@ const CrowdList = ({
   onCreateClick,
   loadMore,
   hasMore,
-  isMyCrowds,
+  isMyCrowds = false,
 }: Props): ReactElement => {
-  const { push } = useHistory();
   if (loading) {
     return (
       <LoaderContainer>
@@ -109,74 +86,66 @@ const CrowdList = ({
   }
 
   if (!loading && !crowds.length) {
-    if (isMyCrowds) {
-      return (
-        <LoaderContainer>
-          <Row className={mb62}>
-            <EmptyTitle>You have not yet participated in any of the Crowds</EmptyTitle>
-          </Row>
-          <Row>
-            <GradientBorderButton size={ButtonSize.large} onClick={() => push('/')}>Join existing one</GradientBorderButton>
-            <EmptyTitle className={cx(ml52, mr52)}>or</EmptyTitle>
-            <GradientBorderButton size={ButtonSize.large} onClick={onCreateClick}>Start a new one</GradientBorderButton>
-          </Row>
-        </LoaderContainer>
-      );
-    }
     return (
-      <LoaderContainer>
-        <EmptyTitle className={mb62}>There is no Crowds yet!</EmptyTitle>
-        <GradientBorderButton size={ButtonSize.large} onClick={onCreateClick}>Start a new one</GradientBorderButton>
-      </LoaderContainer>
+      <>
+        <NoCrowds
+          onCreateClick={onCreateClick}
+          isMyCrowds={isMyCrowds}
+          className={desktopNoCrowds}
+        />
+        <MobileNoCrowds
+          isMyCrowds={isMyCrowds}
+          onCreateClick={onCreateClick}
+          className={mobileNoCrowd}
+        />
+      </>
     );
   }
 
   return (
     <>
-      {
-        <InfiniteScroll
-          dataLength={8}
-          next={loadMore}
-          hasMore={hasMore}
-          loader={
-            <LoaderContainer>
-              <Loader type="Puff" color="#6200E8" height={50} width={50} />
-            </LoaderContainer>
-          }
-          scrollableTarget="scrollableDiv"
-        >
-          <Root>
-            {crowds.map(
-              (
-                {
-                  name,
-                  media,
-                  price,
-                  ceramic_stream,
-                  percentage,
-                  deposits,
-                  status,
-                },
-                index
-              ) => {
-                return (
-                  <NftCard
-                    key={ceramic_stream}
-                    id={ceramic_stream}
-                    price={+price}
-                    percentage={percentage}
-                    title={name}
-                    participants={deposits.length}
-                    className={cx(card, (index + 1) % 4 === 0 ? "" : mr32)}
-                    status={status}
-                    image={media}
-                  />
-                );
-              }
-            )}
-          </Root>
-        </InfiniteScroll>
-      }
+      <InfiniteScroll
+        dataLength={crowds.length}
+        next={loadMore}
+        hasMore={hasMore}
+        loader={
+          <LoaderContainer>
+            <Loader type="Puff" color="#6200E8" height={50} width={50} />
+          </LoaderContainer>
+        }
+        scrollableTarget="scrollableDiv"
+      >
+        <Root>
+          {crowds.map(
+            (
+              {
+                name,
+                media,
+                price,
+                ceramic_stream,
+                percentage,
+                deposits,
+                status,
+              },
+              index
+            ) => {
+              return (
+                <NftCard
+                  key={ceramic_stream}
+                  id={ceramic_stream}
+                  price={+price}
+                  percentage={percentage}
+                  title={name}
+                  participants={deposits.length}
+                  className={cx(card, (index + 1) % 4 === 0 ? "" : mr32)}
+                  status={status}
+                  image={media}
+                />
+              );
+            }
+          )}
+        </Root>
+      </InfiniteScroll>
     </>
   );
 };
