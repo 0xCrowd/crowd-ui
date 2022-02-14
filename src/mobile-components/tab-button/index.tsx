@@ -33,14 +33,13 @@ const underline = css`
 
 type Props = {
   active: boolean;
-  value?: string;
-  onClick?: (value: string) => void;
+  onClick?: () => void;
 }
 
-const TabButton = ({ active, value, children, onClick }: PropsWithChildren<Props>) => {
+const TabButton = ({ active, children, onClick }: PropsWithChildren<Props>) => {
   const onTabClick = () => {
-    if (onClick && value) {
-      onClick(value);
+    if (onClick) {
+      onClick();
     }
   };
 

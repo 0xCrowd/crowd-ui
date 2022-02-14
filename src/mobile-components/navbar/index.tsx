@@ -14,9 +14,12 @@ const Root = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 68px;
-  padding: 19px 28px;
-  background: rgba(20, 20, 20, 0.6);
+  padding: 18px;
+  background: linear-gradient(
+    0deg,
+    rgba(38, 50, 56, 0.4),
+    rgba(38, 50, 56, 0.4)
+  );
 `;
 
 const Burger = styled.img`

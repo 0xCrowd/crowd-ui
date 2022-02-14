@@ -1,16 +1,17 @@
 import React from "react";
 
-import Percentage from '@app/components/percentage';
+import Percentage from "@app/components/percentage";
 import Button from "@app/components/button";
 import { Hr } from "@app/components/hr";
 import UserBadge from "@app/components/user-badge";
 
 //#region styles
-import { styled } from '@linaria/react';
-import { css } from '@linaria/core';
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 
-import eth from '@assets/images/eth_gr.png';
-
+import eth from "@assets/images/eth_gr.png";
+import ActiveCrowd from "../../../desktop/components/crowd-block/active-crowd/index";
+import BigNumber from "bignumber.js";
 
 const CrowdInfo = styled.div`
   display: flex;
@@ -48,7 +49,7 @@ const Description = styled.div`
   font-weight: 500;
   font-size: 10px;
   line-height: 14px;
-  color: #C5C5C5;
+  color: #c5c5c5;
 `;
 
 const PriceBlock = styled.div`
@@ -161,7 +162,7 @@ const button = css`
 `;
 
 const userText = css`
-  color: #C5C5C5;
+  color: #c5c5c5;
   line-height: 20px;
 `;
 
@@ -173,7 +174,15 @@ const hr = css`
 const CrowdTab = () => {
   return (
     <>
-      <CrowdInfo>
+      <ActiveCrowd
+        collected={10}
+        percentage={10}
+        price={10}
+        priceWei={new BigNumber(100)}
+        collectedWei={new BigNumber(100)}
+        onOpenModal={() => {}}
+      />
+      {/* <CrowdInfo>
         <CrowdTitle>Qroud Party</CrowdTitle>
         <Badge>Holder</Badge>
         <Description>
@@ -202,7 +211,7 @@ const CrowdTab = () => {
       <UsersTitle>user party name</UsersTitle>
       <UserBadge name="user" number={1000} textClassName={userText} />
       <UserBadge name="user" number={1000} textClassName={userText} />
-      <UserBadge name="user" number={1000} textClassName={userText} />
+      <UserBadge name="user" number={1000} textClassName={userText} /> */}
     </>
   );
 };

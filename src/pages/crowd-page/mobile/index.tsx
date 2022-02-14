@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
-import UserBadge from "@app/components/user-badge";
-import Tabs from "./components/tabs";
 import CrowdTab from "./components/corwd-tab/index";
-import ProposalTab from './components/proposal-tab/index';
+import ProposalTab from "./components/proposal-tab/index";
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -14,11 +12,13 @@ import { media } from "@app/assets/styles/atomic";
 import logo from "@assets/images/logo.png";
 import close from "@assets/images/closeDark.svg";
 import rarible from "@assets/images/rarible.svg";
-
-
+import { textPrimary } from "@app/assets/styles/constants";
+import TabButton from "@app/mobile-components/tab-button";
+import { CrowdPageEnum } from "../../../enums/crowd-page-enum/index";
+import Tabs from "@app/mobile-components/tabs";
 
 const Root = styled.div`
-  ${media('large')} {
+  ${media("large")} {
     display: none;
   }
 `;
@@ -26,7 +26,7 @@ const Root = styled.div`
 const PreviewContainer = styled.div`
   width: 100%;
   height: 521px;
-  background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hashmask_15753.jpg/1024px-Hashmask_15753.jpg');
+  background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hashmask_15753.jpg/1024px-Hashmask_15753.jpg");
   background-size: cover;
 `;
 
@@ -67,20 +67,18 @@ const Close = styled.img`
 
 const InfoBlock = styled.div`
   display: flex;
-  flex-direction: column;
-  padding-bottom: 18px;
-  padding-left: 36px;
-  padding-right: 24px;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Title = styled.p`
-  margin-bottom: 4px;
-  margin-top: 0;
-  font-family: Inter;
-  font-weight: 800;
-  font-size: 28px;
+  width: 80%;
+  margin: 0;
+  font-weight: bold;
+  font-size: 24px;
   line-height: 32px;
-  color: #fff;
+  color: ${textPrimary};
+  text-align: center;
 `;
 
 const UserRow = styled.div`
@@ -97,50 +95,43 @@ const Main = styled.div`
   padding-left: 36px;
   padding-right: 36px;
 
-  ${media('mobile')} {
+  ${media("mobile")} {
     padding-bottom: 26px;
   }
 `;
 
-const tabs = css`
-  margin-bottom: 18px;
-`;
-
-const userText = css`
-  color: #fff;
-`;
 //#endregion
-
-export enum CrowdTabs {
-  Party = "party",
-  Proposal = "proposal",
-}
 
 const MobilePage = () => {
   const { push } = useHistory();
 
-  const [activeTab, setActiveTab] = useState(CrowdTabs.Party);
+  const [activeTab, setActiveTab] = useState(CrowdPageEnum.info);
 
   return (
     <Root>
       <PreviewContainer>
         <Preview>
-          <Topline>
-            <Logo src={logo} alt="logo" />
-            <Close src={close} alt="close" onClick={() => push('/')} />
-          </Topline>
           <InfoBlock>
             <Title>PartyName</Title>
-            <UserRow>
-              <UserBadge name="user" textClassName={userText} />
-              <Rarible src={rarible} alt="rarible" />
-            </UserRow>
           </InfoBlock>
         </Preview>
       </PreviewContainer>
       <Main>
-        <Tabs active={activeTab} onChange={setActiveTab} className={tabs} />
-        {activeTab === CrowdTabs.Party ? <CrowdTab /> : <ProposalTab />}
+        <Tabs>
+          <TabButton
+            onClick={() => setActiveTab(CrowdPageEnum.info)}
+            active={activeTab === CrowdPageEnum.info}
+          >
+            Info
+          </TabButton>
+          <TabButton
+            onClick={() => setActiveTab(CrowdPageEnum.voting)}
+            active={activeTab === CrowdPageEnum.voting}
+          >
+            Voting
+          </TabButton>
+        </Tabs>
+        {activeTab === CrowdPageEnum.info ? <CrowdTab /> : <ProposalTab />}
       </Main>
     </Root>
   );

@@ -9,10 +9,6 @@ const Root = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 62px;
-  padding-top: 14px;
-  padding-left: 24px;
-  padding-right: 18px;
-  margin-bottom: 40px;
 `;
 
 const TabsWrapper = styled.div`

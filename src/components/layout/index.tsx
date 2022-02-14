@@ -20,12 +20,7 @@ import { IPartyFormData } from "@app/pages/main-page/components/party-form/const
 
 //#region styles
 import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
-import {
-  desktopComponent,
-  media,
-  mobileComponent,
-} from "@app/assets/styles/atomic";
+import { desktopComponent, mobileComponent } from "@app/assets/styles/atomic";
 
 const Root = styled.div`
   min-height: 100vh;
