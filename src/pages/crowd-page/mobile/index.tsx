@@ -1,68 +1,28 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { toNumber } from "lodash";
 
+import TabButton from "@app/mobile-components/tab-button";
+import Tabs from "@app/mobile-components/tabs";
 import CrowdTab from "./components/corwd-tab/index";
 import ProposalTab from "./components/proposal-tab/index";
+import Skeleton from "./components/skeleton";
+
+import { CrowdPageProps } from "../desktop";
+import { CrowdPageEnum } from "../../../enums/crowd-page-enum/index";
 
 //#region styles
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { media } from "@app/assets/styles/atomic";
 
-import logo from "@assets/images/logo.png";
-import close from "@assets/images/closeDark.svg";
-import rarible from "@assets/images/rarible.svg";
+import { media } from "@app/assets/styles/atomic";
 import { textPrimary } from "@app/assets/styles/constants";
-import TabButton from "@app/mobile-components/tab-button";
-import { CrowdPageEnum } from "../../../enums/crowd-page-enum/index";
-import Tabs from "@app/mobile-components/tabs";
+
+import noMedia from '@assets/images/no_image.png';
 
 const Root = styled.div`
   ${media("large")} {
     display: none;
   }
-`;
-
-const PreviewContainer = styled.div`
-  width: 100%;
-  height: 521px;
-  background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Hashmask_15753.jpg/1024px-Hashmask_15753.jpg");
-  background-size: cover;
-`;
-
-const Preview = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    180deg,
-    rgba(20, 20, 20, 0.78) 0%,
-    rgba(20, 20, 20, 0.18) 28.13%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(20, 20, 20, 0.22) 69.79%,
-    #141414 99.99%,
-    rgba(20, 20, 20, 0.79) 100%
-  );
-  filter: drop-shadow(0px 0px 10px rgba(38, 50, 56, 0.06));
-`;
-
-const Topline = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 22px 24px;
-`;
-
-const Logo = styled.img`
-  width: 40px;
-  height: 40px;
-`;
-
-const Close = styled.img`
-  width: 24px;
-  height: 24px;
-  margin-top: 5px;
 `;
 
 const InfoBlock = styled.div`
@@ -73,7 +33,7 @@ const InfoBlock = styled.div`
 
 const Title = styled.p`
   width: 80%;
-  margin: 0;
+  margin: 44px 0;
   font-weight: bold;
   font-size: 24px;
   line-height: 32px;
@@ -81,14 +41,15 @@ const Title = styled.p`
   text-align: center;
 `;
 
-const UserRow = styled.div`
+const PreviewContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-`;
-
-const Rarible = styled.img`
-  height: 24px;
-  width: 24px;
+  align-items: center;
+  justify-content: center;
+  height: 375px;
+  width: 100%;
+  margin-bottom: 44px;
+  background: #141414;
+  border-radius: 30px;
 `;
 
 const Main = styled.div`
@@ -100,24 +61,82 @@ const Main = styled.div`
   }
 `;
 
+const tabsWrapper = css`
+  padding-left: 39px;
+  padding-right: 39px;
+`;
+
+const shadows = {
+  active: css`
+    box-shadow: 280px 0px 80px 40px #00f0ff, -120px 0px 80px 40px #01b2ea;
+  `,
+  failed: css`
+    box-shadow: 280px 0px 80px 40px #ff1cf7, -120px 0px 80px 40px #a812dd;
+  `,
+  sailed: css`
+    box-shadow: 280px 0px 80px 40px #02ffa4, -120px 0px 80px 40px #ff8a00;
+  `,
+  success: css`
+    box-shadow: 280px 0px 80px 40px #c8ff2a, -120px 0px 80px 40px #22b928;
+  `,
+  on_execution: css`
+    box-shadow: 280px 0px 80px 40px #00f0ff, -120px 0px 80px 40px #01b2ea;
+  `,
+};
+
 //#endregion
 
-const MobilePage = () => {
-  const { push } = useHistory();
-
+const MobilePage = ({
+  crowd,
+  crowdLoading,
+  proposalsList,
+  proposalsLoading,
+  nftId,
+  makeVote,
+  onOpenModal,
+}: CrowdPageProps) => {
   const [activeTab, setActiveTab] = useState(CrowdPageEnum.info);
+  const imgEl = useRef<HTMLImageElement>(null);
+
+  const [loaded, setLoaded] = useState(false);
+
+  const onImageLoaded = () => setLoaded(true);
+
+  useEffect(() => {
+    const imgElCurrent = imgEl.current;
+
+    if (imgElCurrent) {
+      imgElCurrent.addEventListener("load", onImageLoaded);
+      return () => imgElCurrent.removeEventListener("load", onImageLoaded);
+    }
+  }, []);
+
+  const fraction = (crowd?.myFound || 0) / toNumber(crowd?.price);
+
+  const listingPrice = useMemo(() => {
+    if (window.web3.utils) {
+      const listingPriceWei = proposalsList.length ? proposalsList[0].price.dp(2).toString() : '0';
+      return toNumber(window.web3.utils.fromWei(listingPriceWei, 'ether'));
+    }
+
+    return 0;
+  }, [window.web3.utils, proposalsList]);
+
+  if (crowdLoading) {
+    return <Skeleton />;
+  }
 
   return (
     <Root>
-      <PreviewContainer>
-        <Preview>
-          <InfoBlock>
-            <Title>PartyName</Title>
-          </InfoBlock>
-        </Preview>
+      <InfoBlock>
+        <Title>PartyName</Title>
+      </InfoBlock>
+      <PreviewContainer className={shadows[crowd.status] || shadows.active}>
+        <img ref={imgEl} src={crowd.media || noMedia} alt="media" />
+        {/* {!loaded && <Loader width={50} height={25} type="Puff" color="#6200E8" />} */}
       </PreviewContainer>
       <Main>
-        <Tabs>
+        <Tabs wrapperClassName={tabsWrapper}>
           <TabButton
             onClick={() => setActiveTab(CrowdPageEnum.info)}
             active={activeTab === CrowdPageEnum.info}
@@ -127,11 +146,37 @@ const MobilePage = () => {
           <TabButton
             onClick={() => setActiveTab(CrowdPageEnum.voting)}
             active={activeTab === CrowdPageEnum.voting}
+            disabled={
+              crowd.status === "active" ||
+              crowd.status === "failed" ||
+              crowd.status === "on_execution"
+            }
           >
             Voting
           </TabButton>
         </Tabs>
-        {activeTab === CrowdPageEnum.info ? <CrowdTab /> : <ProposalTab />}
+        {activeTab === CrowdPageEnum.info ? (
+          <CrowdTab
+            status={crowd.status || "active"}
+            participants={crowd.deposits}
+            collected={crowd?.collected}
+            percentage={crowd?.percentage}
+            price={crowd?.price}
+            priceWei={crowd?.priceWei}
+            collectedWei={crowd?.collectedWei}
+            listingPrice={listingPrice}
+            myFound={crowd?.myFound}
+            afterFounds={listingPrice * fraction}
+            leftovers={crowd?.leftovers}
+            onOpenModal={onOpenModal}
+            votingType={
+              proposalsList.length ? proposalsList[0].type : "notVoting"
+            }
+            proposalsLoading={proposalsLoading}
+          />
+        ) : (
+          <ProposalTab />
+        )}
       </Main>
     </Root>
   );

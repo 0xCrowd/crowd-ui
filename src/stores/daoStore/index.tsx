@@ -1,5 +1,7 @@
-import { makeAutoObservable, runInAction } from "mobx";
 import axios from 'axios';
+import BigNumber from "bignumber.js";
+import { ethers } from "ethers";
+import { makeAutoObservable, runInAction } from "mobx";
 import { toNumber } from "lodash";
 
 import chainStore from '@stores/chainStore';
@@ -10,8 +12,7 @@ import { ProposalTypeEnum } from "@app/enums/proposal-type-Enum";
 import { notify } from '@app/utils/notify';
 
 import DAO from "../../../ABI/Vault.json";
-import { ethers } from "ethers";
-import BigNumber from "bignumber.js";
+
 
 const API_ENDPOINT = "https://crowd-protocol-master-9iojf.ondigitalocean.app";
 
@@ -131,6 +132,10 @@ class DaoStore {
       }
     } else {
       crowd.price = '0';
+    }
+
+    if (!crowd.media) {
+      crowd.media = '';
     }
 
     // @ts-ignore

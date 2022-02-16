@@ -5,7 +5,8 @@ import { Row } from "@components/row/Row";
 //#region styles
 import { styled } from "@linaria/react";
 
-import { textGray, textPrimary } from "@app/assets/styles/constants";
+import { bgDark, textGray, textPrimary } from "@app/assets/styles/constants";
+import { media } from "@app/assets/styles/atomic";
 
 type RootProps = {
   collapsed: boolean;
@@ -24,6 +25,13 @@ const Root = styled.div<RootProps>`
   border-radius: 5px;
   transition: 1000ms;
   cursor: pointer;
+
+  ${media('mobile')} {
+    width: 100%;
+    height: ${({ collapsed }) => (collapsed ? "36x" : "338px")};
+    background: ${bgDark}
+    box-shadow: none;
+  }
 `;
 
 const RootRow = styled.div`
@@ -39,7 +47,12 @@ const Title = styled.p`
   font-weight: 400;
   font-size: 18px;
   line-height: 24px;
-  color: ${textPrimary};
+  color: ${textPrimary}
+
+  ${media('mobile')} {
+    font-size: 14px;
+    line-height: 22px;
+  }
 `;
 
 const Icon = styled.div`
@@ -54,6 +67,11 @@ const Icon = styled.div`
   color: ${textPrimary};
   background: linear-gradient(158.63deg, #00f0ff 4.48%, #ff1cf7 85.94%);
   border-radius: 50%;
+
+  ${media('mobile')} {
+    height: 20px;
+    width: 20px;
+  }
 `;
 
 const StyledOl = styled.ol<RootProps>`
@@ -68,6 +86,10 @@ const StyledOl = styled.ol<RootProps>`
   line-height: 18px;
   overflow: hidden;
   transition: 1000ms;
+
+  ${media('mobile')} {
+    width: 80%;
+  }
 `;
 
 const Arrow = styled.div`
@@ -110,9 +132,10 @@ interface Props {
 }
 
 const HowWorks = ({ collapsed, onChange, className }: Props): ReactElement => {
+  console.log(collapsed, 'cll')
   return (
-    <Root collapsed={collapsed} onClick={() => onChange(!collapsed)}>
-      <RootRow className={className}>
+    <Root collapsed={collapsed} onClick={() => onChange(!collapsed)} className={className}>
+      <RootRow>
         <Row>
           <Icon>?</Icon>
           <Title>How it works?</Title>

@@ -26,12 +26,13 @@ const TabsWrapper = styled.div`
 
 interface Props {
   className?: string;
+  wrapperClassName?: string;
 }
 
-const Tabs = ({ children, className }: PropsWithChildren<Props>): ReactElement => {
+const Tabs = ({ children, className, wrapperClassName }: PropsWithChildren<Props>): ReactElement => {
   return (
     <Root className={className}>
-      <TabsWrapper>
+      <TabsWrapper className={wrapperClassName}>
         {children}
       </TabsWrapper>
     </Root>

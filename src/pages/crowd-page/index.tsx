@@ -258,15 +258,23 @@ const CrowdPage: FC = observer(() => {
       </Modal>
       <Root>
         {/* ортобразится только при ширине экрана меньше 420px */}
-        <MobilePage />
-        {/* ортобразится только при ширине экрана больше 420px */}
-        <DesktopPage
-          adaptedCrowd={detailedCrowd}
+        <MobilePage 
+          crowd={detailedCrowd}
           proposalsList={proposalsList}
           onOpenModal={onOpenModal}
           makeVote={onMakeVote}
           proposalsLoading={proposalState === StateEnum.Loading}
-          daoLoading={crowdState === StateEnum.Loading}
+          crowdLoading={crowdState === StateEnum.Loading}
+          nftId={detailedCrowd?.item}
+        />
+        {/* ортобразится только при ширине экрана больше 420px */}
+        <DesktopPage
+          crowd={detailedCrowd}
+          proposalsList={proposalsList}
+          onOpenModal={onOpenModal}
+          makeVote={onMakeVote}
+          proposalsLoading={proposalState === StateEnum.Loading}
+          crowdLoading={crowdState === StateEnum.Loading}
           nftId={detailedCrowd?.item}
         />
       </Root>

@@ -1,7 +1,7 @@
 export enum CrowdStatusText {
   active = 'active 🙌',
-  lost = 'unsuccessful buyout 😔',
-  success = 'successful buyout 😁',
-  resale = 'successful resale 💸',
-  buyout = 'buyout ⏳'
+  failed = 'unsuccessful buyout 😔',
+  complete = 'successful buyout 😁',
+  resolved = 'successful resale 💸',
+  on_execution = 'buyout ⏳'
 };

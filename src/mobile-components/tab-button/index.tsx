@@ -2,8 +2,8 @@ import React, { PropsWithChildren } from 'react';
 
 //#region styles
 import { styled } from '@linaria/react';
-import { css } from '@linaria/core';
-import { successText, textPrimary } from '@app/assets/styles/constants';
+import { css, cx } from '@linaria/core';
+import { successText, textGray, textPrimary } from '@app/assets/styles/constants';
 
 interface ButtonProps {
   active: boolean;
@@ -29,14 +29,19 @@ const underline = css`
     border-bottom: 2px solid ${successText};
   }
 `;
+
+const cnDisabled = css`
+  color: ${textGray};
+`;
 //#endregion
 
 type Props = {
   active: boolean;
+  disabled?: boolean;
   onClick?: () => void;
 }
 
-const TabButton = ({ active, children, onClick }: PropsWithChildren<Props>) => {
+const TabButton = ({ active, disabled, children, onClick }: PropsWithChildren<Props>) => {
   const onTabClick = () => {
     if (onClick) {
       onClick();
@@ -47,7 +52,8 @@ const TabButton = ({ active, children, onClick }: PropsWithChildren<Props>) => {
     <Root
       onClick={onTabClick}
       active={active}
-      className={active ? underline : ''}
+      className={cx(active && underline, disabled && cnDisabled)}
+      disabled={disabled}
     >
       {children}
     </Root>

@@ -21,7 +21,7 @@ const MainBlock = styled.div`
   display: flex;
   margin-bottom: 40px;
 
-  ${media("mobile")} {
+  ${media('mobile')} {
     display: none;
   }
 `;
@@ -85,9 +85,9 @@ const proposalButton = css`
 `;
 //#endregion
 
-interface Props {
-  adaptedCrowd: DetailedCrowd;
-  daoLoading: boolean;
+export interface CrowdPageProps {
+  crowd: DetailedCrowd;
+  crowdLoading: boolean;
   proposalsList: AdaptedProposal[];
   proposalsLoading: boolean;
   nftId: string;
@@ -96,17 +96,17 @@ interface Props {
 }
 
 const DesktopPage = ({
-  adaptedCrowd,
-  daoLoading,
+  crowd,
+  crowdLoading,
   proposalsList,
   proposalsLoading,
   nftId,
   makeVote,
   onOpenModal,
-}: Props): ReactElement => {
+}: CrowdPageProps): ReactElement => {
   const [collapsed, setCollapsed] = useState(true);
 
-  const fraction = (adaptedCrowd?.myFound || 0) / toNumber(adaptedCrowd?.price);
+  const fraction = (crowd?.myFound || 0) / toNumber(crowd?.price);
 
   const listingPrice = useMemo(() => {
     if (window.web3.utils) {
@@ -117,7 +117,7 @@ const DesktopPage = ({
     return 0;
   }, [window.web3.utils, proposalsList]);
 
-  if (daoLoading) {
+  if (crowdLoading) {
     return (
       <MainBlock>
         <SkeletonLoader
@@ -140,15 +140,15 @@ const DesktopPage = ({
       <MainBlock>
         <NftBlock>
           <UserRow>
-            <UserName>{adaptedCrowd?.name}</UserName>
+            <UserName>{crowd?.name}</UserName>
             <RaribleButton tokenId={nftId} />
           </UserRow>
           <PreviewContainer>
-            <Preview src={adaptedCrowd?.media} alt="preview" />
+            <Preview src={crowd?.media} alt="preview" />
           </PreviewContainer>
-          {adaptedCrowd?.status === "complete" && (
+          {crowd?.status === "complete" && (
             <>
-              {!!adaptedCrowd?.myFound &&
+              {!!crowd?.myFound &&
                 ((proposalsList[0] && proposalsList[0].type !== "success") ||
                   !proposalsList[0]) && (
                   <GradientBorderButton
@@ -169,7 +169,7 @@ const DesktopPage = ({
               <Proposals
                 proposals={proposalsList}
                 loading={proposalsLoading}
-                isParticipants={!!adaptedCrowd?.myFound}
+                isParticipants={!!crowd?.myFound}
                 makeVote={makeVote}
               />
             </>
@@ -177,17 +177,17 @@ const DesktopPage = ({
         </NftBlock>
         <Columns>
           <CrowdBlock
-            type={adaptedCrowd?.status || "failed"}
-            collected={adaptedCrowd?.collected}
-            percentage={adaptedCrowd?.percentage}
-            price={adaptedCrowd?.price}
-            priceWei={adaptedCrowd?.priceWei}
-            collectedWei={adaptedCrowd?.collectedWei}
-            participant={adaptedCrowd?.deposits}
+            type={crowd?.status || "failed"}
+            collected={crowd?.collected}
+            percentage={crowd?.percentage}
+            price={crowd?.price}
+            priceWei={crowd?.priceWei}
+            collectedWei={crowd?.collectedWei}
+            participant={crowd?.deposits}
             listingPrice={listingPrice}
-            myFound={adaptedCrowd?.myFound}
+            myFound={crowd?.myFound}
             afterFounds={listingPrice * fraction}
-            leftovers={adaptedCrowd?.leftovers}
+            leftovers={crowd?.leftovers}
             onOpenModal={onOpenModal}
             votingType={
               proposalsList.length ? proposalsList[0].type : "notVoting"

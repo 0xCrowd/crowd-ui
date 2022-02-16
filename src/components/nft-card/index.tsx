@@ -29,6 +29,14 @@ import lostCard from "@app/assets/images/card_lost.png";
 import successCard from "@app/assets/images/card_success.png";
 import successSellCard from "@app/assets/images/card_success_sell.png";
 
+const backgrounds = {
+  active: activeCard,
+  failed: lostCard,
+  complete: successCard,
+  resolved: successSellCard,
+  on_execution: activeCard,
+};
+
 type RootProps = {
   background: string;
 };
@@ -249,10 +257,6 @@ const NftCard = ({
   const imgEl = useRef<HTMLImageElement>(null);
 
   const [loaded, setLoaded] = useState(false);
-  const [statusText, setStatusText] = useState<CrowdStatusText>(
-    CrowdStatusText.active
-  );
-  const [cardBackground, setCardBackground] = useState("");
 
   const onImageLoaded = () => setLoaded(true);
 
@@ -265,43 +269,10 @@ const NftCard = ({
     }
   }, []);
 
-  useEffect(() => {
-    switch (status) {
-      case "active":
-        setCardBackground(activeCard);
-        setStatusText(CrowdStatusText.active);
-        break;
-
-      case "failed":
-        setCardBackground(lostCard);
-        setStatusText(CrowdStatusText.lost);
-        break;
-
-      case "complete":
-        setCardBackground(successCard);
-        setStatusText(CrowdStatusText.success);
-        break;
-
-      case "resolved":
-        setCardBackground(successSellCard);
-        setStatusText(CrowdStatusText.resale);
-        break;
-
-      case "on_execution":
-        setCardBackground(activeCard);
-        setStatusText(CrowdStatusText.buyout);
-        break;
-
-      default:
-        setCardBackground(activeCard);
-        setStatusText(CrowdStatusText.active);
-    }
-  }, [status]);
-
   return (
     <Root
       className={className}
-      background={cardBackground}
+      background={backgrounds[status] || backgrounds.active}
       onClick={() => push(id)}
     >
       <Title title={title} className={mb12}>
@@ -335,7 +306,7 @@ const NftCard = ({
         <ParticipantsValue>{participants}</ParticipantsValue>
       </Row>
       <PercentBar percent={percentage || 0} className={percent} />
-      <Status>{statusText}</Status>
+      <Status>{CrowdStatusText[status] || CrowdStatusText.active}</Status>
     </Root>
   );
 };
