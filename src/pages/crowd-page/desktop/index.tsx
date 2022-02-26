@@ -106,7 +106,7 @@ const DesktopPage = ({
 }: CrowdPageProps): ReactElement => {
   const [collapsed, setCollapsed] = useState(true);
 
-  const fraction = (crowd?.myFound || 0) / toNumber(crowd?.price);
+  const fraction = (crowd?.myFoundEth || 0) / toNumber(crowd?.priceEth);
 
   const listingPrice = useMemo(() => {
     if (window.web3.utils) {
@@ -148,7 +148,7 @@ const DesktopPage = ({
           </PreviewContainer>
           {crowd?.status === "complete" && (
             <>
-              {!!crowd?.myFound &&
+              {!!crowd?.myFoundEth &&
                 ((proposalsList[0] && proposalsList[0].type !== "success") ||
                   !proposalsList[0]) && (
                   <GradientBorderButton
@@ -169,7 +169,7 @@ const DesktopPage = ({
               <Proposals
                 proposals={proposalsList}
                 loading={proposalsLoading}
-                isParticipants={!!crowd?.myFound}
+                isParticipants={!!crowd?.myFoundEth}
                 makeVote={makeVote}
               />
             </>
@@ -178,14 +178,14 @@ const DesktopPage = ({
         <Columns>
           <CrowdBlock
             type={crowd?.status || "failed"}
-            collected={crowd?.collected}
+            collected={crowd?.collectedEth}
             percentage={crowd?.percentage}
-            price={crowd?.price}
+            price={crowd?.priceEth}
             priceWei={crowd?.priceWei}
             collectedWei={crowd?.collectedWei}
             participant={crowd?.deposits}
             listingPrice={listingPrice}
-            myFound={crowd?.myFound}
+            myFound={crowd?.myFoundEth}
             afterFounds={listingPrice * fraction}
             leftovers={crowd?.leftovers}
             onOpenModal={onOpenModal}

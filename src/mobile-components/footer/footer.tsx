@@ -16,6 +16,7 @@ const Root = styled.div`
   flex-direction: center;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   height: 190px;
   background: linear-gradient(
     0deg,

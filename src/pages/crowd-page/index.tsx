@@ -28,6 +28,7 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   margin: auto;
+  width: 100%;
 
   ${media("large")} {
     margin-top: 64px;
@@ -48,10 +49,9 @@ const CrowdPage: FC = observer(() => {
     donate,
     createProposal,
     makeVote,
-    getDelta,
     withdraw,
     detailedCrowd,
-    crowdState,
+    detailedCrowdState,
     donateState,
     proposalsList,
     createProposalState,
@@ -65,12 +65,10 @@ const CrowdPage: FC = observer(() => {
   const [modalTitle, setModalTitle] = useState("");
   const [ceramicStream, setCeramicStream] = useState("");
   const [proposalStream, setProposalStream] = useState("");
-  const [isUserNotified, setIsUserNotified] = useState(false);
 
   useEffect(() => {
     loadWeb3();
     loadBlockChain();
-    getDelta();
   }, []);
 
   useEffect(() => {
@@ -86,36 +84,6 @@ const CrowdPage: FC = observer(() => {
       getProposals(ceramicStream);
     }
   }, [ceramicStream, detailedCrowd]);
-
-  // useEffect(() => {
-  //   if (adaptedDao) {
-  //     getProposals(ceramicStream);
-  //   }
-  // }, [adaptedDao]);
-
-  // useEffect(() => {
-  //   let id: NodeJS.Timer | null = null;
-  //   if (
-  //     !isUserNotified &&
-  //     adaptedDao &&
-  //     proposalsList.length &&
-  //     !adaptedDao.isBought &&
-  //     adaptedDao.collected >= adaptedDao.price
-  //   ) {
-  //     notifySuccess("Buyout in process. It's take about 30 seconds");
-  //     id = setInterval(() => getCrowdList(undefined, ceramicStream), 30000);
-  //     setIsUserNotified(true);
-  //   }
-
-  //   if (
-  //     adaptedDao &&
-  //     proposalsList.length &&
-  //     adaptedDao.isBought &&
-  //     id
-  //   ) {
-  //     clearInterval(id);
-  //   }
-  // }, [proposalsList, adaptedDao]);
 
   const onCloseModal = () => setIsOpen(false);
 
@@ -147,7 +115,7 @@ const CrowdPage: FC = observer(() => {
 
   const onProposalSubmit = async ({ price }: IProposalFormData) => {
     try {
-      await createProposal(detailedCrowd.ceramic_stream, price);
+      await createProposal('', price);
       onCloseModal();
       getProposals(ceramicStream);
     } catch (error) {}
@@ -157,9 +125,9 @@ const CrowdPage: FC = observer(() => {
     try {
       await donate(
         address,
-        detailedCrowd.ceramic_stream,
+        '',
         data.deposite,
-        detailedCrowd.l1_vault
+        ''
       );
       onCloseModal();
       getCrowd(ceramicStream);
@@ -186,7 +154,6 @@ const CrowdPage: FC = observer(() => {
     switch (modalMode) {
       case ModalModeEnum.Eth:
         const maxWei = detailedCrowd?.priceWei.minus(detailedCrowd.collectedWei).toString();
-        console.log(maxWei, 'wei');
         const max = toNumber(window.web3.utils.fromWei(maxWei, 'ether'));
         return (
           <EthForm
@@ -206,7 +173,7 @@ const CrowdPage: FC = observer(() => {
         );
 
       case ModalModeEnum.Withdraw:
-        const myFound = detailedCrowd.myFound as number;
+        const myFound = detailedCrowd.myFoundEth as number;
         return (
           <WithdrawForm
             onSubmit={onWithdrawSubmit}
@@ -264,7 +231,7 @@ const CrowdPage: FC = observer(() => {
           onOpenModal={onOpenModal}
           makeVote={onMakeVote}
           proposalsLoading={proposalState === StateEnum.Loading}
-          crowdLoading={crowdState === StateEnum.Loading}
+          crowdLoading={detailedCrowdState === StateEnum.Loading}
           nftId={detailedCrowd?.item}
         />
         {/* ортобразится только при ширине экрана больше 420px */}
@@ -274,7 +241,7 @@ const CrowdPage: FC = observer(() => {
           onOpenModal={onOpenModal}
           makeVote={onMakeVote}
           proposalsLoading={proposalState === StateEnum.Loading}
-          crowdLoading={crowdState === StateEnum.Loading}
+          crowdLoading={detailedCrowdState === StateEnum.Loading}
           nftId={detailedCrowd?.item}
         />
       </Root>

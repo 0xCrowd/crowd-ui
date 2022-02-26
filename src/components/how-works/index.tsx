@@ -132,7 +132,6 @@ interface Props {
 }
 
 const HowWorks = ({ collapsed, onChange, className }: Props): ReactElement => {
-  console.log(collapsed, 'cll')
   return (
     <Root collapsed={collapsed} onClick={() => onChange(!collapsed)} className={className}>
       <RootRow>

@@ -10,8 +10,15 @@ import { primaryGreenButton } from "../no-crowds";
 
 const Root = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
+const Container = styled.div`
+  display: flex;
   flex-direction: column;
-  height: calc(100vh - 401px);
+  align-items: center;
 `;
 
 const Title = styled.p`
@@ -26,16 +33,18 @@ const Title = styled.p`
 const MobileError = ({ className }: ClassNameProps) => {
   return (
     <Root className={className}>
-      <Title className={mb62}>Please connect wallet</Title>
-      <Button
-        size={ButtonSize.small}
-        className={primaryGreenButton}
-        onClick={() => {
-          window.open("https://metamask.io/");
-        }}
-      >
-        Metamask
-      </Button>
+      <Container>
+        <Title className={mb62}>Please connect wallet</Title>
+        <Button
+          size={ButtonSize.small}
+          className={primaryGreenButton}
+          onClick={() => {
+            window.open("https://metamask.io/");
+          }}
+        >
+          Metamask
+        </Button>
+      </Container>
     </Root>
   );
 };

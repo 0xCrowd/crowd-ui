@@ -232,7 +232,7 @@ const labelRow = css`
 //#endregion
 
 interface Props {
-  id: string;
+  id: number;
   title: string;
   percentage: number;
   price: number;
@@ -273,7 +273,7 @@ const NftCard = ({
     <Root
       className={className}
       background={backgrounds[status] || backgrounds.active}
-      onClick={() => push(id)}
+      onClick={() => push(id.toString())}
     >
       <Title title={title} className={mb12}>
         {title || "XXX"}

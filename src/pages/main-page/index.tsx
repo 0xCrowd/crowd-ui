@@ -12,10 +12,12 @@ import daoStore from "@app/stores/daoStore";
 
 import { StateEnum } from "@enums/state-enum";
 import { RouteNames } from "@app/router/route-names";
-import { mobileComponent } from "@assets/styles/atomic";
+import { useLayoutHeightAuto } from '@app/hooks/use-layout-height-auto';
 
 //#region styles
-import { css, cx } from '@linaria/core';
+import { css, cx } from "@linaria/core";
+
+import { h100, mobileComponent } from "@assets/styles/atomic";
 
 const tabs = css`
   padding: 0 36px;
@@ -70,6 +72,8 @@ const MainPage: FC = observer(() => {
     }
   };
 
+  useLayoutHeightAuto(crowds.length, crowdState === StateEnum.Success);
+
   return (
     <Layout
       onSubmit={() => getCrowdList(isMyCrowdsPage ? address : "")}
@@ -77,28 +81,30 @@ const MainPage: FC = observer(() => {
       closeModal={closeModal}
       isModalOpen={modalIsOpen}
     >
-      <Tabs className={cx(mobileComponent, tabs)}>
-        <TabButton
-          active={!isMyCrowdsPage}
-          onClick={() => onTabClick(RouteNames.INDEX)}
-        >
-          All crowds
-        </TabButton>
-        <TabButton
-          active={isMyCrowdsPage}
-          onClick={() => onTabClick(RouteNames.MY_CROWDS)}
-        >
-          My crowds
-        </TabButton>
-      </Tabs>
-      <CrowdList
-        isMyCrowds={isMyCrowdsPage}
-        loading={crowdState === StateEnum.Loading}
-        crowds={crowds}
-        onCreateClick={openModal}
-        loadMore={loadMoreCrowds}
-        hasMore={loadedCrowds < totalCrowds}
-      />
+      <div className={h100}>
+        <Tabs className={cx(mobileComponent, tabs)}>
+          <TabButton
+            active={!isMyCrowdsPage}
+            onClick={() => onTabClick(RouteNames.INDEX)}
+          >
+            All crowds
+          </TabButton>
+          <TabButton
+            active={isMyCrowdsPage}
+            onClick={() => onTabClick(RouteNames.MY_CROWDS)}
+          >
+            My crowds
+          </TabButton>
+        </Tabs>
+        <CrowdList
+          isMyCrowds={isMyCrowdsPage}
+          loading={crowdState === StateEnum.Loading}
+          crowds={crowds}
+          onCreateClick={openModal}
+          loadMore={loadMoreCrowds}
+          hasMore={loadedCrowds < totalCrowds}
+        />
+      </div>
     </Layout>
   );
 });

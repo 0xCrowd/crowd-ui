@@ -13,6 +13,7 @@ import BurgerLogo from "@assets/images/burger.svg";
 const Root = styled.div`
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   justify-content: space-between;
   padding: 18px;
   background: linear-gradient(

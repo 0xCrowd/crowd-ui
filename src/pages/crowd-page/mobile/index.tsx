@@ -3,8 +3,9 @@ import { toNumber } from "lodash";
 
 import TabButton from "@app/mobile-components/tab-button";
 import Tabs from "@app/mobile-components/tabs";
-import CrowdTab from "./components/corwd-tab/index";
-import ProposalTab from "./components/proposal-tab/index";
+import CrowdBlock from "../desktop/components/crowd-block";
+import VotingMobile from "@app/mobile-components/voting";
+import LiveVoting from "@app/mobile-components/live-voting";
 import Skeleton from "./components/skeleton";
 
 import { CrowdPageProps } from "../desktop";
@@ -17,7 +18,8 @@ import { css } from "@linaria/core";
 import { media } from "@app/assets/styles/atomic";
 import { textPrimary } from "@app/assets/styles/constants";
 
-import noMedia from '@assets/images/no_image.png';
+import noMedia from "@assets/images/no_image.png";
+import { useLayoutHeightAuto } from "@app/hooks/use-layout-height-auto";
 
 const Root = styled.div`
   ${media("large")} {
@@ -41,15 +43,25 @@ const Title = styled.p`
   text-align: center;
 `;
 
-const PreviewContainer = styled.div`
+type PreviewProps = {
+  isLive: boolean;
+}
+
+const PreviewContainer = styled.div<PreviewProps>`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 375px;
   width: 100%;
-  margin-bottom: 44px;
+  margin-bottom: ${({ isLive }) => isLive ? '144px' : '44px'};
   background: #141414;
   border-radius: 30px;
+`;
+
+const Preview = styled.img`
+  max-width: 100%;
+  max-height: 375px;
 `;
 
 const Main = styled.div`
@@ -73,10 +85,10 @@ const shadows = {
   failed: css`
     box-shadow: 280px 0px 80px 40px #ff1cf7, -120px 0px 80px 40px #a812dd;
   `,
-  sailed: css`
+  resolved: css`
     box-shadow: 280px 0px 80px 40px #02ffa4, -120px 0px 80px 40px #ff8a00;
   `,
-  success: css`
+  complete: css`
     box-shadow: 280px 0px 80px 40px #c8ff2a, -120px 0px 80px 40px #22b928;
   `,
   on_execution: css`
@@ -84,6 +96,12 @@ const shadows = {
   `,
 };
 
+const live = css`
+  position: absolute;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+`;
 //#endregion
 
 const MobilePage = ({
@@ -101,6 +119,7 @@ const MobilePage = ({
   const [loaded, setLoaded] = useState(false);
 
   const onImageLoaded = () => setLoaded(true);
+  useLayoutHeightAuto(1, true);
 
   useEffect(() => {
     const imgElCurrent = imgEl.current;
@@ -111,12 +130,14 @@ const MobilePage = ({
     }
   }, []);
 
-  const fraction = (crowd?.myFound || 0) / toNumber(crowd?.price);
+  const fraction = (crowd?.myFoundEth || 0) / toNumber(crowd?.priceEth);
 
   const listingPrice = useMemo(() => {
     if (window.web3.utils) {
-      const listingPriceWei = proposalsList.length ? proposalsList[0].price.dp(2).toString() : '0';
-      return toNumber(window.web3.utils.fromWei(listingPriceWei, 'ether'));
+      const listingPriceWei = proposalsList.length
+        ? proposalsList[0].price.dp(2).toString()
+        : "0";
+      return toNumber(window.web3.utils.fromWei(listingPriceWei, "ether"));
     }
 
     return 0;
@@ -126,14 +147,18 @@ const MobilePage = ({
     return <Skeleton />;
   }
 
+  const activeProposal = proposalsList[0];
+
+
   return (
     <Root>
       <InfoBlock>
         <Title>PartyName</Title>
       </InfoBlock>
-      <PreviewContainer className={shadows[crowd.status] || shadows.active}>
-        <img ref={imgEl} src={crowd.media || noMedia} alt="media" />
+      <PreviewContainer isLive={Boolean(activeProposal)} className={shadows[crowd ? crowd.status : "active"]}>
+        <Preview ref={imgEl} src={crowd ? crowd.media : noMedia} alt="media" />
         {/* {!loaded && <Loader width={50} height={25} type="Puff" color="#6200E8" />} */}
+        {activeProposal && <LiveVoting className={live} />}
       </PreviewContainer>
       <Main>
         <Tabs wrapperClassName={tabsWrapper}>
@@ -147,25 +172,27 @@ const MobilePage = ({
             onClick={() => setActiveTab(CrowdPageEnum.voting)}
             active={activeTab === CrowdPageEnum.voting}
             disabled={
-              crowd.status === "active" ||
-              crowd.status === "failed" ||
-              crowd.status === "on_execution"
+              crowd ? (
+                crowd.status === "active" ||
+                crowd.status === "failed" ||
+                crowd.status === "on_execution"
+              ) : true
             }
           >
             Voting
           </TabButton>
         </Tabs>
         {activeTab === CrowdPageEnum.info ? (
-          <CrowdTab
-            status={crowd.status || "active"}
-            participants={crowd.deposits}
-            collected={crowd?.collected}
+          <CrowdBlock
+            type={crowd?.status || "active"}
+            participant={crowd.deposits}
+            collected={crowd?.collectedEth}
             percentage={crowd?.percentage}
-            price={crowd?.price}
+            price={crowd?.priceEth}
             priceWei={crowd?.priceWei}
             collectedWei={crowd?.collectedWei}
             listingPrice={listingPrice}
-            myFound={crowd?.myFound}
+            myFound={crowd?.myFoundEth}
             afterFounds={listingPrice * fraction}
             leftovers={crowd?.leftovers}
             onOpenModal={onOpenModal}
@@ -175,7 +202,17 @@ const MobilePage = ({
             proposalsLoading={proposalsLoading}
           />
         ) : (
-          <ProposalTab />
+          <VotingMobile
+            type={activeProposal?.type}
+            time={activeProposal?.till}
+            voted={activeProposal?.voted}
+            against={activeProposal?.against}
+            price={activeProposal?.price}
+            votingPower={activeProposal?.votingPower}
+            isParticipant={Boolean(crowd.myFoundEth)}
+            status={crowd.status}
+            loading={proposalsLoading}
+          />
         )}
       </Main>
     </Root>

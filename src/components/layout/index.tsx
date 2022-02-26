@@ -23,7 +23,10 @@ import { styled } from "@linaria/react";
 import { desktopComponent, mobileComponent } from "@app/assets/styles/atomic";
 
 const Root = styled.div`
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
   background-color: #141414;
 `;
 //#endregion
@@ -92,7 +95,7 @@ const Layout = observer(
     };
 
     return (
-      <Root className={className}>
+      <Root className={className} id='Layout'>
         <Modal
           isOpen={isModalOpen}
           onRequestClose={closeModal}

@@ -10,7 +10,7 @@ import MobileNoCrowds from "@app/mobile-components/no-crowds";
 import { styled } from "@linaria/react";
 import { css, cx } from "@linaria/core";
 
-import { media, mr32 } from "@assets/styles/atomic";
+import { h100, media, mr32 } from "@assets/styles/atomic";
 
 const Root = styled.div`
   display: flex;
@@ -28,11 +28,10 @@ const Root = styled.div`
 
 const LoaderContainer = styled.div`
   width: 100%;
-  height: 80vh;
+  height: 80%;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
 `;
 
 const card = css`
@@ -113,27 +112,18 @@ const CrowdList = ({
             <Loader type="Puff" color="#6200E8" height={50} width={50} />
           </LoaderContainer>
         }
-        scrollableTarget="scrollableDiv"
       >
         <Root>
           {crowds.map(
             (
-              {
-                name,
-                media,
-                price,
-                ceramic_stream,
-                percentage,
-                deposits,
-                status,
-              },
+              { id, name, media, priceEth, percentage, deposits, status },
               index
             ) => {
               return (
                 <NftCard
-                  key={ceramic_stream}
-                  id={ceramic_stream}
-                  price={+price}
+                  key={id}
+                  id={id}
+                  price={priceEth}
                   percentage={percentage}
                   title={name}
                   participants={deposits.length}

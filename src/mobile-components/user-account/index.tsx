@@ -36,7 +36,7 @@ type Props = {
 }
 
 export const UserAccount = ({ text }: Props) => {
-  const formattedText = `${text.substr(0, 6)}...${text.substr(text.length - 4), text.length}`;
+  const formattedText = text ? `${text.substr(0, 6)}...${text.substr(text.length - 4), text.length}` : 'connect';
 
   return (
     <Root>

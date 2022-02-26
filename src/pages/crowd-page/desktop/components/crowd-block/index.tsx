@@ -1,6 +1,7 @@
 import React, { ReactElement, useState, useEffect } from "react";
 import BigNumber from "bignumber.js";
 
+import HowWorks from "@app/components/how-works";
 import Users from "./components/users";
 import ActiveCrowd from "./active-crowd";
 import SuccessCrowd from "./success-crowd";
@@ -12,6 +13,9 @@ import { CrowdStatusText } from "@app/enums/crowd-status/crowd-status";
 
 //#region styles
 import { styled } from "@linaria/react";
+import { css } from '@linaria/core';
+
+import { media } from "@app/assets/styles/atomic";
 
 import activeDetail from "@assets/images/active_detail.png";
 import successDetail from "@assets/images/success_detail.png";
@@ -31,21 +35,25 @@ type RootProps = {
 };
 
 const Root = styled.div<RootProps>`
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 416px;
-  height: 575px;
-  padding: 28px 38px;
-  background-image: ${({ background }) => `url(${background})`};
-  background-size: cover;
+  ${media("large")} {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 416px;
+    height: 575px;
+    padding: 28px 38px;
+    background-image: ${({ background }) => `url(${background})`};
+    background-size: cover;
+  }
 `;
 
 const ContentContainer = styled.div`
-  box-sizing: border-box;
-  padding: 18px;
-  width: 340px;
+  ${media("large")} {
+    box-sizing: border-box;
+    padding: 18px;
+    width: 340px;
+  }
 `;
 
 const Title = styled.p`
@@ -57,6 +65,20 @@ const Title = styled.p`
   line-height: 18px;
   color: #fff;
   text-transform: uppercase;
+
+  ${media("mobile")} {
+    margin-top: 25px;
+    margin-bottom: 82px;
+    text-align: center;
+  }
+`;
+
+const howWorks = css`
+  margin-bottom: 28px;
+
+  ${media('large')} {
+    display: none;
+  }
 `;
 //#endregion
 
@@ -66,7 +88,7 @@ interface Props {
   percentage: number;
   price: number;
   onWithdraw?: () => void;
-  participant: IDeposits[];
+  participant: AdaptedDeposits[];
   listingPrice?: number;
   myFound?: number;
   afterFounds?: number;
@@ -97,6 +119,8 @@ const CrowdBlock = ({
   onOpenModal,
   className,
 }: Props): ReactElement => {
+  const [collapsed, setCollapsed] = useState(true);
+
   const components = {
     complete: (
       <SuccessCrowd
@@ -148,10 +172,14 @@ const CrowdBlock = ({
   };
 
   return (
-    <Root background={backgrounds[type] || backgrounds.failed} className={className}>
+    <Root
+      background={backgrounds[type] || backgrounds.failed}
+      className={className}
+    >
       <Title>{CrowdStatusText[type] || CrowdStatusText.failed}</Title>
       <ContentContainer>
         {components[type] || components.failed}
+        <HowWorks collapsed={collapsed} onChange={setCollapsed} className={howWorks} />
         <Users participants={participant} />
       </ContentContainer>
     </Root>

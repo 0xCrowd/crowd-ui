@@ -49,6 +49,10 @@ export const mb36 = css`
   margin-bottom: 36px !important;
 `;
 
+export const mb44 = css`
+  margin-bottom: 44px !important;
+`;
+
 export const mb45 = css`
   margin-bottom: 45px !important;
 `;

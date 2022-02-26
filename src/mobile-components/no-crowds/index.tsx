@@ -16,8 +16,7 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 300px;
-  height: calc(100vh - 401px);
+  justify-content: center;
 `;
 
 const Title = styled.p`
