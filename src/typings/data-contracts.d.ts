@@ -10,6 +10,7 @@ type CrowdTarget = {
   type: "currency" | "nft";
   name: string;
   media: string;
+  mediaType: string;
   price: string;
 };
 

@@ -54,12 +54,12 @@ class DaoStore {
       }
 
       const response = await axios.get<ApiResponse<CrowdApiType>>(
-        `${NEW_API_ENDPOINT}/api/fundraising/all`,
+        `${NEW_API_ENDPOINT}/crowd`,
         {
           params: {
             offset: this.crowdPage * this.crowdLimit,
             limit: this.crowdLimit,
-            // address,
+            user: address,
           },
           withCredentials: false,
         }
@@ -70,10 +70,6 @@ class DaoStore {
       });
 
       let crowds: AdaptedCrowd[] = response.data.items.map(this.adaptCrowd);
-
-      if (address) {
-        crowds = [];
-      }
 
       if (this.crowdPage === 0) {
         runInAction(() => {
@@ -102,7 +98,7 @@ class DaoStore {
       });
 
       const response = await axios.get<CrowdApiType>(
-        `${NEW_API_ENDPOINT}/api/fundraising`,
+        `${NEW_API_ENDPOINT}/crowd`,
         {
           params: {
             id,
@@ -117,7 +113,9 @@ class DaoStore {
       });
     } catch (error: any) {
       notify(error.message);
-      this.detailedCrowdState = StateEnum.Error;
+      runInAction(() => {
+        this.detailedCrowdState = StateEnum.Error;
+      });
     }
   };
 
@@ -221,7 +219,7 @@ class DaoStore {
       this.createCrowdState = StateEnum.Loading;
 
       const response = await axios.get<PreviewApiType>(
-        `${NEW_API_ENDPOINT}/api/fundraising/preview`,
+        `${NEW_API_ENDPOINT}/crowd/preview`,
         {
           params: {
             item,
@@ -259,7 +257,9 @@ class DaoStore {
       this.getCrowdList(address);
     } catch (error: any) {
       notify(error.message);
-      this.crowdState = StateEnum.Error;
+      runInAction(() => {
+        this.crowdState = StateEnum.Error;
+      });
     }
   };
 
@@ -267,48 +267,23 @@ class DaoStore {
     this.crowdPage = 0;
   };
 
-  createCrowd = async (tokenId: string) => {
+  createCrowd = async (target: string) => {
     try {
-      const { address, factoryContract } = chainStore;
-
+      console.log(target, 'target');
       runInAction(() => {
         this.createCrowdState = StateEnum.Loading;
       });
 
-      let tokenName = "";
+      // const matches = this.crowdPreview?.name.match(/\b(\w)/g);
+      // if (matches) {
+      //   tokenName = `CROWD_${matches.join("")}`;
+      // }
 
-      const matches = this.crowdPreview?.name.match(/\b(\w)/g);
-      if (matches) {
-        tokenName = `CROWD_${matches.join("")}`;
-      }
-
-      //const initAmount = window.web3.utils.toWei('1000');
-      let vaultAddress = "";
-      let tokenAddress = "";
-
-      const listener = (err: any, e: any) => {
-        vaultAddress = e.returnValues.vault;
-        tokenAddress = e.returnValues.tokenAddress;
-      };
-
-      await factoryContract.events.NewVault({}, listener);
-
-      await factoryContract.methods
-        .newVault(tokenName, tokenName, 100)
-        .send({ from: address, value: 0 });
-
-      const response = await axios.post(`${API_ENDPOINT}/crowd`, {
-        name: tokenName,
-        l1_type: "ethereum",
-        l1_vault: vaultAddress,
-        l1_token: tokenAddress,
-        proposal_total_threshold: 0.5,
-        proposal_for_threshold: 0.5,
-        proposal_timeout: 3600,
-        pool_target: tokenId,
+      const response = await axios.post(`${NEW_API_ENDPOINT}/crowd/new`, {
+        target,
       });
 
-      await this.makeMyCrowd(response.data.stream, address);
+      // await this.makeMyCrowd(response.data.stream, address);
 
       runInAction(() => {
         this.createCrowdState = StateEnum.Success;
