@@ -117,7 +117,7 @@ const DesktopPage = ({
     return 0;
   }, [window.web3.utils, proposalsList]);
 
-  if (crowdLoading) {
+  if (crowdLoading || !crowd) {
     return (
       <MainBlock>
         <SkeletonLoader

@@ -11,8 +11,6 @@ import { ProposalTypeEnum } from "@app/enums/proposal-type-Enum";
 import { notify } from "@app/utils/notify";
 import { toEth } from "@app/utils/toEth";
 
-import DAO from "../../../ABI/Vault.json";
-
 const NEW_API_ENDPOINT = "http://crowd-api-e43tw.ondigitalocean.app";
 const API_ENDPOINT = "https://crowd-protocol-master-9iojf.ondigitalocean.app";
 
@@ -138,7 +136,7 @@ class DaoStore {
       priceWei = new BigNumber("0");
     }
 
-    const collectedWei = new BigNumber(crowd.collected);
+    const collectedWei = new BigNumber(crowd.collected || "0");
 
     // if (crowd.status === 'complete' || crowd.status === 'resolved') {
     //   price = toNumber(window.web3.utils.fromWei(crowd.last_proposal_price, 'ether'));
@@ -187,8 +185,21 @@ class DaoStore {
     let myFoundWei = new BigNumber(0);
     let leftoversWei = new BigNumber(0);
     let leftovers = 0;
-    const priceWei = new BigNumber(crowd.target.price);
-    const collectedWei = new BigNumber(crowd.collected);
+    let priceWei = new BigNumber(0);
+
+    const price = crowd.target.price;
+
+    if (price) {
+      if (price.length < 15) {
+        priceWei = new BigNumber("1000000000000000");
+      } else {
+        priceWei = new BigNumber(price);
+      }
+    } else {
+      priceWei = new BigNumber("0");
+    }
+    
+    const collectedWei = new BigNumber(crowd.collected || "0");
 
     if (myDeposit) {
       myFoundEth = toEth(myDeposit.total_deposit);
@@ -209,7 +220,7 @@ class DaoStore {
       priceWei,
       collectedWei,
       collectedEth: toEth(crowd.collected),
-      item: crowd.target.id.toString(),
+      item: crowd.target.address,
       deposits: adaptedDeposits,
     };
   };
@@ -269,7 +280,6 @@ class DaoStore {
 
   createCrowd = async (target: string) => {
     try {
-      console.log(target, 'target');
       runInAction(() => {
         this.createCrowdState = StateEnum.Loading;
       });
@@ -296,64 +306,61 @@ class DaoStore {
     }
   };
 
-  donate = async (
-    address: string,
-    daoStream: string,
-    amount: string,
-    l1_vault: string
-  ) => {
+  donate = async (amount: string, fundraisingId: string) => {
     try {
       runInAction(() => {
         this.donateState = StateEnum.Loading;
       });
 
-      const value = await window.web3.utils.toWei(amount, "ether");
-      //@ts-ignore
-      const l1Dao = new window.web3.eth.Contract(DAO.abi, l1_vault);
+      const { address, vaultContract, blockChainState } = chainStore;
 
-      await l1Dao.methods
-        .recieveDeposit(address)
-        .send({ from: address, value });
 
-      await axios.post(`${API_ENDPOINT}/deposit`, {
-        address,
-        crowd: daoStream,
-        amount: value,
-      });
+      if (blockChainState === StateEnum.Success) {
 
-      await this.makeMyCrowd(daoStream, address);
+        const weiAmount = await window.web3.utils.toWei(amount, "ether");
 
-      runInAction(() => {
-        this.donateState = StateEnum.Success;
-      });
+        await vaultContract.methods
+          .deposit(fundraisingId)
+          .send({ from: address, value: weiAmount });
+
+        // await this.makeMyCrowd(daoStream, address);
+
+        runInAction(() => {
+          this.donateState = StateEnum.Success;
+        });
+      } else {
+        throw new Error("blockchain dont load");
+      }
     } catch (error: any) {
-      notify(error.message);
+      runInAction(() => {
+        this.donateState = StateEnum.Error;
+      });
+
       this.donateState = StateEnum.Error;
     }
   };
 
-  withdraw = async (amount: string) => {
+  withdraw = async (amount: string, fundraisingId: string) => {
     try {
       runInAction(() => {
         this.donateState = StateEnum.Loading;
       });
 
-      const { address } = chainStore;
+      const { address, vaultContract, blockChainState } = chainStore;
 
-      // @ts-ignore
-      const l1Dao = new window.web3.eth.Contract(DAO.abi,this.detailedCrowd.l1_vault);
-      const weiAmount = window.web3.utils.toWei(amount);
-      await l1Dao.methods.withdrawDeposit(weiAmount).send({ from: address });
+      if (blockChainState === StateEnum.Success) {
+        const weiAmount = window.web3.utils.toWei(amount);
 
-      await axios.post(`${API_ENDPOINT}/withdraw`, {
-        address,
-        crowd: "",
-        amount: weiAmount,
-      });
+        await vaultContract.methods
+          .withdraw(fundraisingId, weiAmount)
+          .send({ from: address });
 
-      runInAction(() => {
-        this.donateState = StateEnum.Success;
-      });
+        runInAction(() => {
+          this.donateState = StateEnum.Success;
+        });
+      } else {
+        throw new Error("blockchain dont load");
+      }
     } catch (error: any) {
       runInAction(() => {
         this.donateState = StateEnum.Error;

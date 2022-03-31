@@ -4,10 +4,9 @@ import Web3 from "web3";
 import { StateEnum } from '@app/enums/state-enum/index';
 
 
-import Factory from "../../../ABI/Factory.json";
+import Vault from "../../../ABI/Vault.json";
 
-const FACTORY_ADRESS = "0x9bE9EAb981608d2260C7C66AF57E6A1e1692c8E9";
-
+const VAULT_ADDRESS = "0x598901483868F78BBAa454e319d65824Fa4E5c25";
 class ChainStore {
   constructor() {
     makeAutoObservable(this);
@@ -17,8 +16,7 @@ class ChainStore {
   balance = "";
   networkId = 1;
 
-  factoryContract!: any;
-  daoContract!: any;
+  vaultContract!: any;
 
   web3State: StateEnum = StateEnum.Empty;
   blockChainState: StateEnum = StateEnum.Empty;
@@ -30,7 +28,7 @@ class ChainStore {
       if (ethereum) {
         window.web3 = new Web3(ethereum);
 
-        ethereum.on('accountsChanged', (accounts) => {
+        ethereum.on('accountsChanged', () => {
           this.loadBlockChain();
         });
         ethereum.on('connect', () => {
@@ -72,12 +70,11 @@ class ChainStore {
       this.blockChainState = StateEnum.Error;
     }
 
-    const factoryAbi = Factory.abi;
+    const vaultAbi = Vault.abi;
 
-    if (factoryAbi) {
+    if (vaultAbi) {
       // @ts-ignore
-      const factoryContract = new web3.eth.Contract(factoryAbi, FACTORY_ADRESS);
-      this.factoryContract = factoryContract;
+      this.vaultContract = new web3.eth.Contract(vaultAbi, VAULT_ADDRESS);
     }
   };
 }

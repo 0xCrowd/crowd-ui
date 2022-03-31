@@ -121,14 +121,9 @@ const CrowdPage: FC = observer(() => {
     } catch (error) {}
   };
 
-  const onEthSubmit = async (data: IEthFormData) => {
+  const onEthSubmit = async ({ deposite }: IEthFormData) => {
     try {
-      await donate(
-        address,
-        '',
-        data.deposite,
-        ''
-      );
+      await donate(deposite, detailedCrowd.item.split(':')[0]);
       onCloseModal();
       getCrowd(ceramicStream);
     } catch (error) {}
@@ -136,7 +131,7 @@ const CrowdPage: FC = observer(() => {
 
   const onWithdrawSubmit = async ({ deposite }: IEthFormData) => {
     try {
-      await withdraw(deposite);
+      await withdraw(deposite, detailedCrowd.item.split(':')[0]);
       onCloseModal();
       getCrowd(ceramicStream);
     } catch (error) {}

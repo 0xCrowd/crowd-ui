@@ -4,7 +4,6 @@ type Deposits = {
 };
 
 type CrowdTarget = {
-  id: 6;
   address: string;
   network: "ethereum";
   type: "currency" | "nft";

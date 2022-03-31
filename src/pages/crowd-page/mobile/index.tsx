@@ -143,12 +143,11 @@ const MobilePage = ({
     return 0;
   }, [window.web3.utils, proposalsList]);
 
-  if (crowdLoading) {
+  if (crowdLoading || !crowd) {
     return <Skeleton />;
   }
 
   const activeProposal = proposalsList[0];
-
 
   return (
     <Root>
@@ -185,7 +184,7 @@ const MobilePage = ({
         {activeTab === CrowdPageEnum.info ? (
           <CrowdBlock
             type={crowd?.status || "active"}
-            participant={crowd.deposits}
+            participant={crowd?.deposits}
             collected={crowd?.collectedEth}
             percentage={crowd?.percentage}
             price={crowd?.priceEth}
