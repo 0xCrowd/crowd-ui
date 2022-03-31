@@ -4,6 +4,7 @@ import MobileProposal from "../mobile-proposal";
 
 //#region styles
 import { css } from '@linaria/core';
+import VotingMobile from "@app/mobile-components/voting";
 
 const buttonContainer = css`
   height: 44px;
@@ -21,12 +22,13 @@ const button = css`
 const ProposalTab = () => {
   return (
     <div>
-      <Button className={buttonContainer}>Start new proposal</Button>
+      
+      {/* <Button className={buttonContainer}>Start new proposal</Button>
       <MobileProposal />
       <MobileProposal />
       <MobileProposal />
       <MobileProposal />
-      <MobileProposal />
+      <MobileProposal /> */}
     </div>
   );
 };

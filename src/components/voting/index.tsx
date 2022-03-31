@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { toNumber } from "lodash";
-import BigNumber from 'bignumber.js';
+import BigNumber from "bignumber.js";
 
 import Button from "../button";
 import { Row } from "../row/Row";
@@ -24,6 +24,7 @@ import { mb24, mb28, mb36, mb45 } from "@app/assets/styles/atomic";
 
 import okIcon from "@assets/images/ok.svg";
 import dissIcon from "@assets/images/diss.svg";
+import eth from "@app/assets/images/eth_wh.png";
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -49,7 +50,7 @@ const SubTitlePink = styled.span`
   color: ${pink};
 `;
 
-const Description = styled.p`
+export const Description = styled.p`
   margin: 0;
   font-weight: 500;
   font-size: 12px;
@@ -99,6 +100,7 @@ const Price = styled.p`
   font-weight: 600;
   font-size: 24px;
   color: ${textPrimary};
+  line-height: 24px;
 `;
 
 const greenButton = css`
@@ -193,9 +195,15 @@ const DescriptionLarge = styled.p`
   line-height: 18px;
   color: ${textGray};
 `;
+
+const EthLogo = styled.img`
+  width: 44px;
+  height: 44px;
+  margin-right: 10px;
+`;
 //#endregion
 
-type Props = {
+export type ProposalProps = {
   type?:
     | "liveNotVote"
     | "liveVoteFor"
@@ -213,7 +221,97 @@ type Props = {
   against?: number;
 };
 
-const Voting: FC<Props> = ({
+export const SuccessTitle = ({ className }: ClassNameProps) => (
+  <Title className={className}>
+    <SubTitle>Resale proposal passed</SubTitle>
+  </Title>
+);
+
+export const FailedTitle = ({ className }: ClassNameProps) => (
+  <Title className={className}>
+    <SubTitlePink>Resale proposal did not pass</SubTitlePink>
+  </Title>
+);
+
+export const LiveTitle = ({ className }: ClassNameProps) => (
+  <Title className={className}>
+    Voting is <SubTitle>LIVE</SubTitle>
+  </Title>
+);
+
+export const VoteStatusBlock = ({ type }: { type: ProposalProps["type"] }) => {
+  return (
+    <>
+      <VoteStatus>
+        <Status>Voting is over</Status>
+      </VoteStatus>
+      <VoteIcon>
+        <img src={type === "success" ? okIcon : dissIcon} />
+      </VoteIcon>
+    </>
+  );
+};
+
+export const PriceBlock = ({
+  price,
+  className,
+}: { price: ProposalProps["price"] } & ClassNameProps) => (
+  <Row className={className}>
+    <EthLogo src={eth} alt="eth logo" />
+    <Row alignItems="flex-end">
+      <Price>
+        {price
+          ? window.web3.utils.fromWei(price.dp(4).toString(), "ether")
+          : ""}
+      </Price>
+      <PriceLabel>ETH</PriceLabel>
+    </Row>
+  </Row>
+);
+
+export const VotedDescription = ({
+  against,
+  voted,
+}: {
+  against: ProposalProps["against"];
+  voted: ProposalProps["voted"];
+}) => (
+  <>
+    <Description>{against}% of votes against the selling</Description>
+    <Description className={mb24}>{voted}% voted</Description>
+  </>
+);
+
+export const SuccessVoteBadge = ({
+  votingPower,
+}: {
+  votingPower: ProposalProps["votingPower"];
+}) => (
+  <MainBlock className={smallMainBlock}>
+    <LeftColumn className={smallLeft}>
+      <ColumnText className={greenLabel}>Your vote:</ColumnText>
+    </LeftColumn>
+    <RightColumn className={smallRight}>
+      <Row alignItems="flex-end">
+        <SmallPrice>{votingPower}</SmallPrice>
+        <SmallPriceLabel>ETH</SmallPriceLabel>
+      </Row>
+    </RightColumn>
+  </MainBlock>
+);
+
+export const FailedVoteBadge = () => (
+  <MainBlock className={smallMainBlock}>
+    <LeftColumn className={smallLeft}>
+      <ColumnText className={greenLabel}>Your vote:</ColumnText>
+    </LeftColumn>
+    <RightColumn className={smallRight}>
+      <LostLabel>against the sale</LostLabel>
+    </RightColumn>
+  </MainBlock>
+);
+
+const Voting: FC<ProposalProps> = ({
   isParticipants,
   type = "liveNotVote",
   price,
@@ -225,17 +323,29 @@ const Voting: FC<Props> = ({
   against,
   className,
 }) => {
-  const { web3: { utils: { fromWei } } } = window;
+  const {
+    web3: {
+      utils: { fromWei },
+    },
+  } = window;
   const OverFooter = (
     <Row justify="end">
-      <VoteStatus>
-        <Status>Voting is over</Status>
-      </VoteStatus>
-      <VoteIcon>
-        <img src={type === "success" ? okIcon : dissIcon} />
-      </VoteIcon>
+      <VoteStatusBlock type={type} />
     </Row>
   );
+
+  const getProposalTitle = () => {
+    switch (type) {
+      case "success":
+        return <SuccessTitle />;
+
+      case "noSuccess":
+        return <FailedTitle />;
+
+      default:
+        return <LiveTitle />;
+    }
+  };
 
   const getParticipantFooter = () => {
     switch (type) {
@@ -267,31 +377,10 @@ const Voting: FC<Props> = ({
         );
 
       case "liveVoteFor":
-        return (
-          <MainBlock className={smallMainBlock}>
-            <LeftColumn className={smallLeft}>
-              <ColumnText className={greenLabel}>Your vote:</ColumnText>
-            </LeftColumn>
-            <RightColumn className={smallRight}>
-              <Row alignItems="flex-end">
-                <SmallPrice>{votingPower}</SmallPrice>
-                <SmallPriceLabel>ETH</SmallPriceLabel>
-              </Row>
-            </RightColumn>
-          </MainBlock>
-        );
+        return <SuccessVoteBadge votingPower={votingPower} />;
 
       case "liveVoteAgainst":
-        return (
-          <MainBlock className={smallMainBlock}>
-            <LeftColumn className={smallLeft}>
-              <ColumnText className={greenLabel}>Your vote:</ColumnText>
-            </LeftColumn>
-            <RightColumn className={smallRight}>
-              <LostLabel>against the sale</LostLabel>
-            </RightColumn>
-          </MainBlock>
-        );
+        return <FailedVoteBadge />;
 
       case "success":
         return OverFooter;
@@ -334,37 +423,7 @@ const Voting: FC<Props> = ({
         );
 
       default:
-        return (
-          <>
-            <Description>{against}% of votes against the selling</Description>
-            <Description className={mb24}>{voted}% voted</Description>
-          </>
-        );
-    }
-  };
-
-  const getTitle = () => {
-    switch (type) {
-      case "success":
-        return (
-          <Title>
-            <SubTitle>Resale proposal passed</SubTitle>
-          </Title>
-        );
-
-      case "noSuccess":
-        return (
-          <Title>
-            <SubTitlePink>Resale proposal did not pass</SubTitlePink>
-          </Title>
-        );
-
-      default:
-        return (
-          <Title>
-            Voting is <SubTitle>LIVE</SubTitle>
-          </Title>
-        );
+        return <VotedDescription against={against} voted={voted} />;
     }
   };
 
@@ -375,12 +434,12 @@ const Voting: FC<Props> = ({
         justify="space-between"
         className={type === "noSuccess" || type === "success" ? mb28 : ""}
       >
-        {getTitle()}
+        {getProposalTitle()}
         {type !== "noSuccess" && type !== "success" && <Timer time={time} />}
       </Row>
       {getDescription()}
       {type !== "noSuccess" && (
-        <MainBlock className={isParticipants ? mb24 : ""}>
+        <MainBlock className={isParticipants || type === "success" ? mb24 : ""}>
           <LeftColumn>
             <ColumnText>
               {type !== "success"
@@ -389,10 +448,7 @@ const Voting: FC<Props> = ({
             </ColumnText>
           </LeftColumn>
           <RightColumn>
-            <Row alignItems="flex-end">
-              <Price>{price ? fromWei(price.dp(4).toString(), 'ether') : ''}</Price>
-              <PriceLabel>ETH</PriceLabel>
-            </Row>
+            <PriceBlock price={price} />
           </RightColumn>
         </MainBlock>
       )}

@@ -6,29 +6,28 @@ import Navbar from "@components/navbar/index";
 import ErrorComponent from "@components/error-component/index";
 import PartyForm from "@app/pages/main-page/components/party-form";
 import NftPreview from "@app/pages/main-page/components/nft-preview";
-import Modal from '@app/components/modal';
+import Modal from "@app/components/modal";
+import MobileError from "@app/mobile-components/error-component";
+import { MobileNavbar } from "@app/mobile-components/navbar";
+import { MobileFooter } from "@app/mobile-components/footer/footer";
 
 import daoStore from "@app/stores/daoStore";
+import chainStore from "@app/stores/chainStore";
 
 import { StateEnum } from "@enums/state-enum/index";
-import { TabsEnum } from '../../enums/tabs/index';
-import { notify } from '../../utils/notify';
+import { notify } from "../../utils/notify";
 import { IPartyFormData } from "@app/pages/main-page/components/party-form/constants";
 
 //#region styles
 import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
-import chainStore from "@app/stores/chainStore";
+import { desktopComponent, mobileComponent } from "@app/assets/styles/atomic";
 
 const Root = styled.div`
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
   background-color: #141414;
-`;
-
-const navbar = css`
-  @media (max-width: 420px) {
-    display: none;
-  }
 `;
 //#endregion
 
@@ -49,8 +48,7 @@ const Layout = observer(
     onSubmit,
     className,
   }: PropsWithChildren<Props>): ReactElement => {
-    
-    const { balance, blockChainState } = chainStore;
+    const { balance, blockChainState, address } = chainStore;
     const {
       createCrowd,
       clearPage,
@@ -60,7 +58,7 @@ const Layout = observer(
       createCrowdState,
     } = daoStore;
 
-    const [previewId, setPreviewId] = useState('');
+    const [previewId, setPreviewId] = useState("");
 
     const onFormSubmit = (data: IPartyFormData) => {
       try {
@@ -97,7 +95,7 @@ const Layout = observer(
     };
 
     return (
-      <Root className={className}>
+      <Root className={className} id='Layout'>
         <Modal
           isOpen={isModalOpen}
           onRequestClose={closeModal}
@@ -121,8 +119,24 @@ const Layout = observer(
             />
           )}
         </Modal>
-        <Navbar balance={balance} className={navbar} onAddNew={openModal} />
-        {blockChainState === StateEnum.Error ? <ErrorComponent /> : children}
+        <Navbar
+          balance={balance}
+          className={desktopComponent}
+          onAddNew={openModal}
+        />
+        <MobileNavbar
+          className={mobileComponent}
+          account={address}
+          onAddNew={openModal}
+        />
+        {blockChainState === StateEnum.Error ? (
+          <>
+            <MobileError className={mobileComponent} />
+            <ErrorComponent className={desktopComponent} />
+          </>
+        ) : (
+          children
+        )}
         <ToastContainer
           position="top-center"
           autoClose={5000}
@@ -135,6 +149,7 @@ const Layout = observer(
           pauseOnHover
           theme="dark"
         />
+        <MobileFooter className={mobileComponent} />
       </Root>
     );
   }

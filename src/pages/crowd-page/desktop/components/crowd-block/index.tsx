@@ -1,6 +1,7 @@
 import React, { ReactElement, useState, useEffect } from "react";
 import BigNumber from "bignumber.js";
 
+import HowWorks from "@app/components/how-works";
 import Users from "./components/users";
 import ActiveCrowd from "./active-crowd";
 import SuccessCrowd from "./success-crowd";
@@ -12,32 +13,47 @@ import { CrowdStatusText } from "@app/enums/crowd-status/crowd-status";
 
 //#region styles
 import { styled } from "@linaria/react";
+import { css } from '@linaria/core';
+
+import { media } from "@app/assets/styles/atomic";
 
 import activeDetail from "@assets/images/active_detail.png";
 import successDetail from "@assets/images/success_detail.png";
 import lostDetail from "@assets/images/lost_detail.png";
 import resaleDetail from "@assets/images/resale_detail.png";
 
+const backgrounds = {
+  active: activeDetail,
+  failed: lostDetail,
+  complete: successDetail,
+  resolved: resaleDetail,
+  on_execution: activeDetail,
+};
+
 type RootProps = {
   background: string;
 };
 
 const Root = styled.div<RootProps>`
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 416px;
-  height: 575px;
-  padding: 28px 38px;
-  background-image: ${({ background }) => `url(${background})`};
-  background-size: cover;
+  ${media("large")} {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 416px;
+    height: 575px;
+    padding: 28px 38px;
+    background-image: ${({ background }) => `url(${background})`};
+    background-size: cover;
+  }
 `;
 
 const ContentContainer = styled.div`
-  box-sizing: border-box;
-  padding: 18px;
-  width: 340px;
+  ${media("large")} {
+    box-sizing: border-box;
+    padding: 18px;
+    width: 340px;
+  }
 `;
 
 const Title = styled.p`
@@ -49,6 +65,20 @@ const Title = styled.p`
   line-height: 18px;
   color: #fff;
   text-transform: uppercase;
+
+  ${media("mobile")} {
+    margin-top: 25px;
+    margin-bottom: 82px;
+    text-align: center;
+  }
+`;
+
+const howWorks = css`
+  margin-bottom: 28px;
+
+  ${media('large')} {
+    display: none;
+  }
 `;
 //#endregion
 
@@ -58,7 +88,7 @@ interface Props {
   percentage: number;
   price: number;
   onWithdraw?: () => void;
-  participant: IDeposits[];
+  participant: AdaptedDeposits[];
   listingPrice?: number;
   myFound?: number;
   afterFounds?: number;
@@ -89,92 +119,67 @@ const CrowdBlock = ({
   onOpenModal,
   className,
 }: Props): ReactElement => {
-  const [background, setBackground] = useState<string>(lostDetail);
-  const [title, setTitle] = useState(CrowdStatusText.lost);
-  const [content, setContent] = useState<JSX.Element | null>(null);
+  const [collapsed, setCollapsed] = useState(true);
 
-  useEffect(() => {
-    switch (type) {
-      case "complete":
-        setBackground(successDetail);
-        setTitle(CrowdStatusText.success);
-        setContent(
-          <SuccessCrowd
-            votingType={votingType}
-            price={price}
-            listingPrice={listingPrice}
-            myFound={myFound}
-            afterFounds={afterFounds}
-            leftovers={leftovers}
-          />
-        );
-        break;
-
-      case "resolved":
-        setBackground(resaleDetail);
-        setTitle(CrowdStatusText.resale);
-        setContent(
-          <ResoldCrowd
-            loading={proposalsLoading}
-            myFound={myFound}
-            price={price}
-            resoldPrice={listingPrice || 0}
-            onOpenModal={onOpenModal}
-          />
-        );
-        break;
-
-      case "on_execution":
-        setBackground(activeDetail);
-        setTitle(CrowdStatusText.buyout);
-        setContent(
-          <ActiveCrowd
-            price={price}
-            onWithdraw={onWithdraw}
-            collected={collected}
-            percentage={percentage}
-            myFound={myFound}
-            onOpenModal={onOpenModal}
-            isOnExecution
-            priceWei={priceWei}
-            collectedWei={collectedWei}
-          />
-        );
-        break;
-
-      case "active":
-        setBackground(activeDetail);
-        setTitle(CrowdStatusText.active);
-        setContent(
-          <ActiveCrowd
-            price={price}
-            onWithdraw={onWithdraw}
-            collected={collected}
-            percentage={percentage}
-            myFound={myFound}
-            onOpenModal={onOpenModal}
-            priceWei={priceWei}
-            collectedWei={collectedWei}
-          />
-        );
-        break;
-
-      default:
-        setContent(
-          <LostCrowd
-            collected={collected}
-            percentage={percentage}
-            price={price}
-          />
-        );
-    }
-  }, [type, votingType, proposalsLoading]);
+  const components = {
+    complete: (
+      <SuccessCrowd
+        votingType={votingType}
+        price={price}
+        listingPrice={listingPrice}
+        myFound={myFound}
+        afterFounds={afterFounds}
+        leftovers={leftovers}
+      />
+    ),
+    resolved: (
+      <ResoldCrowd
+        loading={proposalsLoading}
+        myFound={myFound}
+        price={price}
+        resoldPrice={listingPrice || 0}
+        onOpenModal={onOpenModal}
+      />
+    ),
+    on_execution: (
+      <ActiveCrowd
+        price={price}
+        onWithdraw={onWithdraw}
+        collected={collected}
+        percentage={percentage}
+        myFound={myFound}
+        onOpenModal={onOpenModal}
+        isOnExecution
+        priceWei={priceWei}
+        collectedWei={collectedWei}
+      />
+    ),
+    active: (
+      <ActiveCrowd
+        price={price}
+        onWithdraw={onWithdraw}
+        collected={collected}
+        percentage={percentage}
+        myFound={myFound}
+        onOpenModal={onOpenModal}
+        priceWei={priceWei}
+        collectedWei={collectedWei}
+      />
+    ),
+    failed: (
+      <LostCrowd collected={collected} percentage={percentage} price={price} />
+    ),
+  };
 
   return (
-    <Root background={background} className={className}>
-      <Title>{title}</Title>
+    <Root
+      background={backgrounds[type] || backgrounds.failed}
+      className={className}
+    >
+      <Title>{CrowdStatusText[type] || CrowdStatusText.failed}</Title>
       <ContentContainer>
-        {content}
+        {components[type] || components.failed}
+        <HowWorks collapsed={collapsed} onChange={setCollapsed} className={howWorks} />
         <Users participants={participant} />
       </ContentContainer>
     </Root>

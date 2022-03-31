@@ -19,29 +19,29 @@ export const appRoutes: IAppRoute[] = [
   {
     path: RouteNames.INDEX,
     exact: true,
-    render: () => <NotFoundPage />,
+    render: () => <MainPage />,
+  },
+  {
+    path: RouteNames.MY_CROWDS,
+    exact: true,
+    render: () => <MainPage />,
+  },
+  {
+    path: RouteNames.SETTER,
+    exact: true,
+    render: () => <Setter />,
+  },
+  {
+     path: RouteNames.CROWD,
+     exact: true,
+     render: () => <CrowdPage />,
   },
   // {
-  //   path: RouteNames.MY_CROWDS,
-  //   exact: true,
-  //   render: () => <MainPage />,
-  // },
-  // {
-  //   path: RouteNames.SETTER,
-  //   exact: true,
-  //   render: () => <Setter />,
-  // },
-  // {
-  //    path: RouteNames.CROWD,
-  //    exact: true,
-  //    render: () => <CrowdPage />,
-  // },
-  //{
   //  path: RouteNames.FORM,
   //  render: props => (
   //    <EntityFormStoresCtx.Provider value={getEntityFormStores()}>
   //      <EntityFormPage {...props} action="new" />
   //    </EntityFormStoresCtx.Provider>
   //  ),
-  //},
+  // },
 ];

@@ -1,22 +1,36 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect } from "react";
 import { observer } from "mobx-react-lite";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from "react-router-dom";
 
 import Layout from "@app/components/layout";
 import CrowdList from "./components/crowd-list";
-import MobileTopline from "./components/mobile-topline/index";
+import Tabs from "@app/mobile-components/tabs";
+import TabButton from "@app/mobile-components/tab-button";
 
 import chainStore from "@stores/chainStore";
 import daoStore from "@app/stores/daoStore";
 
-import { TabsEnum } from "@enums/tabs";
 import { StateEnum } from "@enums/state-enum";
+import { RouteNames } from "@app/router/route-names";
+import { useLayoutHeightAuto } from '@app/hooks/use-layout-height-auto';
+
+//#region styles
+import { css, cx } from "@linaria/core";
+
+import { h100, mobileComponent } from "@assets/styles/atomic";
+
+const tabs = css`
+  padding: 0 36px;
+  margin-bottom: 24px;
+  margin-top: 18px;
+`;
+//#endregion
 
 const MainPage: FC = observer(() => {
   const location = useLocation();
+  const { push } = useHistory();
 
-  const { loadWeb3, loadBlockChain, blockChainState, address } =
-    chainStore;
+  const { loadWeb3, loadBlockChain, blockChainState, address } = chainStore;
 
   const {
     getCrowdList,
@@ -28,19 +42,21 @@ const MainPage: FC = observer(() => {
     loadedCrowds,
   } = daoStore;
 
-  const [activeTab, setActiveTab] = useState(TabsEnum.All);
   const [modalIsOpen, setIsOpen] = React.useState(false);
 
-  const isMyCrowdsPage = location.pathname === '/my-crowds';
+  const isMyCrowdsPage = location.pathname === "/my-crowds";
 
   useEffect(() => {
-    loadWeb3();
-    loadBlockChain();
+    if (blockChainState !== StateEnum.Success) {
+      loadWeb3();
+      loadBlockChain();
+    }
   }, []);
 
   useEffect(() => {
-    if (blockChainState === StateEnum.Success)
+    if (blockChainState === StateEnum.Success) {
       getCrowdList(isMyCrowdsPage ? address : "");
+    }
   }, [blockChainState]);
 
   const openModal = () => setIsOpen(true);
@@ -50,32 +66,45 @@ const MainPage: FC = observer(() => {
     setIsOpen(false);
   };
 
-  const onTabChange = (active: TabsEnum) => {
+  const onTabClick = (path: string) => {
     if (crowdState !== StateEnum.Loading) {
-      setActiveTab(active);
+      push(path);
     }
   };
 
+  useLayoutHeightAuto(crowds.length, crowdState === StateEnum.Success);
+
   return (
     <Layout
-      onSubmit={() => getCrowdList(activeTab === TabsEnum.My ? address : "")}
+      onSubmit={() => getCrowdList(isMyCrowdsPage ? address : "")}
       openModal={openModal}
       closeModal={closeModal}
       isModalOpen={modalIsOpen}
     >
-      <MobileTopline
-        activeTab={activeTab}
-        onChange={onTabChange}
-        onAdd={openModal}
-      />
-      <CrowdList
-        isMyCrowds={isMyCrowdsPage}
-        loading={crowdState === StateEnum.Loading}
-        crowds={crowds}
-        onCreateClick={openModal}
-        loadMore={loadMoreCrowds}
-        hasMore={loadedCrowds < totalCrowds}
-      />
+      <div className={h100}>
+        <Tabs className={cx(mobileComponent, tabs)}>
+          <TabButton
+            active={!isMyCrowdsPage}
+            onClick={() => onTabClick(RouteNames.INDEX)}
+          >
+            All crowds
+          </TabButton>
+          <TabButton
+            active={isMyCrowdsPage}
+            onClick={() => onTabClick(RouteNames.MY_CROWDS)}
+          >
+            My crowds
+          </TabButton>
+        </Tabs>
+        <CrowdList
+          isMyCrowds={isMyCrowdsPage}
+          loading={crowdState === StateEnum.Loading}
+          crowds={crowds}
+          onCreateClick={openModal}
+          loadMore={loadMoreCrowds}
+          hasMore={loadedCrowds < totalCrowds}
+        />
+      </div>
     </Layout>
   );
 });

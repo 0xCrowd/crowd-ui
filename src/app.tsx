@@ -21,7 +21,6 @@ export const App = (): ReactElement => {
       {appRoutes.map((appRoute, i) => (
         <Route key={i} {...appRoute} />
       ))}
-      <Redirect to="/" />
     </Switch>
   );
 };

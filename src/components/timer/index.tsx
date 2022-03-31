@@ -35,9 +35,10 @@ const plusZero = (number: number) => {
 
 type Props = {
   time: string;
+  className?: string;
 }
 
-const Timer: FC<Props> = ({ time }) => {
+const Timer: FC<Props> = ({ time, className }) => {
   const [days, setDays] = useState('-');
   const [hours, setHours] = useState('-');
   const [minutes, setMinutes] = useState('-');
@@ -113,7 +114,7 @@ const Timer: FC<Props> = ({ time }) => {
   }, []);
 
   return (
-    <Root>
+    <Root className={className}>
       <Number>{`${days} : ${hours} : ${minutes} : ${seconds}`}</Number>
     </Root>
   )
