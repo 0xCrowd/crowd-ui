@@ -11,7 +11,7 @@ import { ProposalTypeEnum } from "@app/enums/proposal-type-Enum";
 import { notify } from "@app/utils/notify";
 import { toEth } from "@app/utils/toEth";
 
-const NEW_API_ENDPOINT = "http://crowd-api-e43tw.ondigitalocean.app";
+const NEW_API_ENDPOINT = "https://crowd-api-e43tw.ondigitalocean.app";
 const API_ENDPOINT = "https://crowd-protocol-master-9iojf.ondigitalocean.app";
 
 class DaoStore {
