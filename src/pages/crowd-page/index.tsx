@@ -41,7 +41,7 @@ const Root = styled.div`
 const CrowdPage: FC = observer(() => {
   const { pathname } = useLocation();
 
-  const { address, balance, loadWeb3, loadBlockChain, blockChainState } = chainStore;
+  const { balance, loadWeb3, loadBlockChain, blockChainState } = chainStore;
 
   const {
     getCrowd,
@@ -65,6 +65,7 @@ const CrowdPage: FC = observer(() => {
   const [modalTitle, setModalTitle] = useState("");
   const [ceramicStream, setCeramicStream] = useState("");
   const [proposalStream, setProposalStream] = useState("");
+  const [withdrawAll, setWithdrawAll] = useState(false);
 
   useEffect(() => {
     loadWeb3();
@@ -123,7 +124,7 @@ const CrowdPage: FC = observer(() => {
 
   const onEthSubmit = async ({ deposite }: IEthFormData) => {
     try {
-      await donate(deposite, detailedCrowd.item.split(':')[0]);
+      await donate(deposite, detailedCrowd.fundraising);
       onCloseModal();
       getCrowd(ceramicStream);
     } catch (error) {}
@@ -131,8 +132,9 @@ const CrowdPage: FC = observer(() => {
 
   const onWithdrawSubmit = async ({ deposite }: IEthFormData) => {
     try {
-      await withdraw(deposite, detailedCrowd.item.split(':')[0]);
+      await withdraw(deposite, detailedCrowd.fundraising, withdrawAll);
       onCloseModal();
+      setWithdrawAll(false);
       getCrowd(ceramicStream);
     } catch (error) {}
   };
@@ -175,6 +177,7 @@ const CrowdPage: FC = observer(() => {
             loading={donateState === StateEnum.Loading}
             onAmountButtonClick={(setValue) => {
               setValue(myFound.toString());
+              setWithdrawAll(true);
             }}
           />
         );

@@ -1,6 +1,6 @@
 type Deposits = {
   address: string;
-  total_deposit: string;
+  amount: number;
 };
 
 type CrowdTarget = {
@@ -15,6 +15,7 @@ type CrowdTarget = {
 
 type CrowdApiType = {
   id: number;
+  fundraising: number;
   status: CrowdStatusType;
   target: CrowdTarget;
   collected: string;

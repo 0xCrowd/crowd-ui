@@ -156,6 +156,7 @@ class DaoStore {
 
     return {
       id: crowd.id,
+      fundraising: crowd.fundraising,
       status: crowd.status,
       deposits: crowd.deposits || [],
       priceEth,
@@ -168,15 +169,6 @@ class DaoStore {
   getDetailsCrowd = (crowd: CrowdApiType): DetailedCrowd => {
     const adaptedCrowd = this.adaptCrowd(crowd);
     const { address } = chainStore;
-
-    const adaptedDeposits: AdaptedDeposits[] = adaptedCrowd.deposits.map(
-      (item) => ({
-        address: item.address,
-        totalDepositEth: toEth(item.total_deposit),
-        totalDepositWei: new BigNumber(item.total_deposit),
-      })
-    );
-
     const myDeposit = adaptedCrowd.deposits.find(
       (item) => item.address === address
     );
@@ -202,8 +194,8 @@ class DaoStore {
     const collectedWei = new BigNumber(crowd.collected || "0");
 
     if (myDeposit) {
-      myFoundEth = toEth(myDeposit.total_deposit);
-      myFoundWei = new BigNumber(myDeposit.total_deposit);
+      myFoundEth = toEth(myDeposit.amount.toString());
+      myFoundWei = new BigNumber(myDeposit.amount);
     }
 
     if (crowd.status === "complete" && collectedWei.isGreaterThan(0)) {
@@ -221,7 +213,6 @@ class DaoStore {
       collectedWei,
       collectedEth: toEth(crowd.collected),
       item: crowd.target.address,
-      deposits: adaptedDeposits,
     };
   };
 
@@ -306,7 +297,7 @@ class DaoStore {
     }
   };
 
-  donate = async (amount: string, fundraisingId: string) => {
+  donate = async (amount: string, fundraisingId: number) => {
     try {
       runInAction(() => {
         this.donateState = StateEnum.Loading;
@@ -340,7 +331,7 @@ class DaoStore {
     }
   };
 
-  withdraw = async (amount: string, fundraisingId: string) => {
+  withdraw = async (amount: string, fundraisingId: number, all?: boolean) => {
     try {
       runInAction(() => {
         this.donateState = StateEnum.Loading;
@@ -352,7 +343,7 @@ class DaoStore {
         const weiAmount = window.web3.utils.toWei(amount);
 
         await vaultContract.methods
-          .withdraw(fundraisingId, weiAmount)
+          .withdraw(fundraisingId, weiAmount, all)
           .send({ from: address });
 
         runInAction(() => {

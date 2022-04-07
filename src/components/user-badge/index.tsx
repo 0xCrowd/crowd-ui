@@ -45,7 +45,6 @@ const Price = styled.p`
   font-size: 10px;
   line-height: 18px;
   letter-spacing: 0.25px;
-  color: #000000;
 `;
 //#endregion
 
@@ -75,7 +74,7 @@ const UserBadge: FC<PropsType> = ({
           className={textClassName}
         >{`${firstPart}...${secondPart}`}</Name>
       </NameBlock>
-      {number && <Price className={textClassName}>{number} ETH</Price>}
+      {number !== undefined && <Price className={textClassName}>{number} ETH</Price>}
     </Root>
   );
 };

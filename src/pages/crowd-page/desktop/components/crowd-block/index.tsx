@@ -88,7 +88,7 @@ interface Props {
   percentage: number;
   price: number;
   onWithdraw?: () => void;
-  participant: AdaptedDeposits[];
+  participant: Deposits[];
   listingPrice?: number;
   myFound?: number;
   afterFounds?: number;
