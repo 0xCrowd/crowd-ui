@@ -105,6 +105,7 @@ const CrowdPage: FC = observer(() => {
 
       case ModalModeEnum.Withdraw:
         title = "Withdraw Funds";
+        setWithdrawAll(false);
         break;
       
       case ModalModeEnum.Price:
