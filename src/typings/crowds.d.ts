@@ -1,22 +1,16 @@
 import BigNumber from "bignumber.js";
 
 declare global {
-  type AdaptedDeposits = {
-    address: string;
-    totalDepositWei: BigNumber;
-    totalDepositEth: number;
-  };
-
   type AdaptedCrowd = Pick<
     CrowdApiType,
-    "id" | "status" | "deposits"
+    "id" | "status" | "deposits" | "fundraising"
   > & Pick<CrowdTarget, "name" | "media"> &
   {
       priceEth: number;
       percentage: number;
   };
 
-  type DetailedCrowd = Omit<AdaptedCrowd, 'deposits'> & {
+  type DetailedCrowd = AdaptedCrowd & {
     priceWei: BigNumber;
     collectedEth: number;
     collectedWei: BigNumber;
@@ -25,6 +19,5 @@ declare global {
     remained?: number;
     leftovers?: number;
     item: string;
-    deposits: AdaptedDeposits[];
   };
 }

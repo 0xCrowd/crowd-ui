@@ -10,7 +10,6 @@ import { css } from '@linaria/core';
 
 import { mb4 } from '@assets/styles/atomic';
 import { textPrimary } from '@app/assets/styles/constants';
-import { toEth } from '../../../../../../../utils/toEth';
 
 const UserTitle = styled.p`
   margin: 0; 
@@ -29,12 +28,12 @@ const hr = css`
 `;
 
 const text = css`
-  color: #9095B4;
+  color: #9095B4 !important;
 `;
 //#endregion
 
 type Props = {
-  participants: AdaptedDeposits[];
+  participants: Deposits[];
 }
 
 const Users: FC<Props> = ({ participants }) => {
@@ -44,11 +43,11 @@ const Users: FC<Props> = ({ participants }) => {
       <UserTitle>Participants: {participants?.length || 0}</UserTitle>
       <Scrollbars className={scroller}>
         {participants?.length > 0 &&
-          participants.map(({ address, totalDepositEth }) => {
+          participants.map(({ address, amount }) => {
             return (
               <UserBadge
                 key={address}
-                number={totalDepositEth}
+                number={amount}
                 name={address}
                 className={mb4}
                 textClassName={text}
