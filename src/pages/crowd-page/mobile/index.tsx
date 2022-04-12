@@ -19,7 +19,7 @@ import { media } from "@app/assets/styles/atomic";
 import { textPrimary } from "@app/assets/styles/constants";
 
 import noMedia from "@assets/images/no_image.png";
-import { useLayoutHeightAuto } from "@app/hooks/use-layout-height-auto";
+import { useLayoutDetailsHeightAuto } from "@app/hooks/use-layout-height-auto";
 
 const Root = styled.div`
   ${media("large")} {
@@ -119,7 +119,7 @@ const MobilePage = ({
   const [loaded, setLoaded] = useState(false);
 
   const onImageLoaded = () => setLoaded(true);
-  useLayoutHeightAuto(1, true);
+  useLayoutDetailsHeightAuto();
 
   useEffect(() => {
     const imgElCurrent = imgEl.current;
