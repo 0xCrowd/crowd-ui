@@ -194,8 +194,8 @@ class DaoStore {
     const collectedWei = new BigNumber(crowd.collected || "0");
 
     if (myDeposit) {
-      myFoundEth = toEth(myDeposit.amount.toString());
-      myFoundWei = new BigNumber(myDeposit.amount);
+      myFoundEth = myDeposit.amount;
+      myFoundWei = new BigNumber(window.web3.utils.toWei(myDeposit.amount.toString(), 'ether'));
     }
 
     if (crowd.status === "complete" && collectedWei.isGreaterThan(0)) {
@@ -245,6 +245,12 @@ class DaoStore {
       notify(error.message);
     }
   };
+
+  resetLoadingStatus = () => {
+    runInAction(() => {
+      this.detailedCrowdState = StateEnum.Loading
+    })
+  }
 
   clearPreview = () => {
     runInAction(() => {
@@ -341,7 +347,6 @@ class DaoStore {
 
       if (blockChainState === StateEnum.Success) {
         const weiAmount = window.web3.utils.toWei(amount);
-
         await vaultContract.methods
           .withdraw(fundraisingId, weiAmount, all)
           .send({ from: address });

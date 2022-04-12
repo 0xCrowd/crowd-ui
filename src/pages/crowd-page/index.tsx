@@ -50,6 +50,7 @@ const CrowdPage: FC = observer(() => {
     createProposal,
     makeVote,
     withdraw,
+    resetLoadingStatus,
     detailedCrowd,
     detailedCrowdState,
     donateState,
@@ -70,6 +71,10 @@ const CrowdPage: FC = observer(() => {
   useEffect(() => {
     loadWeb3();
     loadBlockChain();
+
+    return () => {
+      resetLoadingStatus();
+    }
   }, []);
 
   useEffect(() => {
