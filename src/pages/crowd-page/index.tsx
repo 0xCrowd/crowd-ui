@@ -17,6 +17,7 @@ import daoStore from "@app/stores/daoStore";
 
 import { StateEnum } from "@enums/state-enum/index";
 import { ModalModeEnum } from "@app/enums/modal-enum";
+import { ProposalChoice } from "@app/enums/proposal-choice-enum";
 import { IEthFormData } from "./components/eth-form/constants";
 import { IProposalFormData } from "./components/proposal-form/constants";
 
@@ -65,7 +66,7 @@ const CrowdPage: FC = observer(() => {
   const [modalMode, setModalMode] = useState(ModalModeEnum.Proposal);
   const [modalTitle, setModalTitle] = useState("");
   const [ceramicStream, setCeramicStream] = useState("");
-  const [proposalStream, setProposalStream] = useState("");
+  const [proposalStream, setProposalStream] = useState<number | null>(null);
   const [withdrawAll, setWithdrawAll] = useState(false);
 
   useEffect(() => {
@@ -86,7 +87,7 @@ const CrowdPage: FC = observer(() => {
   }, [pathname, blockChainState]);
 
   useEffect(() => {
-    if (detailedCrowd && (detailedCrowd.status === "complete" || detailedCrowd.status === 'resolved')) {
+    if (detailedCrowd && (detailedCrowd.status === "success" || detailedCrowd.status === 'resolved')) {
       getProposals(ceramicStream);
     }
   }, [ceramicStream, detailedCrowd]);
@@ -122,7 +123,7 @@ const CrowdPage: FC = observer(() => {
 
   const onProposalSubmit = async ({ price }: IProposalFormData) => {
     try {
-      await createProposal('', price);
+      await createProposal(ceramicStream, price);
       onCloseModal();
       getProposals(ceramicStream);
     } catch (error) {}
@@ -147,7 +148,7 @@ const CrowdPage: FC = observer(() => {
 
   const onPriceSubmit = async ({ price }: IProposalFormData) => {
     try {
-      await makeVote(proposalStream, 0, price);
+      await makeVote(proposalStream as number, ProposalChoice.Own, price);
       onCloseModal();
       getProposals(ceramicStream);
     } catch (error) {}
@@ -199,17 +200,12 @@ const CrowdPage: FC = observer(() => {
   };
 
   const onMakeVote = async (
-    proposalStream: string,
-    option: number,
+    proposalId: number,
+    choice: ProposalChoice,
     amount: string
   ) => {
-    if (amount !== 'same' && amount !== 'null') {
-      setProposalStream(proposalStream);
-      onOpenModal(ModalModeEnum.Price);
-    } else {
-      await makeVote(proposalStream, option, amount);
-      getProposals(ceramicStream);
-    }
+    await makeVote(proposalId, choice, amount);
+    getProposals(ceramicStream);
   };
 
   return (

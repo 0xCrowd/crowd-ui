@@ -9,6 +9,8 @@ import Proposals from "./components/proposals";
 import HowWorks from "@app/components/how-works";
 
 import { ModalModeEnum } from "@enums/modal-enum";
+import { ProposalChoice } from "@app/enums/proposal-choice-enum";
+import { toEth } from "@app/utils/toEth";
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -91,7 +93,7 @@ export interface CrowdPageProps {
   proposalsList: AdaptedProposal[];
   proposalsLoading: boolean;
   nftId: string;
-  makeVote: (proposalStream: string, option: number, amount: string) => void;
+  makeVote: (proposalId: number, choice: ProposalChoice, amount: string) => void;
   onOpenModal: (mode: ModalModeEnum) => void;
 }
 
@@ -110,8 +112,8 @@ const DesktopPage = ({
 
   const listingPrice = useMemo(() => {
     if (window.web3.utils) {
-      const listingPriceWei = proposalsList.length ? proposalsList[0].price.dp(2).toString() : '0';
-      return toNumber(window.web3.utils.fromWei(listingPriceWei, 'ether'));
+      const listingPriceWei = proposalsList.length ? proposalsList[0].priceWei.dp(2).toString() : '0';
+      return toEth(listingPriceWei);
     }
 
     return 0;
@@ -146,7 +148,7 @@ const DesktopPage = ({
           <PreviewContainer>
             <Preview src={crowd?.media} alt="preview" />
           </PreviewContainer>
-          {crowd?.status === "complete" && (
+          {crowd?.status === "success" && (
             <>
               {!!crowd?.myFoundEth &&
                 ((proposalsList[0] && proposalsList[0].type !== "success") ||
@@ -171,6 +173,7 @@ const DesktopPage = ({
                 loading={proposalsLoading}
                 isParticipants={!!crowd?.myFoundEth}
                 makeVote={makeVote}
+                onOpenPriceModal={() => onOpenModal(ModalModeEnum.Price)}
               />
             </>
           )}
