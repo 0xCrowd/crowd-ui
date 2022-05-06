@@ -6,7 +6,7 @@ import Button from "../button";
 import { Row } from "../row/Row";
 import Timer from "../timer";
 
-import { fixedRound } from "@app/utils/round";
+import { ProposalChoice } from "@app/enums/proposal-choice-enum";
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -211,14 +211,15 @@ export type ProposalProps = {
     | "success"
     | "noSuccess";
   isParticipants?: boolean;
-  price?: BigNumber;
+  price?: number;
   time: string;
   loading: boolean;
-  makeVote: (option: number, amount: string) => void;
+  makeVote: (choice: ProposalChoice, amount: string) => void;
   className?: string;
-  votingPower: string;
+  votingPower?: number;
   voted?: number;
   against?: number;
+  onOpenPriceModal: () => void;
 };
 
 export const SuccessTitle = ({ className }: ClassNameProps) => (
@@ -260,9 +261,7 @@ export const PriceBlock = ({
     <EthLogo src={eth} alt="eth logo" />
     <Row alignItems="flex-end">
       <Price>
-        {price
-          ? window.web3.utils.fromWei(price.dp(4).toString(), "ether")
-          : ""}
+        {price}
       </Price>
       <PriceLabel>ETH</PriceLabel>
     </Row>
@@ -318,16 +317,12 @@ const Voting: FC<ProposalProps> = ({
   time,
   loading,
   makeVote,
+  onOpenPriceModal,
   votingPower,
   voted,
   against,
   className,
 }) => {
-  const {
-    web3: {
-      utils: { fromWei },
-    },
-  } = window;
   const OverFooter = (
     <Row justify="end">
       <VoteStatusBlock type={type} />
@@ -355,21 +350,21 @@ const Voting: FC<ProposalProps> = ({
             <Button
               loading={loading}
               className={pinkButton}
-              onClick={() => makeVote(1, "null")}
+              onClick={() => makeVote(ProposalChoice.Against, '0')}
             >
               Vote against selling
             </Button>
             <Button
               loading={loading}
               className={blueButton}
-              onClick={() => makeVote(0, "same")}
+              onClick={() => makeVote(ProposalChoice.For, "0")}
             >
               Agree with avarege
             </Button>
             <Button
               loading={loading}
               className={greenButton}
-              onClick={() => makeVote(0, "1000")}
+              onClick={onOpenPriceModal}
             >
               Suggest your price
             </Button>

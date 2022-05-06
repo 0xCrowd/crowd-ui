@@ -6,7 +6,7 @@ import { StateEnum } from '@app/enums/state-enum/index';
 
 import Vault from "../../../ABI/Vault.json";
 
-const VAULT_ADDRESS = "0x7f67795c82A57f289f74F511E4f29AFc25903D9a";
+const VAULT_ADDRESS = "0x759D6BC03f9d27bc582fCC6A75e07b2570Aa92Bc";
 class ChainStore {
   constructor() {
     makeAutoObservable(this);

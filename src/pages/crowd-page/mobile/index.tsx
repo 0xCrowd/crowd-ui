@@ -10,6 +10,7 @@ import Skeleton from "./components/skeleton";
 
 import { CrowdPageProps } from "../desktop";
 import { CrowdPageEnum } from "../../../enums/crowd-page-enum/index";
+import { toEth } from "@app/utils/toEth";
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -135,9 +136,9 @@ const MobilePage = ({
   const listingPrice = useMemo(() => {
     if (window.web3.utils) {
       const listingPriceWei = proposalsList.length
-        ? proposalsList[0].price.dp(2).toString()
+        ? proposalsList[0].priceWei.dp(2).toString()
         : "0";
-      return toNumber(window.web3.utils.fromWei(listingPriceWei, "ether"));
+      return toEth(listingPriceWei);
     }
 
     return 0;
@@ -204,10 +205,10 @@ const MobilePage = ({
           <VotingMobile
             type={activeProposal?.type}
             time={activeProposal?.till}
-            voted={activeProposal?.voted}
+            voted={activeProposal?.all}
             against={activeProposal?.against}
-            price={activeProposal?.price}
-            votingPower={activeProposal?.votingPower}
+            price={activeProposal?.priceEth}
+            votingPower={activeProposal?.myVote}
             isParticipant={Boolean(crowd.myFoundEth)}
             status={crowd.status}
             loading={proposalsLoading}

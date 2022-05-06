@@ -9,13 +9,13 @@ declare global {
     | "noSuccess";
 
   type AdaptedProposal = {
-    proposal: string;
+    id: number;
     till: string;
-    price: BigNumber;
+    priceWei: BigNumber;
+    priceEth: number;
     type: VotingType;
-    votingPower: string;
-    options: string[];
-    voted?: number;
-    against?: number;
+    against: number;
+    all: number;
+    myVote?: number;
   };
 }

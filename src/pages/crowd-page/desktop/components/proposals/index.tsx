@@ -1,9 +1,12 @@
 import React, { ReactElement } from "react";
 import SkeletonLoader from "tiny-skeleton-loader-react";
 
+import Voting from "@app/components/voting";
+
+import { ProposalChoice } from "@app/enums/proposal-choice-enum";
+
 //#region styles
 import { styled } from "@linaria/react";
-import Voting from "@app/components/voting";
 import { mb20 } from "@assets/styles/atomic";
 
 const Root = styled.div`
@@ -18,7 +21,8 @@ interface Props {
   proposals: AdaptedProposal[];
   loading: boolean;
   isParticipants: boolean;
-  makeVote: (proposalStream: string, option: number, amount: string) => void;
+  makeVote: (proposalStream: number, choice: ProposalChoice, amount: string) => void;
+  onOpenPriceModal: () => void;
   className?: string;
 }
 
@@ -27,6 +31,7 @@ const Proposals = ({
   loading,
   isParticipants,
   makeVote,
+  onOpenPriceModal,
   className,
 }: Props): ReactElement => {
   if (loading) {
@@ -43,21 +48,22 @@ const Proposals = ({
 
   return (
     <Root className={className}>
-      {proposals.map(({ proposal, type, price, till, votingPower, voted, against }) => (
+      {proposals.map(({ id, type, priceEth, till, myVote, all, against }) => (
         <Voting
-          key={proposal}
+          key={id}
           type={type}
           isParticipants={isParticipants}
-          price={price}
-          makeVote={(option: number, amount: string) =>
-            makeVote(proposal, option, amount)
+          price={priceEth}
+          makeVote={(choice: ProposalChoice, amount: string) =>
+            makeVote(id, choice, amount)
           }
           time={till}
           className={mb20}
           loading={loading}
-          votingPower={votingPower}
-          voted={voted}
+          votingPower={myVote}
+          voted={all}
           against={against}
+          onOpenPriceModal={onOpenPriceModal}
         />
       ))}
     </Root>

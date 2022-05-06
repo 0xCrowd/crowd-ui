@@ -25,7 +25,7 @@ import resaleDetail from "@assets/images/resale_detail.png";
 const backgrounds = {
   active: activeDetail,
   failed: lostDetail,
-  complete: successDetail,
+  success: successDetail,
   resolved: resaleDetail,
   on_execution: activeDetail,
 };
