@@ -313,10 +313,10 @@ class DaoStore {
 
       const { address, vaultContract, blockChainState } = chainStore;
 
-
       if (blockChainState === StateEnum.Success) {
 
         const weiAmount = await window.web3.utils.toWei(amount, "ether");
+        console.log(weiAmount, 'amount');
 
         await vaultContract.methods
           .deposit(fundraisingId)
@@ -411,9 +411,7 @@ class DaoStore {
       type = 'noSuccess';
     } else if (proposal.status === 'completed') {
       type = 'success';
-    }
-
-    if (vote.already_voted) {
+    } else if (vote.already_voted) {
       if (vote.choice === 'for') {
         type = 'liveVoteFor';
       } else if (vote.choice === 'against') {
