@@ -70,8 +70,10 @@ const CrowdPage: FC = observer(() => {
   const [withdrawAll, setWithdrawAll] = useState(false);
 
   useEffect(() => {
-    loadWeb3();
-    loadBlockChain();
+    if (blockChainState !== StateEnum.Success) {
+      loadWeb3();
+      loadBlockChain();
+    }
 
     return () => {
       resetLoadingStatus();

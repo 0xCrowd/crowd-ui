@@ -122,7 +122,7 @@ const CrowdBlock = ({
   const [collapsed, setCollapsed] = useState(true);
 
   const components = {
-    complete: (
+    success: (
       <SuccessCrowd
         votingType={votingType}
         price={price}
