@@ -57,6 +57,7 @@ const PartyForm = ({
         value={values.url}
         onChange={handleChange}
         error={touched.url && errors.url ? errors.url : ""}
+        autoComplete="off"
       />
       <Button
         size={ButtonSize.large}

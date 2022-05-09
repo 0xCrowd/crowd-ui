@@ -100,7 +100,7 @@ const Layout = observer(
           isOpen={isModalOpen}
           onRequestClose={closeModal}
           preventScroll={false}
-          title={crowdPreview ? "Create a CROWD" : "Start a CROWD"}
+          title={crowdPreview ? "Create a Crowd" : "Start a Crowd"}
           isLight={!crowdPreview ? true : false}
           onBack={crowdPreview ? clearPreview : undefined}
         >

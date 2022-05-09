@@ -32,7 +32,7 @@ import successSellCard from "@app/assets/images/card_success_sell.png";
 const backgrounds = {
   active: activeCard,
   failed: lostCard,
-  complete: successCard,
+  success: successCard,
   resolved: successSellCard,
   on_execution: activeCard,
 };

@@ -48,6 +48,7 @@ const EthForm = ({ onSubmit, loading, max, userBalance }: Props): ReactElement =
         value={values.deposite}
         onChange={handleChange}
         error={(touched.deposite && errors.deposite) ? errors.deposite : ''}
+        autoComplete="off"
         badge={
           <Badge
             onClick={setDeposit}
