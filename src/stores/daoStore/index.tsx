@@ -159,7 +159,7 @@ class DaoStore {
     return {
       id: crowd.id,
       fundraising: crowd.fundraising,
-      status: crowd.status,
+      status: crowd.status || 'failed',
       deposits: crowd.deposits || [],
       priceEth,
       percentage,

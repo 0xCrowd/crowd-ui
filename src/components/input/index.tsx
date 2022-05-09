@@ -80,16 +80,17 @@ type PropsType = {
   badge?: JSX.Element;
   labelClassName?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  autoComplete?: string;
 }
 
-const Input: FC<PropsType> = ({ label, id, placeholder, value, error, badge, onChange, labelClassName, className }) => {
+const Input: FC<PropsType> = ({ label, id, placeholder, value, error, badge, onChange, labelClassName, autoComplete, className }) => {
   return (
     <Root className={className}>
       <LabelContainer>
         <Label htmlFor={id} className={labelClassName}>{label}</Label>
         {badge}
       </LabelContainer>
-      <StyledInput value={value} onChange={onChange} placeholder={placeholder} id={id} error={error}/>
+      <StyledInput autoComplete={autoComplete} value={value} onChange={onChange} placeholder={placeholder} id={id} error={error}/>
       {error && <ErrorText>{error}</ErrorText>}
     </Root>
   );

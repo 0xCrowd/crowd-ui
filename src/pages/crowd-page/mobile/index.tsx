@@ -89,7 +89,7 @@ const shadows = {
   resolved: css`
     box-shadow: 280px 0px 80px 40px #02ffa4, -120px 0px 80px 40px #ff8a00;
   `,
-  complete: css`
+  success: css`
     box-shadow: 280px 0px 80px 40px #c8ff2a, -120px 0px 80px 40px #22b928;
   `,
   on_execution: css`

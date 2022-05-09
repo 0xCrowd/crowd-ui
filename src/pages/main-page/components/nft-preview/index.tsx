@@ -60,6 +60,10 @@ const Name = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
+
+const button = css`
+  margin: auto;
+`;
 //#endregion
 
 interface Props {
@@ -111,7 +115,7 @@ const NftPreview = ({
         </PreviewContainer>
       )}
       <Name title={nftName}>{nftName}</Name>
-      <Button size={ButtonSize.large} loading={loading} onClick={onSubmit}>
+      <Button size={ButtonSize.large} loading={loading} onClick={onSubmit} className={button}>
         Start Fundrising
       </Button>
     </Root>
