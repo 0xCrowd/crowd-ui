@@ -283,20 +283,15 @@ class DaoStore {
         this.createCrowdState = StateEnum.Loading;
       });
 
-      // const matches = this.crowdPreview?.name.match(/\b(\w)/g);
-      // if (matches) {
-      //   tokenName = `CROWD_${matches.join("")}`;
-      // }
-
-      const response = await axios.post(`${NEW_API_ENDPOINT}/crowd/new`, {
+      const response = await axios.post<{ id: number; fundraising: number }>(`${NEW_API_ENDPOINT}/crowd/new`, {
         target,
       });
-
-      // await this.makeMyCrowd(response.data.stream, address);
 
       runInAction(() => {
         this.createCrowdState = StateEnum.Success;
       });
+      
+      return response.data.id;
     } catch (error: any) {
       notify(error.message);
       runInAction(() => {
