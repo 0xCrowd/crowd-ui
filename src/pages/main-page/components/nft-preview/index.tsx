@@ -116,7 +116,7 @@ const NftPreview = ({
       )}
       <Name title={nftName}>{nftName}</Name>
       <Button size={ButtonSize.large} loading={loading} onClick={onSubmit} className={button}>
-        Start Fundrising
+        Start fundrising
       </Button>
     </Root>
   );

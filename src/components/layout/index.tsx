@@ -21,6 +21,7 @@ import { IPartyFormData } from "@app/pages/main-page/components/party-form/const
 //#region styles
 import { styled } from "@linaria/react";
 import { desktopComponent, mobileComponent } from "@app/assets/styles/atomic";
+import { useHistory } from "react-router-dom";
 
 const Root = styled.div`
   display: flex;
@@ -35,7 +36,6 @@ interface Props {
   openModal: () => void;
   closeModal: () => void;
   isModalOpen: boolean;
-  onSubmit: () => void;
   className?: string;
 }
 
@@ -45,9 +45,9 @@ const Layout = observer(
     openModal,
     closeModal,
     isModalOpen,
-    onSubmit,
     className,
   }: PropsWithChildren<Props>): ReactElement => {
+    const { push } = useHistory();
     const { balance, blockChainState, address } = chainStore;
     const {
       createCrowd,
@@ -87,10 +87,10 @@ const Layout = observer(
 
     const onCreate = async () => {
       try {
-        await createCrowd(previewId);
+        const id = await createCrowd(previewId);
         closeModal();
         clearPage();
-        onSubmit();
+        push(`/${id}`);
       } catch (error) {}
     };
 

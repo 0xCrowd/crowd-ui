@@ -76,7 +76,6 @@ const MainPage: FC = observer(() => {
 
   return (
     <Layout
-      onSubmit={() => getCrowdList(isMyCrowdsPage ? address : "")}
       openModal={openModal}
       closeModal={closeModal}
       isModalOpen={modalIsOpen}

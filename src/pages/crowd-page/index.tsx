@@ -212,7 +212,6 @@ const CrowdPage: FC = observer(() => {
 
   return (
     <Layout
-      onSubmit={() => getCrowd(ceramicStream)}
       openModal={() => setCreateModalIsOpen(true)}
       closeModal={() => setCreateModalIsOpen(false)}
       isModalOpen={createModalIsOpen}
