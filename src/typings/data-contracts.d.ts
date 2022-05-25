@@ -30,7 +30,7 @@ declare global {
     | "success"
     | "failed"
     | "resolved"
-    | "on_execution";
+    | "processing";
 
   type ApiResponse<T> = {
     items: T[];

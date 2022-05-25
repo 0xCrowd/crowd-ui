@@ -34,7 +34,7 @@ const backgrounds = {
   failed: lostCard,
   success: successCard,
   resolved: successSellCard,
-  on_execution: activeCard,
+  processing: activeCard,
 };
 
 type RootProps = {

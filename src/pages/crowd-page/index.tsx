@@ -141,7 +141,7 @@ const CrowdPage: FC = observer(() => {
 
   const onWithdrawSubmit = async ({ deposite }: IEthFormData) => {
     try {
-      await withdraw(deposite, detailedCrowd.fundraising, withdrawAll);
+      await withdraw(deposite, detailedCrowd.id, withdrawAll);
       onCloseModal();
       setWithdrawAll(false);
       getCrowd(ceramicStream);
