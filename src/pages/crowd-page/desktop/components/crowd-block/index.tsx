@@ -27,7 +27,7 @@ const backgrounds = {
   failed: lostDetail,
   success: successDetail,
   resolved: resaleDetail,
-  on_execution: activeDetail,
+  processing: activeDetail,
 };
 
 type RootProps = {
@@ -141,7 +141,7 @@ const CrowdBlock = ({
         onOpenModal={onOpenModal}
       />
     ),
-    on_execution: (
+    processing: (
       <ActiveCrowd
         price={price}
         onWithdraw={onWithdraw}

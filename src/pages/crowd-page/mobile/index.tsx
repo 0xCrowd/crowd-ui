@@ -92,7 +92,7 @@ const shadows = {
   success: css`
     box-shadow: 280px 0px 80px 40px #c8ff2a, -120px 0px 80px 40px #22b928;
   `,
-  on_execution: css`
+  processing: css`
     box-shadow: 280px 0px 80px 40px #00f0ff, -120px 0px 80px 40px #01b2ea;
   `,
 };
@@ -175,7 +175,7 @@ const MobilePage = ({
               crowd ? (
                 crowd.status === "active" ||
                 crowd.status === "failed" ||
-                crowd.status === "on_execution"
+                crowd.status === "processing"
               ) : true
             }
           >

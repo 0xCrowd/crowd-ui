@@ -311,7 +311,6 @@ class DaoStore {
       if (blockChainState === StateEnum.Success) {
 
         const weiAmount = await window.web3.utils.toWei(amount, "ether");
-        console.log(weiAmount, 'amount');
 
         await vaultContract.methods
           .deposit(fundraisingId)
@@ -337,20 +336,20 @@ class DaoStore {
         this.donateState = StateEnum.Loading;
       });
 
-      const { address, vaultContract, blockChainState } = chainStore;
+      const weiAmount = await window.web3.utils.toWei(amount, "ether");
 
-      if (blockChainState === StateEnum.Success) {
-        const weiAmount = window.web3.utils.toWei(amount);
-        await vaultContract.methods
-          .withdraw(fundraisingId, weiAmount, all)
-          .send({ from: address });
+      const { address } = chainStore;
 
-        runInAction(() => {
-          this.donateState = StateEnum.Success;
-        });
-      } else {
-        throw new Error("blockchain dont load");
-      }
+      await axios.post(`${NEW_API_ENDPOINT}/withdraw`, {
+        crowd: fundraisingId,
+        user: address,
+        amount: weiAmount
+      });
+
+      runInAction(() => {
+        this.donateState = StateEnum.Success;
+      });
+
     } catch (error: any) {
       runInAction(() => {
         this.donateState = StateEnum.Error;
