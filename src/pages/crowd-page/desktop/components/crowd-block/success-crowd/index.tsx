@@ -31,6 +31,7 @@ const SuccessCrowd = ({
   myFound,
   afterFounds,
   leftovers,
+  onWithdraw
 }: Props): ReactElement => {
   const isLeftovers = !!leftovers;
 
@@ -44,6 +45,7 @@ const SuccessCrowd = ({
               afterSum={afterFounds as number}
               listingPrice={listingPrice as number}
               leftovers={leftovers as number}
+              onWithdraw={onWithdraw}
             />
           );
         }
@@ -61,6 +63,7 @@ const SuccessCrowd = ({
             <NotPassedLeftovBody
               sum={myFound as number}
               leftovers={leftovers as number}
+              onWithdraw={onWithdraw}
             />
           );
         }
@@ -72,6 +75,7 @@ const SuccessCrowd = ({
             <ParticipantLeftovBody
               sum={myFound as number}
               leftovers={leftovers as number}
+              onWithdraw={onWithdraw}
             />
           );
         }

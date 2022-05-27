@@ -21,12 +21,14 @@ type Props = {
   afterSum: number;
   listingPrice: number;
   leftovers: number;
+  onWithdraw?: () => void;
 };
 const PassedLeftovBody: FC<Props> = ({
   sum,
   afterSum,
   listingPrice,
   leftovers,
+  onWithdraw
 }) => {
   return (
     <>
@@ -42,7 +44,7 @@ const PassedLeftovBody: FC<Props> = ({
         If not all your funds were spent during the buyout, then you can
         withdraw the leftovers
       </SecondaryText>
-      <GradientBorderButton className={button}>
+      <GradientBorderButton className={button} onClick={onWithdraw}>
         - Withdraw leftovers
       </GradientBorderButton>
       <Row className={mb2}>

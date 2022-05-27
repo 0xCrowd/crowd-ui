@@ -6,8 +6,6 @@ import PriceBock, { PriceBlockEnum } from "../components/price-block";
 import { Row } from "@app/components/row/Row";
 import GradientBorderButton from "@app/components/gradient-border-button";
 
-import { ModalModeEnum } from "@enums/modal-enum";
-
 //#region styles
 import { mr4, mb28, mb12, w100 } from "@assets/styles/atomic";
 import { PrimaryText, SecondaryText } from ".././commonStyles";
@@ -18,7 +16,6 @@ interface Props {
   price: number;
   resoldPrice: number;
   onWithdraw?: () => void;
-  onOpenModal: (mode: ModalModeEnum) => void;
   myFound?: number;
   loading: boolean;
 }
@@ -28,7 +25,7 @@ const ResoldCrowd = ({
   resoldPrice = 0,
   myFound,
   loading,
-  onOpenModal,
+  onWithdraw
 }: Props): ReactElement => {
   return (
     <>
@@ -54,7 +51,7 @@ const ResoldCrowd = ({
           </SecondaryText>
           <GradientBorderButton
             className={cx(mb12, w100)}
-            onClick={() => onOpenModal(ModalModeEnum.Withdraw)}
+            onClick={onWithdraw}
           >
             - Withdraw funds
           </GradientBorderButton>

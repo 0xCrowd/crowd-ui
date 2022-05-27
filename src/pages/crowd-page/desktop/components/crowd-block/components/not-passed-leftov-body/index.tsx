@@ -18,8 +18,9 @@ const button = css`
 type Props = {
   sum: number | string;
   leftovers: number;
+  onWithdraw?: () => void;
 };
-const NotPassedLeftovBody: FC<Props> = ({ sum, leftovers }) => {
+const NotPassedLeftovBody: FC<Props> = ({ sum, leftovers, onWithdraw }) => {
   return (
     <>
       <InfoText className={mb28}>Resale proposal did not pass</InfoText>
@@ -27,7 +28,7 @@ const NotPassedLeftovBody: FC<Props> = ({ sum, leftovers }) => {
         If not all your funds were spent during the buyout, then you can
         withdraw the leftovers
       </SecondaryText>
-      <GradientBorderButton className={button}>
+      <GradientBorderButton className={button} onClick={onWithdraw}>
         - Withdraw leftovers
       </GradientBorderButton>
       <Row className={mb2}>

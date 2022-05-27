@@ -87,7 +87,7 @@ interface Props {
   collected: number;
   percentage: number;
   price: number;
-  onWithdraw?: () => void;
+  onWithdrawWithoutAmount?: () => void;
   participant: Deposits[];
   listingPrice?: number;
   myFound?: number;
@@ -115,7 +115,7 @@ const CrowdBlock = ({
   priceWei,
   collectedWei,
   proposalsLoading,
-  onWithdraw,
+  onWithdrawWithoutAmount,
   onOpenModal,
   className,
 }: Props): ReactElement => {
@@ -130,6 +130,7 @@ const CrowdBlock = ({
         myFound={myFound}
         afterFounds={afterFounds}
         leftovers={leftovers}
+        onWithdraw={onWithdrawWithoutAmount}
       />
     ),
     resolved: (
@@ -138,13 +139,12 @@ const CrowdBlock = ({
         myFound={myFound}
         price={price}
         resoldPrice={listingPrice || 0}
-        onOpenModal={onOpenModal}
+        onWithdraw={onWithdrawWithoutAmount}
       />
     ),
     processing: (
       <ActiveCrowd
         price={price}
-        onWithdraw={onWithdraw}
         collected={collected}
         percentage={percentage}
         myFound={myFound}
@@ -157,7 +157,6 @@ const CrowdBlock = ({
     active: (
       <ActiveCrowd
         price={price}
-        onWithdraw={onWithdraw}
         collected={collected}
         percentage={percentage}
         myFound={myFound}
