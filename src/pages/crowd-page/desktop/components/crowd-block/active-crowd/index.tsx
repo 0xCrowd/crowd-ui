@@ -50,7 +50,6 @@ interface Props {
   collected: number;
   percentage: number;
   price: number;
-  onWithdraw?: () => void;
   onOpenModal: (mode: ModalModeEnum) => void;
   myFound?: number;
   isOnExecution?: boolean;

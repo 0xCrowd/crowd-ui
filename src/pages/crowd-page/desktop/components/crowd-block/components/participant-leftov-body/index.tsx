@@ -18,9 +18,10 @@ const button = css`
 type Props = {
   sum: number | string;
   leftovers: number | string;
+  onWithdraw?: () => void;
 };
 
-const ParticipantLeftovBody: FC<Props> = ({ sum, leftovers }) => {
+const ParticipantLeftovBody: FC<Props> = ({ sum, leftovers, onWithdraw }) => {
   return (
     <>
       <InfoText className={mb12}>NFT was successfully purchased 🎉</InfoText>
@@ -32,7 +33,7 @@ const ParticipantLeftovBody: FC<Props> = ({ sum, leftovers }) => {
         If not all your funds were spent during the buyout, then you can
         withdraw the leftovers
       </SecondaryText>
-      <GradientBorderButton className={button}>
+      <GradientBorderButton className={button} onClick={onWithdraw}>
         - Withdraw leftovers
       </GradientBorderButton>
       <Row className={mb2}>

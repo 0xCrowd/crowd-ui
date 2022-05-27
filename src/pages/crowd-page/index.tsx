@@ -67,7 +67,6 @@ const CrowdPage: FC = observer(() => {
   const [modalTitle, setModalTitle] = useState("");
   const [ceramicStream, setCeramicStream] = useState("");
   const [proposalStream, setProposalStream] = useState<number | null>(null);
-  const [withdrawAll, setWithdrawAll] = useState(false);
 
   useEffect(() => {
     if (blockChainState !== StateEnum.Success) {
@@ -113,7 +112,6 @@ const CrowdPage: FC = observer(() => {
 
       case ModalModeEnum.Withdraw:
         title = "Withdraw Funds";
-        setWithdrawAll(false);
         break;
       
       case ModalModeEnum.Price:
@@ -141,12 +139,18 @@ const CrowdPage: FC = observer(() => {
 
   const onWithdrawSubmit = async ({ deposite }: IEthFormData) => {
     try {
-      await withdraw(deposite, detailedCrowd.id, withdrawAll);
+      await withdraw(detailedCrowd.id, deposite);
       onCloseModal();
-      setWithdrawAll(false);
       getCrowd(ceramicStream);
     } catch (error) {}
   };
+
+  const onWithdrawWithoutAmount = async () => {
+    try {
+      await withdraw(detailedCrowd.id);
+      getCrowd(ceramicStream);
+    } catch (error) {}
+  }
 
   const onPriceSubmit = async ({ price }: IProposalFormData) => {
     try {
@@ -186,7 +190,6 @@ const CrowdPage: FC = observer(() => {
             loading={donateState === StateEnum.Loading}
             onAmountButtonClick={(setValue) => {
               setValue(myFound.toString());
-              setWithdrawAll(true);
             }}
           />
         );
@@ -234,6 +237,7 @@ const CrowdPage: FC = observer(() => {
           proposalsLoading={proposalState === StateEnum.Loading}
           crowdLoading={detailedCrowdState === StateEnum.Loading}
           nftId={detailedCrowd?.item}
+          onWithdrawWithoutAmount={onWithdrawWithoutAmount}
         />
         {/* ортобразится только при ширине экрана больше 420px */}
         <DesktopPage
@@ -244,6 +248,7 @@ const CrowdPage: FC = observer(() => {
           proposalsLoading={proposalState === StateEnum.Loading}
           crowdLoading={detailedCrowdState === StateEnum.Loading}
           nftId={detailedCrowd?.item}
+          onWithdrawWithoutAmount={onWithdrawWithoutAmount}
         />
       </Root>
     </Layout>

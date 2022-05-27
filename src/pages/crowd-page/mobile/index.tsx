@@ -110,9 +110,9 @@ const MobilePage = ({
   crowdLoading,
   proposalsList,
   proposalsLoading,
-  nftId,
   makeVote,
   onOpenModal,
+  onWithdrawWithoutAmount
 }: CrowdPageProps) => {
   const [activeTab, setActiveTab] = useState(CrowdPageEnum.info);
   const imgEl = useRef<HTMLImageElement>(null);
@@ -200,9 +200,12 @@ const MobilePage = ({
               proposalsList.length ? proposalsList[0].type : "notVoting"
             }
             proposalsLoading={proposalsLoading}
+            onWithdrawWithoutAmount={onWithdrawWithoutAmount}
           />
         ) : (
           <VotingMobile
+            makeVote={(choice) => makeVote(activeProposal.id, choice, '0')}
+            onOpenModal={onOpenModal}
             type={activeProposal?.type}
             time={activeProposal?.till}
             voted={activeProposal?.all}

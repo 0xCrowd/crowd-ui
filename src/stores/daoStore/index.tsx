@@ -206,8 +206,6 @@ class DaoStore {
       leftovers = toEth(leftovers.toString());
     }
 
-    console.log(leftovers, 'leftovers');
-
     return {
       ...adaptedCrowd,
       myFoundEth,
@@ -332,13 +330,18 @@ class DaoStore {
     }
   };
 
-  withdraw = async (amount: string, fundraisingId: number, all?: boolean) => {
+  withdraw = async (fundraisingId: number, amount?: string) => {
     try {
       runInAction(() => {
         this.donateState = StateEnum.Loading;
       });
+      
 
-      const weiAmount = await window.web3.utils.toWei(amount, "ether");
+      let weiAmount: string | undefined = undefined;
+
+      if (amount) {
+        weiAmount = await window.web3.utils.toWei(amount, "ether");
+      }
 
       const { address } = chainStore;
 

@@ -95,6 +95,7 @@ export interface CrowdPageProps {
   nftId: string;
   makeVote: (proposalId: number, choice: ProposalChoice, amount: string) => void;
   onOpenModal: (mode: ModalModeEnum) => void;
+  onWithdrawWithoutAmount: () => void;
 }
 
 const DesktopPage = ({
@@ -105,6 +106,7 @@ const DesktopPage = ({
   nftId,
   makeVote,
   onOpenModal,
+  onWithdrawWithoutAmount
 }: CrowdPageProps): ReactElement => {
   const [collapsed, setCollapsed] = useState(true);
 
@@ -192,6 +194,7 @@ const DesktopPage = ({
             afterFounds={listingPrice * fraction}
             leftovers={crowd?.leftovers}
             onOpenModal={onOpenModal}
+            onWithdrawWithoutAmount={onWithdrawWithoutAmount}
             votingType={
               proposalsList.length ? proposalsList[0].type : "notVoting"
             }

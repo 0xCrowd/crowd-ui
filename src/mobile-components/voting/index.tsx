@@ -17,7 +17,9 @@ import { Row } from "@app/components/row/Row";
 import Timer from "@app/components/timer";
 import Button, { ButtonSize } from "@app/components/button";
 
-import { CrowdStatusText } from "../../enums/crowd-status/crowd-status";
+import { CrowdStatusText } from "@app/enums/crowd-status/crowd-status";
+import { ProposalChoice } from "@app/enums/proposal-choice-enum";
+import { ModalModeEnum } from "@app/enums/modal-enum";
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -114,6 +116,8 @@ type Props = Pick<
   loading: boolean;
   isParticipant: boolean;
   status: DetailedCrowd["status"];
+  makeVote: (choice: ProposalChoice) => void;
+  onOpenModal: (mode: ModalModeEnum) => void;
 };
 
 const VotingMobile = ({
@@ -126,6 +130,8 @@ const VotingMobile = ({
   isParticipant,
   status,
   loading,
+  makeVote,
+  onOpenModal
 }: Props) => {
   if (loading) {
     <Root>
@@ -143,14 +149,14 @@ const VotingMobile = ({
 
   const Buttons = () => (
     <>
-      <Button size={ButtonSize.small} className={blueButton}>
+      <Button size={ButtonSize.small} className={blueButton} onClick={() => makeVote(ProposalChoice.For)}>
         Agree with avarege
       </Button>
       <Row justify="space-between" className={contentWidth}>
-        <Button size={ButtonSize.small} className={pinkButton}>
+        <Button size={ButtonSize.small} className={pinkButton} onClick={() => makeVote(ProposalChoice.Against)}>
           Vote against selling
         </Button>
-        <Button size={ButtonSize.small} className={greenButton}>
+        <Button size={ButtonSize.small} className={greenButton} onClick={() => onOpenModal(ModalModeEnum.Price)}>
           Suggest your price
         </Button>
       </Row>
