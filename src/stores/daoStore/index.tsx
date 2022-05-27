@@ -202,9 +202,11 @@ class DaoStore {
 
     if (crowd.status === "success" && collectedWei.isGreaterThan(0)) {
       const fraction = myFoundWei.dividedBy(priceWei);
-      leftoversWei = collectedWei.multipliedBy(fraction);
-      leftovers = toEth(leftoversWei.toString());
+      leftoversWei = leftoversWei.multipliedBy(fraction);
+      leftovers = toEth(leftovers.toString());
     }
+
+    console.log(leftovers, 'leftovers');
 
     return {
       ...adaptedCrowd,
