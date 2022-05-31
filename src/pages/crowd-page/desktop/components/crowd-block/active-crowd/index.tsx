@@ -71,16 +71,12 @@ const ActiveCrowd = ({
   const [description, setDescription] = useState(
     <ExecutionDescription className={mb18} />
   );
-  const [cardCollected, setCardCollected] = useState(
-    toNumber(fromWei(collectedWei.plus(priceWei).toString(), 'ether'))
-  );
   const [cardRemain, setCardRemain] = useState(0);
   const [cardButtons, setCardButtons] = useState<ReactElement | null>(null);
 
   useEffect(() => {
     if (!isOnExecution) {
       setDescription(<ActiveDescription className={mb18} />);
-      setCardCollected(collected);
       setCardButtons(<ButtonRow />);
 
       let remain = toNumber(fromWei(priceWei.minus(collectedWei).toString(), 'ether'));
@@ -96,6 +92,10 @@ const ActiveCrowd = ({
   }, [isOnExecution, collected, price]);
 
   const ButtonRow = () => {
+    if (cardRemain === 0) {
+      return null;
+    }
+
     return myFound ? (
       <>
         <Row className={mb12}>
@@ -134,7 +134,7 @@ const ActiveCrowd = ({
       <PercentBar percent={percentage} className={mb18} />
       <PriceRow className={mb2}>
         <Row className={priceRowContainer}>
-          <GreenNumber>{cardCollected}</GreenNumber>
+          <GreenNumber>{collected}</GreenNumber>
           <SecondaryText>ETH Collected</SecondaryText>
         </Row>
       </PriceRow>
