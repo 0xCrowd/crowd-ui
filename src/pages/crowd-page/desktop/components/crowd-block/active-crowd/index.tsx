@@ -92,10 +92,6 @@ const ActiveCrowd = ({
   }, [isOnExecution, collected, price]);
 
   const ButtonRow = () => {
-    if (cardRemain === 0) {
-      return null;
-    }
-
     return myFound ? (
       <>
         <Row className={mb12}>
@@ -144,7 +140,7 @@ const ActiveCrowd = ({
           <SecondaryText>ETH more required for a buyout</SecondaryText>
         </Row>
       </PriceRow>
-      {!isOnExecution && cardButtons}
+      {!isOnExecution && cardRemain > 0 && cardButtons}
     </>
   );
 };
