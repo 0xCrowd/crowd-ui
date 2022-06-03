@@ -467,7 +467,7 @@ class DaoStore {
         user: address,
         proposal: proposalStream,
         choice,
-        price: amount
+        price: window.web3.utils.toWei(amount, 'ether')
       });
 
       runInAction(() => {

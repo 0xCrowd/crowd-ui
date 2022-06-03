@@ -66,7 +66,6 @@ const CrowdPage: FC = observer(() => {
   const [modalMode, setModalMode] = useState(ModalModeEnum.Proposal);
   const [modalTitle, setModalTitle] = useState("");
   const [ceramicStream, setCeramicStream] = useState("");
-  const [proposalStream, setProposalStream] = useState<number | null>(null);
 
   useEffect(() => {
     if (blockChainState !== StateEnum.Success) {
@@ -154,7 +153,7 @@ const CrowdPage: FC = observer(() => {
 
   const onPriceSubmit = async ({ price }: IProposalFormData) => {
     try {
-      await makeVote(proposalStream as number, ProposalChoice.Own, price);
+      await makeVote(proposalsList[0].id, ProposalChoice.Own, price);
       onCloseModal();
       getProposals(ceramicStream);
     } catch (error) {}

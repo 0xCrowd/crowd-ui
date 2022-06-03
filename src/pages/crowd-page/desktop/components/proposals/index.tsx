@@ -21,7 +21,11 @@ interface Props {
   proposals: AdaptedProposal[];
   loading: boolean;
   isParticipants: boolean;
-  makeVote: (proposalStream: number, choice: ProposalChoice, amount: string) => void;
+  makeVote: (
+    proposalStream: number,
+    choice: ProposalChoice,
+    amount: string
+  ) => void;
   onOpenPriceModal: () => void;
   className?: string;
 }
@@ -54,7 +58,7 @@ const Proposals = ({
           type={type}
           isParticipants={isParticipants}
           price={priceEth}
-          makeVote={(choice: ProposalChoice, amount: string) =>
+          makeVote={(choice: ProposalChoice, amount: string) => 
             makeVote(id, choice, amount)
           }
           time={till}
