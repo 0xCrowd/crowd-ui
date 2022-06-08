@@ -423,7 +423,7 @@ class DaoStore {
       priceWei: new BigNumber(proposal.average_price),
       type,
       id: proposal.id,
-      till: '2022-05-30',
+      till: '2022-10-30',
       against: toNumber(proposal.reached_quorum_against) * 100,
       all: toNumber(proposal.reached_quorum) * 100,
       myVote: toEth(vote.price)

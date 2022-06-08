@@ -48,8 +48,6 @@ const Timer: FC<Props> = ({ time, className }) => {
     const date1 = new Date();
     const date2 = new Date(time);
 
-    console.log(date2);
-
     // @ts-ignore
     let diff = (date2 - date1)/1000;
     if (diff < 0) {

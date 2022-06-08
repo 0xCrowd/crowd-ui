@@ -17,7 +17,7 @@ const button = css`
 
 interface Props {
   loading: boolean;
-  onSubmit: (data: IProposalFormData) => void
+  onSubmit: (data: IProposalFormData) => void;
 }
 
 const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
@@ -27,7 +27,7 @@ const ProposalForm = ({ onSubmit, loading }: Props): ReactElement => {
       values.price = values.price.replace(',', '.');
       onSubmit(values);
     },
-    validate: validate,
+    validate,
   });
 
   return (

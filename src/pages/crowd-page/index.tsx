@@ -198,6 +198,7 @@ const CrowdPage: FC = observer(() => {
           <PriceForm
             onSubmit={onPriceSubmit}
             loading={voteState === StateEnum.Loading}
+            proposalPrice={proposalsList && proposalsList[0]?.priceEth}
           />
         );
     }

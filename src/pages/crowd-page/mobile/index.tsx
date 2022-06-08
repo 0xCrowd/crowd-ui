@@ -184,6 +184,7 @@ const MobilePage = ({
         </Tabs>
         {activeTab === CrowdPageEnum.info ? (
           <CrowdBlock
+            id={crowd.id.toString()}
             type={crowd?.status || "active"}
             participant={crowd?.deposits}
             collected={crowd?.collectedEth}

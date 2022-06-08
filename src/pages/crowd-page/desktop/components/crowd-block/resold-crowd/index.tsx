@@ -18,6 +18,7 @@ interface Props {
   onWithdraw?: () => void;
   myFound?: number;
   loading: boolean;
+  isWithdrawn: boolean;
 }
 
 const ResoldCrowd = ({
@@ -25,7 +26,8 @@ const ResoldCrowd = ({
   resoldPrice = 0,
   myFound,
   loading,
-  onWithdraw
+  onWithdraw,
+  isWithdrawn
 }: Props): ReactElement => {
   return (
     <>
@@ -49,15 +51,15 @@ const ResoldCrowd = ({
           <SecondaryText className={mb12}>
             This NFT was resold, now you can withdraw funds
           </SecondaryText>
-          <GradientBorderButton
+          {!isWithdrawn && <GradientBorderButton
             className={cx(mb12, w100)}
             onClick={onWithdraw}
           >
             - Withdraw funds
-          </GradientBorderButton>
+          </GradientBorderButton>}
           <Row className={mb28}>
             <SecondaryText className={mr4}>
-              Your funds after resale:
+              {isWithdrawn ? 'you have withdrawn' : 'Your funds after resale:'}
             </SecondaryText>
             <PrimaryText className={mr4}>{myFound}</PrimaryText>
             <SecondaryText>ETH</SecondaryText>
