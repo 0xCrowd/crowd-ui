@@ -52,15 +52,19 @@ const Proposals = ({
 
   return (
     <Root className={className}>
-      {proposals.map(({ id, type, priceEth, till, myVote, all, against }) => (
+      {proposals.map(({ id, type, priceEth, till, myVote, all, against, priceWei }) => (
         <Voting
           key={id}
           type={type}
           isParticipants={isParticipants}
           price={priceEth}
-          makeVote={(choice: ProposalChoice, amount: string) => 
-            makeVote(id, choice, amount)
-          }
+          makeVote={(choice: ProposalChoice, amount: string) => {
+            if (choice === ProposalChoice.For) {
+              makeVote(id, ProposalChoice.Own, priceWei.toString())
+            } else {
+              makeVote(id, choice, amount)
+            }
+          }}
           time={till}
           className={mb20}
           loading={loading}

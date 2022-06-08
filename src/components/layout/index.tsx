@@ -21,7 +21,7 @@ import { IPartyFormData } from "@app/pages/main-page/components/party-form/const
 //#region styles
 import { styled } from "@linaria/react";
 import { desktopComponent, mobileComponent } from "@app/assets/styles/atomic";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 const Root = styled.div`
   display: flex;
@@ -48,6 +48,7 @@ const Layout = observer(
     className,
   }: PropsWithChildren<Props>): ReactElement => {
     const { push } = useHistory();
+    const { pathname } = useLocation();
     const { balance, blockChainState, address } = chainStore;
     const {
       createCrowd,
@@ -123,6 +124,7 @@ const Layout = observer(
           balance={balance}
           className={desktopComponent}
           onAddNew={openModal}
+          location={pathname}
         />
         <MobileNavbar
           className={mobileComponent}

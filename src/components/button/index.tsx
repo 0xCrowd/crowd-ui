@@ -70,6 +70,10 @@ const linkButton = css`
   background: transparent;
   font-size: 14px;
   font-weight: 700;
+
+  &:hover {
+    background-color: transparent;
+  }
 `;
 //#endregion
 

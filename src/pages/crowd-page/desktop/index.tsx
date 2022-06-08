@@ -182,6 +182,7 @@ const DesktopPage = ({
         </NftBlock>
         <Columns>
           <CrowdBlock
+            id={crowd.id.toString()}
             type={crowd?.status || "failed"}
             collected={crowd?.collectedEth}
             percentage={crowd?.percentage}

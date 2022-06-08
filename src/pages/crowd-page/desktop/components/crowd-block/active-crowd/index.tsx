@@ -140,6 +140,7 @@ const ActiveCrowd = ({
           <SecondaryText>ETH more required for a buyout</SecondaryText>
         </Row>
       </PriceRow>
+      {cardRemain === 0 && <SecondaryText className={mb12}>Processing...</SecondaryText>}
       {!isOnExecution && cardRemain > 0 && cardButtons}
     </>
   );

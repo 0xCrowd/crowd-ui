@@ -86,15 +86,20 @@ const MenuLink = styled.a`
 const gradientButton = css`
   width: 140px;
 `;
+
+const activeLink = css`
+  text-decoration: underline;
+`;
 //#endregion
 
 interface Props {
   balance: string;
+  location: string;
   onAddNew?: () => void;
   className?: string;
 }
 
-const Navbar = ({ balance, onAddNew, className }: Props): ReactElement => {
+const Navbar = ({ balance, location, onAddNew, className }: Props): ReactElement => {
   return (
     <Root className={className}>
       <Row>
@@ -112,7 +117,7 @@ const Navbar = ({ balance, onAddNew, className }: Props): ReactElement => {
             About us
           </MenuLink>
           <Link to={RouteNames.MY_CROWDS}>
-            <Button mode={ButtonMode.link}>My crowds</Button>
+            <Button mode={ButtonMode.link} className={location === '/my-crowds' ? activeLink : undefined}>My crowds</Button>
           </Link>
           <Button
             mode={ButtonMode.gradient}

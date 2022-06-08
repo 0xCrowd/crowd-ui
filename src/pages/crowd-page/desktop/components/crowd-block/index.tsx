@@ -21,6 +21,7 @@ import activeDetail from "@assets/images/active_detail.png";
 import successDetail from "@assets/images/success_detail.png";
 import lostDetail from "@assets/images/lost_detail.png";
 import resaleDetail from "@assets/images/resale_detail.png";
+import id from "date-fns/esm/locale/id/index.js";
 
 const backgrounds = {
   active: activeDetail,
@@ -83,6 +84,7 @@ const howWorks = css`
 //#endregion
 
 interface Props {
+  id: string;
   type: CrowdStatusType;
   collected: number;
   percentage: number;
@@ -102,6 +104,7 @@ interface Props {
 }
 
 const CrowdBlock = ({
+  id,
   collected,
   percentage,
   type,
@@ -121,6 +124,22 @@ const CrowdBlock = ({
 }: Props): ReactElement => {
   const [collapsed, setCollapsed] = useState(true);
 
+  const isWithdrawn = () => {
+    const withdraws = localStorage.getItem('withdraws');
+
+    if (withdraws) {
+      const withdrawsArr = withdraws?.split(',');
+      if (withdrawsArr.includes(id)) {
+        return true;
+      }
+
+      return false;
+    }
+
+    return false;
+    
+  }
+
   const components = {
     success: (
       <SuccessCrowd
@@ -139,7 +158,22 @@ const CrowdBlock = ({
         myFound={myFound}
         price={price}
         resoldPrice={listingPrice || 0}
-        onWithdraw={onWithdrawWithoutAmount}
+        isWithdrawn={isWithdrawn()}
+        onWithdraw={() => {
+          let withdraws = localStorage.getItem('withdraws');
+          if (withdraws) {
+            const withdrawsArr = withdraws.split(',');
+            if (!withdrawsArr.includes(id)) {
+              withdrawsArr.push(id);
+            }
+            withdraws = withdrawsArr.join(',');
+            localStorage.setItem('withdraws', withdraws);
+          } else {
+            localStorage.setItem('withdraws', `${id}`);
+          }
+          
+          onWithdrawWithoutAmount && onWithdrawWithoutAmount();
+        }}
       />
     ),
     processing: (

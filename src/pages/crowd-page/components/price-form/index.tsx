@@ -25,17 +25,18 @@ const Title = styled.p`
 
 interface Props {
   loading: boolean;
-  onSubmit: (data: IProposalFormData) => void
+  onSubmit: (data: IProposalFormData) => void;
+  proposalPrice?: number;
 }
 
-const PriceForm = ({ onSubmit, loading }: Props): ReactElement => {
+const PriceForm = ({ onSubmit, loading, proposalPrice }: Props): ReactElement => {
   const { handleSubmit, handleChange, values, errors, touched } = useFormik({
     initialValues,
     onSubmit: values => {
       values.price = values.price.replace(',', '.');
       onSubmit(values);
     },
-    validate: validate,
+    validate: values => validate(values, proposalPrice),
   });
 
   return (
