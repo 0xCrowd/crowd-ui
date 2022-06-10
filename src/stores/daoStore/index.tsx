@@ -196,7 +196,7 @@ class DaoStore {
     const collectedWei = new BigNumber(crowd.collected || "0");
 
     if (myDeposit) {
-      myFoundEth = myDeposit.amount;
+      myFoundEth = new BigNumber(myDeposit.amount).dp(5).toNumber();
       myFoundWei = new BigNumber(window.web3.utils.toWei(myDeposit.amount.toString(), 'ether'));
     }
 

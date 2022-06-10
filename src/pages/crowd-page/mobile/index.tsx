@@ -21,6 +21,7 @@ import { textPrimary } from "@app/assets/styles/constants";
 
 import noMedia from "@assets/images/no_image.png";
 import { useLayoutDetailsHeightAuto } from "@app/hooks/use-layout-height-auto";
+import BigNumber from "bignumber.js";
 
 const Root = styled.div`
   ${media("large")} {
@@ -131,18 +132,23 @@ const MobilePage = ({
     }
   }, []);
 
-  const fraction = (crowd?.myFoundEth || 0) / toNumber(crowd?.priceEth);
-
   const listingPrice = useMemo(() => {
     if (window.web3.utils) {
-      const listingPriceWei = proposalsList.length
-        ? proposalsList[0].priceWei.dp(2).toString()
-        : "0";
-      return toEth(listingPriceWei);
+      const listingPriceWei = proposalsList.length ? proposalsList[0].priceWei.dp(0).toString() : '0';
+      return new BigNumber(toEth(listingPriceWei)).dp(5).toNumber();
     }
 
     return 0;
   }, [window.web3.utils, proposalsList]);
+
+  const foundsAfterResale = useMemo(() => {
+    if (crowd && crowd.myFoundWei && proposalsList && proposalsList[0]) {
+      const foundWei = proposalsList[0].priceWei.multipliedBy(crowd.myFoundWei).dividedBy(crowd.collectedWei).dp(0).toString();
+      return new BigNumber(toEth(foundWei)).dp(5).toNumber();
+    }
+
+    return 0;
+  }, [proposalsList, crowd]);
 
   if (crowdLoading || !crowd) {
     return <Skeleton />;
@@ -194,7 +200,7 @@ const MobilePage = ({
             collectedWei={crowd?.collectedWei}
             listingPrice={listingPrice}
             myFound={crowd?.myFoundEth}
-            afterFounds={listingPrice * fraction}
+            afterFounds={foundsAfterResale}
             leftovers={crowd?.leftovers}
             onOpenModal={onOpenModal}
             votingType={
