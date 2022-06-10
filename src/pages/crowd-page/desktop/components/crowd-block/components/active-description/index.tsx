@@ -28,7 +28,7 @@ type Props = {
 const ActiveDescription: FC<Props> = ({ className }) => {
   return (
     <div className={className}>
-      <InfoText className={mb4}>Add founds to:</InfoText>
+      <InfoText className={mb4}>Add funds to:</InfoText>
       <StyledUl>
         <StyledLi>Increase your stake in the acquired NFT</StyledLi>
         <StyledLi>Increase the chances of a successful buyout</StyledLi>

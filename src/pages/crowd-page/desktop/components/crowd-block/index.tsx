@@ -22,6 +22,7 @@ import successDetail from "@assets/images/success_detail.png";
 import lostDetail from "@assets/images/lost_detail.png";
 import resaleDetail from "@assets/images/resale_detail.png";
 import id from "date-fns/esm/locale/id/index.js";
+import { notifySuccess } from "@app/utils/notify";
 
 const backgrounds = {
   active: activeDetail,
@@ -155,11 +156,11 @@ const CrowdBlock = ({
     resolved: (
       <ResoldCrowd
         loading={proposalsLoading}
-        myFound={myFound}
+        myFound={afterFounds}
         price={price}
         resoldPrice={listingPrice || 0}
         isWithdrawn={isWithdrawn()}
-        onWithdraw={() => {
+        onWithdraw={async () => {
           let withdraws = localStorage.getItem('withdraws');
           if (withdraws) {
             const withdrawsArr = withdraws.split(',');
@@ -168,11 +169,14 @@ const CrowdBlock = ({
             }
             withdraws = withdrawsArr.join(',');
             localStorage.setItem('withdraws', withdraws);
+            console.log(withdraws, 'withdraws');
           } else {
+            console.log(id, 'id');
             localStorage.setItem('withdraws', `${id}`);
           }
           
-          onWithdrawWithoutAmount && onWithdrawWithoutAmount();
+          onWithdrawWithoutAmount && await onWithdrawWithoutAmount();
+          notifySuccess('Successful withdrawal!');
         }}
       />
     ),

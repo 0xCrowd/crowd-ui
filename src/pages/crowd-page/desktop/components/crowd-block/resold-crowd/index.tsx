@@ -48,18 +48,18 @@ const ResoldCrowd = ({
       )}
       {myFound && (
         <>
-          <SecondaryText className={mb12}>
+          {!isWithdrawn && <><SecondaryText className={mb12}>
             This NFT was resold, now you can withdraw funds
           </SecondaryText>
-          {!isWithdrawn && <GradientBorderButton
-            className={cx(mb12, w100)}
-            onClick={onWithdraw}
-          >
-            - Withdraw funds
-          </GradientBorderButton>}
+            <GradientBorderButton
+              className={cx(mb12, w100)}
+              onClick={onWithdraw}
+            >
+              - Withdraw funds
+            </GradientBorderButton></>}
           <Row className={mb28}>
             <SecondaryText className={mr4}>
-              {isWithdrawn ? 'you have withdrawn' : 'Your funds after resale:'}
+              {isWithdrawn ? 'You have withdrawn:' : 'Your funds after resale:'}
             </SecondaryText>
             <PrimaryText className={mr4}>{myFound}</PrimaryText>
             <SecondaryText>ETH</SecondaryText>
