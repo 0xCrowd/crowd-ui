@@ -169,9 +169,7 @@ const CrowdBlock = ({
             }
             withdraws = withdrawsArr.join(',');
             localStorage.setItem('withdraws', withdraws);
-            console.log(withdraws, 'withdraws');
           } else {
-            console.log(id, 'id');
             localStorage.setItem('withdraws', `${id}`);
           }
           
