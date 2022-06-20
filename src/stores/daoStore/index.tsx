@@ -6,14 +6,12 @@ import { makeAutoObservable, runInAction } from "mobx";
 import chainStore from "@stores/chainStore";
 
 import { StateEnum } from "@enums/state-enum/index";
-import { ProposalStatusEnum } from "@app/enums/proposal-status-enum";
-import { ProposalTypeEnum } from "@app/enums/proposal-type-Enum";
 import { ProposalChoice } from "@app/enums/proposal-choice-enum";
 import { notify } from "@app/utils/notify";
 import { toEth } from "@app/utils/toEth";
 import { toNumber } from "lodash";
 
-const NEW_API_ENDPOINT = "https://crowd-api-e43tw.ondigitalocean.app";
+const NEW_API_ENDPOINT = "https://crowd-api-e43tw.ondigitalocean.app/polygon";
 const API_ENDPOINT = "https://crowd-protocol-master-9iojf.ondigitalocean.app";
 
 class DaoStore {
