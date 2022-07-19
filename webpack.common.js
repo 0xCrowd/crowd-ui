@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const config = require('config');
+const Dotenv = require('dotenv-webpack');
 
 const assetProcessing = outDir => ({
   loader: 'url-loader',
@@ -77,7 +78,8 @@ module.exports = {
     new webpack.ProvidePlugin({
       process: "process/browser",
     }),
-    new NodePolyfillPlugin()
+    new NodePolyfillPlugin(),
+    new Dotenv(),
   ],
   optimization: {
     chunkIds: 'named',

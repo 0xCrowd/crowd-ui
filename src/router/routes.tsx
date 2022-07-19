@@ -4,8 +4,6 @@ import { Redirect, RouteProps } from 'react-router-dom';
 import { RouteNames } from '@app/router/route-names';
 import MainPage from '@app/pages/main-page';
 import CrowdPage from '@app/pages/crowd-page';
-import Setter from '@app/pages/setter';
-import NotFoundPage from '@pages/not-work/index';
 
 export interface IAppRoute extends RouteProps {
   routes?: IAppRoute[];
@@ -27,21 +25,8 @@ export const appRoutes: IAppRoute[] = [
     render: () => <MainPage />,
   },
   {
-    path: RouteNames.SETTER,
-    exact: true,
-    render: () => <Setter />,
-  },
-  {
      path: RouteNames.CROWD,
      exact: true,
      render: () => <CrowdPage />,
   },
-  // {
-  //  path: RouteNames.FORM,
-  //  render: props => (
-  //    <EntityFormStoresCtx.Provider value={getEntityFormStores()}>
-  //      <EntityFormPage {...props} action="new" />
-  //    </EntityFormStoresCtx.Provider>
-  //  ),
-  // },
 ];

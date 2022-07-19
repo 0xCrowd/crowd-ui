@@ -1,0 +1,1 @@
+export const RARIBLE_URL = 'testnet.rarible.com';

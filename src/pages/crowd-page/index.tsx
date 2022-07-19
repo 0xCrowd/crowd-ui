@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useLocation } from "react-router-dom";
 import { toNumber } from "lodash";
+import { useMetaMask } from "metamask-react";
 
 import Layout from "@app/components/layout";
 import Modal from "@app/components/modal";
@@ -12,14 +13,18 @@ import MobilePage from "./mobile/index";
 import DesktopPage from "./desktop";
 import PriceForm from './components/price-form/index';
 
-import chainStore from "@app/stores/chainStore";
-import daoStore from "@app/stores/daoStore";
+import chainStore from "@stores/chainStore";
+import crowdStore from "@stores/crowdStore";
+import proposalStore from "@stores/proposalStore";
+import transactionsStore from "@stores/transactionsStore";
 
 import { StateEnum } from "@enums/state-enum/index";
 import { ModalModeEnum } from "@app/enums/modal-enum";
 import { ProposalChoice } from "@app/enums/proposal-choice-enum";
 import { IEthFormData } from "./components/eth-form/constants";
 import { IProposalFormData } from "./components/proposal-form/constants";
+import { useAddLayoutHeightAuto } from "@app/hooks/layout-hooks";
+import { RINKEBY_ID } from "@app/constants/chain";
 
 //#region styles
 import { styled } from "@linaria/react";
@@ -41,25 +46,34 @@ const Root = styled.div`
 
 const CrowdPage: FC = observer(() => {
   const { pathname } = useLocation();
+  const { chainId } = useMetaMask();
 
   const { balance, loadWeb3, loadBlockChain, blockChainState } = chainStore;
 
+  useAddLayoutHeightAuto(blockChainState === StateEnum.Error || chainId !== RINKEBY_ID);
+
   const {
     getCrowd,
-    getProposals,
-    donate,
-    createProposal,
-    makeVote,
-    withdraw,
     resetLoadingStatus,
     detailedCrowd,
     detailedCrowdState,
-    donateState,
+  } = crowdStore;
+
+  const {
+    createProposal,
+    makeVote,
+    getProposals,
     proposalsList,
     createProposalState,
     proposalState,
     voteState,
-  } = daoStore;
+  } = proposalStore;
+
+  const {
+    donate,
+    withdraw,
+    donateState,
+  } = transactionsStore;
 
   const [isOpen, setIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
@@ -112,7 +126,7 @@ const CrowdPage: FC = observer(() => {
       case ModalModeEnum.Withdraw:
         title = "Withdraw Funds";
         break;
-      
+
       case ModalModeEnum.Price:
         title = "Put NFT on selling";
     }
@@ -125,7 +139,7 @@ const CrowdPage: FC = observer(() => {
       await createProposal(ceramicStream, price);
       onCloseModal();
       getProposals(ceramicStream);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const onEthSubmit = async ({ deposite }: IEthFormData) => {
@@ -133,7 +147,7 @@ const CrowdPage: FC = observer(() => {
       await donate(deposite, detailedCrowd.fundraising);
       onCloseModal();
       getCrowd(ceramicStream);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const onWithdrawSubmit = async ({ deposite }: IEthFormData) => {
@@ -141,14 +155,14 @@ const CrowdPage: FC = observer(() => {
       await withdraw(detailedCrowd.id, deposite);
       onCloseModal();
       getCrowd(ceramicStream);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const onWithdrawWithoutAmount = async () => {
     try {
       await withdraw(detailedCrowd.id);
       getCrowd(ceramicStream);
-    } catch (error) {}
+    } catch (error) { }
   }
 
   const onPriceSubmit = async ({ price }: IProposalFormData) => {
@@ -156,7 +170,7 @@ const CrowdPage: FC = observer(() => {
       await makeVote(proposalsList[0].id, ProposalChoice.Own, price);
       onCloseModal();
       getProposals(ceramicStream);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const renderModalContent = () => {
@@ -229,7 +243,7 @@ const CrowdPage: FC = observer(() => {
       </Modal>
       <Root>
         {/* ортобразится только при ширине экрана меньше 420px */}
-        <MobilePage 
+        <MobilePage
           crowd={detailedCrowd}
           proposalsList={proposalsList}
           onOpenModal={onOpenModal}

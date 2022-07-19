@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { toNumber } from "lodash";
+import BigNumber from "bignumber.js";
 
 import TabButton from "@app/mobile-components/tab-button";
 import Tabs from "@app/mobile-components/tabs";
@@ -20,8 +20,6 @@ import { media } from "@app/assets/styles/atomic";
 import { textPrimary } from "@app/assets/styles/constants";
 
 import noMedia from "@assets/images/no_image.png";
-import { useLayoutDetailsHeightAuto } from "@app/hooks/use-layout-height-auto";
-import BigNumber from "bignumber.js";
 
 const Root = styled.div`
   ${media("large")} {
@@ -121,7 +119,6 @@ const MobilePage = ({
   const [loaded, setLoaded] = useState(false);
 
   const onImageLoaded = () => setLoaded(true);
-  useLayoutDetailsHeightAuto();
 
   useEffect(() => {
     const imgElCurrent = imgEl.current;

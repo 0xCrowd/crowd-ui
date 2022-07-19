@@ -1,7 +1,13 @@
 import React from "react";
+import { useMetaMask } from "metamask-react";
+
+import GradientBorderButton from "../gradient-border-button";
+import { ButtonSize } from "../button";
 
 //#region styles
 import { styled } from '@linaria/react';
+import { RINKEBY_ID } from "@app/constants/chain";
+
 
 const Root = styled.div`
   display: flex;
@@ -42,19 +48,46 @@ const Link = styled.a`
   border-radius: 10px;
   text-decoration: none;
 `;
+
 //#endregion
 
-const ErrorComponent = ({ className }: ClassNameProps) => (
-  <Root className={className}>
-    <Title>
-      Please connect a wallet
-    </Title>
-    <Container>
-      <Link href="https://metamask.io/" target="_blank" rel="noopener noreferrer">
-        MetaMask
-      </Link>
-    </Container>
-  </Root>
-);
+const ErrorComponent = ({ className }: ClassNameProps) => {
+  const { connect, status, chainId, switchChain } = useMetaMask();
+
+  const renderButton = () => {
+    if (status === 'unavailable') {
+      return <Container>
+        <Link href="https://metamask.io/" target="_blank" rel="noopener noreferrer">
+          MetaMask
+        </Link>
+      </Container>
+    }
+
+    if (status === 'notConnected' || status === 'connecting') {
+      return <GradientBorderButton disabled={status === 'connecting'} size={ButtonSize.large} onClick={connect}>Connect</GradientBorderButton>
+    }
+
+    if (status === 'connected' && chainId !== RINKEBY_ID) {
+      return <GradientBorderButton size={ButtonSize.large} onClick={() => switchChain(RINKEBY_ID)} >Change Network</GradientBorderButton>
+    }
+  };
+
+  const renderText = () => {
+    if (status === 'connected' && chainId !== RINKEBY_ID) {
+      return 'Please Change a network to Rinkeby';
+    } else {
+      return 'Please connect a wallet';
+    }
+  };
+
+  return (
+    <Root className={className}>
+      <Title>
+        {renderText()}
+      </Title>
+      {renderButton()}
+    </Root>
+  )
+};
 
 export default ErrorComponent;

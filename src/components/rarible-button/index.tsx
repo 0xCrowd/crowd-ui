@@ -5,7 +5,7 @@ import { styled } from "@linaria/react";
 
 import rarible from "@assets/images/rarible.svg";
 import { observer } from "mobx-react-lite";
-import chainStore from "@app/stores/chainStore";
+import chainStore from "@stores/chainStore";
 
 interface RootProps {
   background: string;
