@@ -8,11 +8,11 @@ import Tabs from "@app/mobile-components/tabs";
 import TabButton from "@app/mobile-components/tab-button";
 
 import chainStore from "@stores/chainStore";
-import daoStore from "@app/stores/daoStore";
+import crowdStore from "@stores/crowdStore";
 
 import { StateEnum } from "@enums/state-enum";
 import { RouteNames } from "@app/router/route-names";
-import { useLayoutHeightAuto } from '@app/hooks/use-layout-height-auto';
+import { useLayoutHeightAuto } from '@app/hooks/layout-hooks';
 
 //#region styles
 import { css, cx } from "@linaria/core";
@@ -40,7 +40,7 @@ const MainPage: FC = observer(() => {
     totalCrowds,
     crowdState,
     loadedCrowds,
-  } = daoStore;
+  } = crowdStore;
 
   const [modalIsOpen, setIsOpen] = React.useState(false);
 
@@ -72,7 +72,7 @@ const MainPage: FC = observer(() => {
     }
   };
 
-  useLayoutHeightAuto(crowds.length, crowdState === StateEnum.Success);
+  useLayoutHeightAuto(crowds.length, crowdState === StateEnum.Success, blockChainState === StateEnum.Success);
 
   return (
     <Layout

@@ -1,6 +1,8 @@
 import React, { PropsWithChildren, ReactElement, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { observer } from "mobx-react-lite";
+import { useHistory, useLocation } from "react-router-dom";
+import { useMetaMask } from "metamask-react";
 
 import Navbar from "@components/navbar/index";
 import ErrorComponent from "@components/error-component/index";
@@ -11,17 +13,19 @@ import MobileError from "@app/mobile-components/error-component";
 import { MobileNavbar } from "@app/mobile-components/navbar";
 import { MobileFooter } from "@app/mobile-components/footer/footer";
 
-import daoStore from "@app/stores/daoStore";
-import chainStore from "@app/stores/chainStore";
+import crowdStore from "@stores/crowdStore";
+import chainStore from "@stores/chainStore";
 
 import { StateEnum } from "@enums/state-enum/index";
 import { notify } from "../../utils/notify";
 import { IPartyFormData } from "@app/pages/main-page/components/party-form/constants";
+import { RINKEBY_ID } from "@app/constants/chain";
+import { RARIBLE_URL } from "@app/constants/rarible-url";
 
 //#region styles
 import { styled } from "@linaria/react";
 import { desktopComponent, mobileComponent } from "@app/assets/styles/atomic";
-import { useHistory, useLocation } from "react-router-dom";
+import closePink from '@assets/images/close-pink.png';
 
 const Root = styled.div`
   display: flex;
@@ -29,6 +33,37 @@ const Root = styled.div`
   justify-content: space-between;
   height: 100%;
   background-color: #141414;
+`;
+
+const Text = styled.p`
+  margin: 0;
+`;
+
+const Alert = styled.div`
+  position: relative;
+  box-sizing: border-box;
+  height: 50px;
+  padding: 10px;
+  font-weight: 600;
+  font-size: 12px;
+  color: #FF00F7;
+  background: #660058;
+  text-align: center;
+`;
+
+const Link = styled.a`
+  font-weight: 600;
+  font-size: 12px;
+  color: #FF00F7;
+`;
+
+const Button = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
 `;
 //#endregion
 
@@ -47,9 +82,11 @@ const Layout = observer(
     isModalOpen,
     className,
   }: PropsWithChildren<Props>): ReactElement => {
+    const { chainId } = useMetaMask();
     const { push } = useHistory();
     const { pathname } = useLocation();
     const { balance, blockChainState, address } = chainStore;
+
     const {
       createCrowd,
       clearPage,
@@ -57,9 +94,10 @@ const Layout = observer(
       clearPreview,
       crowdPreview,
       createCrowdState,
-    } = daoStore;
+    } = crowdStore;
 
     const [previewId, setPreviewId] = useState("");
+    const [isAlertClosed, setIsAlertClosed] = useState(false);
 
     const onFormSubmit = (data: IPartyFormData) => {
       try {
@@ -67,7 +105,7 @@ const Layout = observer(
 
         const [, , domain, page, address, nftId] = data.url.split("/");
 
-        if (domain === "rarible.com" || domain === "rinkeby.rarible.com") {
+        if (domain === "rarible.com" || domain === RARIBLE_URL) {
           if (page === "token") {
             id = address.split("?")[0];
           }
@@ -92,7 +130,7 @@ const Layout = observer(
         closeModal();
         clearPage();
         push(`/${id}`);
-      } catch (error) {}
+      } catch (error) { }
     };
 
     return (
@@ -120,18 +158,25 @@ const Layout = observer(
             />
           )}
         </Modal>
-        <Navbar
-          balance={balance}
-          className={desktopComponent}
-          onAddNew={openModal}
-          location={pathname}
-        />
+        <div>
+          {!isAlertClosed && <Alert>
+            <Text>This is an Ethereum Rinkeby Testnet Demo 🛠</Text>
+            <span>Click <Link href="https://rinkebyfaucet.com/" target="_blank" rel="noopener noreferrer">here</Link> to claim free Rinkeby ETH 💸 for tests. Click <Link href="https://youtu.be/vRbnEQVZVXA" target="_blank" rel="noopener noreferrer">here</Link> to watch an explanation video 🎥 on how to use Crowd</span>
+            <Button onClick={() => setIsAlertClosed(true)}><img src={closePink} /></Button>
+          </Alert>}
+          <Navbar
+            balance={balance}
+            className={desktopComponent}
+            onAddNew={openModal}
+            location={pathname}
+          />
+        </div>
         <MobileNavbar
           className={mobileComponent}
           account={address}
           onAddNew={openModal}
         />
-        {blockChainState === StateEnum.Error ? (
+        {blockChainState === StateEnum.Error || chainId !== RINKEBY_ID ? (
           <>
             <MobileError className={mobileComponent} />
             <ErrorComponent className={desktopComponent} />

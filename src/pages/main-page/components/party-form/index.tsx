@@ -1,11 +1,11 @@
 import React, { ReactElement } from "react";
-import Loader from "react-loader-spinner";
 import { useFormik } from "formik";
 
 import Input from "@app/components/input";
 import Button, { ButtonSize } from "@app/components/button";
 
 import { initialValues, validate, IPartyFormData } from "./constants";
+import { RARIBLE_URL } from "@app/constants/rarible-url";
 
 //#region styles
 import { css } from "@linaria/core";
@@ -48,12 +48,12 @@ const PartyForm = ({
         label={
           <>
             URL of the fixed price NFT on{" "}
-            <a href="https://rinkeby.rarible.com" target="_blank">
+            <a href={`https://${RARIBLE_URL}`} target="_blank">
               rinkeby.rarible.com
             </a>
           </>
         }
-        placeholder="https://rinkeby.rarible.com/token/id"
+        placeholder={`https://${RARIBLE_URL}/token/id`}
         value={values.url}
         onChange={handleChange}
         error={touched.url && errors.url ? errors.url : ""}

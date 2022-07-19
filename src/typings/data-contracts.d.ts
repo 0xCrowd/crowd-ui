@@ -85,4 +85,51 @@ declare global {
     have_permission: boolean;
     already_voted: boolean;
   };
+
+  type ProposalData = {
+    crowd: number;
+    address: string;
+    network: "ethereum"
+  };
+
+  type WithdrawData = { crowd: number; user: string; amount?: string; };
+  type WithdrawResponse = { id: number; fundraising: number; };
+
+  type CreateCrowdData = { target: string; };
+  type CreateCrowdResponse = { id: number; fundraising: number; };
+
+  type CreateProposalData = {
+    crowd: number;
+    user: string;
+    price: string;
+  };
+  type CreateProposalResponse = { proposal: string; };
+
+  type MakeProposalVoteData = {
+    user: string;
+    proposal: number;
+    choice: ProposalChoice;
+    price: string;
+  }
 }
+
+// type CorwdTargetV2 = {
+//   collection: address; // Адрес коллекции, на NFT из которой идет сбор
+//   id: number; // NFT id
+//   buyoutPrice: number; // До момента выкупа 0, после - цена выкупа
+//   resalePrice: nuymber; // До момента перепродажи 0, после - цена перепродажи
+// }
+
+// type CrowdResale = {
+//   votesFor: number; // Voting power "за" перепродажу
+//   votesAgainst: number; // Voting power "против" перепродажу
+//   avgResalePrice: number; // Средняя цена перепродажи, за которую проголосовали
+// }
+
+// type CrowdV2 = {
+// 	status: number; // 0 - FUNDRAISING, 1 - BUYOUT, 2 - ON_SALE, 3 - RESOLD
+// 	target: CorwdTargetV2;
+// 	resale: CrowdResale;
+// 	vault: address; // Адрес хранилища, подключенного к Crowd (хранит ассеты)
+// 	collected: number; // Сумма, собранная во время фандрейзинга. Уменьшается только при выводе на этапе FUNDRAISING
+// }

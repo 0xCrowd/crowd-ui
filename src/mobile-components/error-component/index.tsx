@@ -7,6 +7,8 @@ import { styled } from "@linaria/react";
 
 import { mb62 } from "@assets/styles/atomic";
 import { primaryGreenButton } from "../no-crowds";
+import { useMetaMask } from "metamask-react";
+import { RINKEBY_ID } from "@app/constants/chain";
 
 const Root = styled.div`
   display: flex;
@@ -31,16 +33,38 @@ const Title = styled.p`
 //#endregion
 
 const MobileError = ({ className }: ClassNameProps) => {
+  const { status, connect, chainId, switchChain } = useMetaMask();
+
+  const onClick = () => {
+    if (status === 'notConnected') {
+      connect();
+    }
+
+    if (status === 'unavailable') {
+      window.open("https://metamask.io/");
+    }
+
+    if (status === 'connected' && chainId !== RINKEBY_ID) {
+      switchChain(RINKEBY_ID);
+    }
+  };
+
+  const renderText = () => {
+    if (status === 'connected' && chainId !== RINKEBY_ID) {
+      return 'Please change network to Rinkeby';
+    } else {
+      return 'Please connect wallet';
+    }
+  };
+
   return (
     <Root className={className}>
       <Container>
-        <Title className={mb62}>Please connect wallet</Title>
+        <Title className={mb62}>{renderText()}</Title>
         <Button
           size={ButtonSize.small}
           className={primaryGreenButton}
-          onClick={() => {
-            window.open("https://metamask.io/");
-          }}
+          onClick={onClick}
         >
           Metamask
         </Button>

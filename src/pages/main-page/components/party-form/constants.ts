@@ -1,3 +1,4 @@
+import { RARIBLE_URL } from '@app/constants/rarible-url';
 import { validateUrl } from '@app/utils/validateUrl';
 
 export interface IPartyFormData {
@@ -19,7 +20,7 @@ export const validate = (values: IPartyFormData): ErrorType => {
 
   const [, , domain, page] = values.url.split("/");
 
-  if (domain === "rarible.com" || domain === "rinkeby.rarible.com") {
+  if (domain === "rarible.com" || domain === RARIBLE_URL) {
     if (page !== "token") {
       errors.url = 'Invalid url'
     }

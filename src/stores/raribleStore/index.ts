@@ -7,6 +7,7 @@ import { StateEnum } from '@app/enums/state-enum/index';
 
 import chainStore from '@stores/chainStore';
 
+// deprecated store
 class RaribleStore {
   constructor() {
     makeAutoObservable(this);

@@ -1,0 +1,1 @@
+export const toWei = (eth: string) => window.web3.utils.toWei(eth, 'ether');

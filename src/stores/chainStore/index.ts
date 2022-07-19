@@ -5,8 +5,10 @@ import { StateEnum } from '@app/enums/state-enum/index';
 
 
 import Vault from "../../../ABI/Vault.json";
+// import CrowdManager from "../../../ABI/Vault.json";
 
 const VAULT_ADDRESS = "0x759D6BC03f9d27bc582fCC6A75e07b2570Aa92Bc";
+const CROWD_MANAGER_ADDRESS = "0x759D6BC03f9d27bc582fCC6A75e07b2570Aa92Bc";
 class ChainStore {
   constructor() {
     makeAutoObservable(this);
@@ -17,6 +19,7 @@ class ChainStore {
   networkId = 1;
 
   vaultContract!: any;
+  // crowdMangerContract!: any;
 
   web3State: StateEnum = StateEnum.Empty;
   blockChainState: StateEnum = StateEnum.Empty;
@@ -76,6 +79,13 @@ class ChainStore {
       // @ts-ignore
       this.vaultContract = new web3.eth.Contract(vaultAbi, VAULT_ADDRESS);
     }
+
+    // const corwdManagerAbi = CrowdManager.abi;
+
+    // if (corwdManagerAbi) {
+    //   // @ts-ignore
+    //   this.crowdMangerContract = new web3.eth.Contract(corwdManagerAbi, CROWD_MANAGER_ADDRESS);
+    // }
   };
 }
 

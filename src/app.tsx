@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
 import { configure } from "mobx";
 import { Route, Switch } from "react-router-dom";
 
@@ -15,12 +15,17 @@ configure({
   reactionRequiresObservable: true,
 });
 
+console.log(process, 'process');
+console.log(window, 'window');
+
 export const App = (): ReactElement => {
   return (
+
     <Switch>
       {appRoutes.map((appRoute, i) => (
         <Route key={i} {...appRoute} />
       ))}
     </Switch>
+
   );
 };
