@@ -36,6 +36,7 @@ const MainPage: FC = observer(() => {
     getCrowdList,
     loadMoreCrowds,
     clearPreview,
+    getCrowdTotal,
     crowds,
     totalCrowds,
     crowdState,
@@ -56,6 +57,7 @@ const MainPage: FC = observer(() => {
   useEffect(() => {
     if (blockChainState === StateEnum.Success) {
       getCrowdList(isMyCrowdsPage ? address : "");
+      getCrowdTotal();
     }
   }, [blockChainState]);
 

@@ -111,25 +111,25 @@ declare global {
     choice: ProposalChoice;
     price: string;
   }
+
+  type CorwdTargetV2 = {
+    collection: address; // Адрес коллекции, на NFT из которой идет сбор
+    id: number; // NFT id
+    buyoutPrice: number; // До момента выкупа 0, после - цена выкупа
+    resalePrice: nuymber; // До момента перепродажи 0, после - цена перепродажи
+  }
+  
+  type CrowdResale = {
+    votesFor: number; // Voting power "за" перепродажу
+    votesAgainst: number; // Voting power "против" перепродажу
+    avgResalePrice: number; // Средняя цена перепродажи, за которую проголосовали
+  }
+  
+  type CrowdV2 = {
+    status: number; // 0 - FUNDRAISING, 1 - BUYOUT, 2 - ON_SALE, 3 - RESOLD
+    target: CorwdTargetV2;
+    resale: CrowdResale;
+    vault: address; // Адрес хранилища, подключенного к Crowd (хранит ассеты)
+    collected: number; // Сумма, собранная во время фандрейзинга. Уменьшается только при выводе на этапе FUNDRAISING
+  }
 }
-
-// type CorwdTargetV2 = {
-//   collection: address; // Адрес коллекции, на NFT из которой идет сбор
-//   id: number; // NFT id
-//   buyoutPrice: number; // До момента выкупа 0, после - цена выкупа
-//   resalePrice: nuymber; // До момента перепродажи 0, после - цена перепродажи
-// }
-
-// type CrowdResale = {
-//   votesFor: number; // Voting power "за" перепродажу
-//   votesAgainst: number; // Voting power "против" перепродажу
-//   avgResalePrice: number; // Средняя цена перепродажи, за которую проголосовали
-// }
-
-// type CrowdV2 = {
-// 	status: number; // 0 - FUNDRAISING, 1 - BUYOUT, 2 - ON_SALE, 3 - RESOLD
-// 	target: CorwdTargetV2;
-// 	resale: CrowdResale;
-// 	vault: address; // Адрес хранилища, подключенного к Crowd (хранит ассеты)
-// 	collected: number; // Сумма, собранная во время фандрейзинга. Уменьшается только при выводе на этапе FUNDRAISING
-// }

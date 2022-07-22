@@ -27,46 +27,54 @@ class CrowdStore {
   crowdPreview!: PreviewApiType | undefined;
   createCrowdState = StateEnum.Empty;
 
-  // crowdTotal = 0;
+  getCrowdTotal = async (): Promise<number> => {
+    try {
+      const { crowdMangerContract } = chainStore;
+      const resp = await crowdMangerContract.methods.crowdsTotal().call();
+      console.log(resp, 'resp');
+      return resp
+    } catch (error) { 
+      throw error;
+    }
+  };
 
-  // getCrowdTotal = async () => {
-  //   try {
-  //     const { crowdMangerContract } = chainStore;
-  //     const resp = await crowdMangerContract.methods.crowdsTotal();
-  //     console.log(resp, 'resp');
-  //     runInAction(() => {
-  //       this.crowdTotal = resp;
-  //     })
-  //   } catch (error) { }
-  // };
+  getCrowdListV2 = async () => {
+    try {
+      const total = await this.getCrowdTotal();
+      const { crowdMangerContract } = chainStore;
+      const crowds = [];
+      for (let i = 0; i <= total; i++) {
+        const crowd = await crowdMangerContract.methods.getCrowd(i).call();
+        const adaptedCrowd = await this.adaptCrowdV2(crowd);
+        crowds.push(adaptedCrowd);
+      }
+    } catch (error) {}
+  };
 
-  // getCrowdListV2 = async () => {
-  //   try {
-  //     const { crowdMangerContract } = chainStore;
-  //     const crowds = [];
-  //     for (let i = 0; i <= this.crowdTotal; i++) {
-  //       const crowd = await crowdMangerContract.methods.getCrowd(i);
-  //       const adaptedCrowd = await this.adaptCrowdV2(crowd);
-  //       crowds.push(adaptedCrowd);
-  //     }
-  //   } catch (error) {}
-  // };
+  adaptCrowdV2 = async (crowd: CrowdV2): Promise<AdaptedCrowd | undefined> => {
+    try {
+      const data = await api.looksRare.getData({ params: { crowdId: 0 } });
+      return {
+        priceEth: 0,
+        status: 'active',
+        id: 0,
+        deposits: [],
+        fundraising: 0,
+        name: '',
+        media: '',
+        percentage: 100,
+      };
+    } catch (error) {}
+  };
 
-  // adaptCrowdV2 = async (crowd: CrowdV2): Promise<AdaptedCrowd | undefined> => {
-  //   try {
-  //     const data = await api.looksRare.getData({ params: { crowdId: 0 } });
-  //     return {
-  //       priceEth: 0,
-  //       status: 'active',
-  //       id: 0,
-  //       deposits: [],
-  //       fundraising: 0,
-  //       name: '',
-  //       media: '',
-  //       percentage: 100,
-  //     };
-  //   } catch (error) {}
-  // };
+  createCrowdV2 = async () => {
+    try {
+      const { crowdMangerContract } = chainStore;
+      crowdMangerContract.methods.createCrowd();
+    } catch (error) {
+      
+    }
+  }
 
   getCrowdList = async (address?: string) => {
     try {
